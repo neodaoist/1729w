@@ -5,11 +5,10 @@ Feature: Create an NFT for the weekly winning essay
 
   Scenario: Create winning NFT
     Given Essay "Save the world" is the winning essay for the week
-    And The winning is published at https://testpublish.com/savetheworld.html
-    And The winning essay is authored by George
-    And George has address 0xTBD
-    When I select "mint NFT"
-    Then there should be a contract created of type ...
+    And The winning essay is published at https://testpublish.com/savetheworld.html
+    And The winning essay is authored by Matt, with address 0xTBD
+    When I select 'mint NFT'
+    Then there should be a contract created of type WriterNFT
     And the contract should have URL https://testpublish.com/savetheworld.html
     And the contract should be owned by address 0xTBD
 
