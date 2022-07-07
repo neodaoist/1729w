@@ -76,7 +76,8 @@ fn mint_nft(world: &mut WriterWorld) {
 
 // there should be a contract created of type WriterNFT
 #[then("there should be a contract created of type WriterNFT")]
-fn check_contract_type(world: &mut WriterWorld) {
+fn check_contract_type(world: & mut WriterWorld) {
     // TODO: Stubbed
-    panic!("NFT Contract isn't found");
+    assert!(false, "NFT Contract isn't found");
+    // panic!("NFT Contract isn't found");
 }
