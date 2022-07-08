@@ -10,6 +10,8 @@ Feature: Publish Essay NFT for the weekly winning essay
         And it received 1337 Community-Sourced Attestations
         And "Save the world" is the winning essay for Week 1
 
+    # TODO convert to data table
+    # TODO do mint, list, and bid on together
     Scenario: Mint winning NFT
         Given The winning is published at "https://testpublish.com/savetheworld.html"
         And the winning essay is written by "George"
@@ -27,6 +29,8 @@ Feature: Publish Essay NFT for the weekly winning essay
     Scenario: List Essay NFT
 
     Scenario: Bid on Essay NFT
+
+    # TODO combine in Distribute funds
 
     Scenario: Finalize auction, as winner
 
