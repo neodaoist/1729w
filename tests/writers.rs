@@ -50,6 +50,11 @@ fn main() {
 
 /////////////// STEPDEFS ////////////////////
 
+#[given(regex = r"^The Essay NFT contract is deployed$")]
+fn essay_contract_is_deployed(world: &mut WriterWorld) {
+    panic!("Not implemented yet");
+}
+
 // Given Essay "Save the world" is the winning essay for the week
 #[given(regex = r"^Essay (.*) is the winning essay for the week$")]
 fn winning_essay_title(world: &mut WriterWorld, essay_title: String) {
@@ -75,9 +80,9 @@ fn mint_nft(world: &mut WriterWorld) {
 }
 
 // there should be a contract created of type WriterNFT
-#[then("there should be a contract created of type WriterNFT")]
+#[then("there should be a bid placed for 0.1 ETH by the 1729w multisig account")]
 fn check_contract_type(world: & mut WriterWorld) {
     // TODO: Stubbed
-    assert!(false, "NFT Contract isn't found");
+    assert!(false, "Essay NFT bid is not found");
     // panic!("NFT Contract isn't found");
 }

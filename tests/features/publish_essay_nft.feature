@@ -8,7 +8,7 @@ Feature: Publish Essay NFT for the weekly winning essay
         And there are no NFTs minted on the contract
         And the Cohort is 1
         And the Week is 1
-        And "Save the World" is the winning essay
+        And the winning essay is "Save the World"
         And the essay content is "XYZ"
         And the writer's name is Susmitha and address is 0xCAFE
         And the publication URL is "https://testpublish.com/savetheworld"
@@ -30,8 +30,10 @@ Feature: Publish Essay NFT for the weekly winning essay
             | Community-Sourced Attestation Count | 1337                                 |
         And there should be an auction listing on Zora with a minimum bid amount of 0.1 ETH
         And there should be a bid placed for 0.1 ETH by the 1729w multisig account
+    # QUESTION 1729 Writers Union? Guild, Group, Club? What's the right word, aligned with The Network State
+    # QUESTION how long to leave the auction open ?
 
-    Scenario: Finalize auction as winner
+    Scenario: Finalize auction as winning bidder
     # TODO include Funds are distributed as a Then in both finalize scenarios
 
-    Scenario: Finalize auction as loser
+    Scenario: Finalize auction as losing bidder

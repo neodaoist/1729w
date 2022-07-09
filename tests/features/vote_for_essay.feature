@@ -7,4 +7,5 @@ Feature: 1729 member votes on the best essay of the week
 
     Scenario: Vote for best essay
 
+# TODO on what token do we base the snapshot ? concentric circles — reader, writer, developer, administrator
 # TODO how do we clarify voting criteria ? do we need to ?

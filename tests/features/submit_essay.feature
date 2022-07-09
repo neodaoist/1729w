@@ -4,11 +4,9 @@ Feature: Submit an essay
     I want to submit my essay for the weekly essay contest
 
     Scenario: Submit essay
-    # Then attestation of length
-    # Then attestation of originality
-    # Then attesation of minimum viable publication on publicly-accessible URL
-    # Then attestation of minimum viable promotion on social media
-
-    Scenario: Placeholder
+# Then attestation of length
+# Then attestation of originality
+# Then attesation of minimum viable publication on publicly-accessible URL
+# Then attestation of minimum viable promotion on social media
 
 # TODO Copyright / license required ?
