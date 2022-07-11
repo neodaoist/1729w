@@ -12,6 +12,10 @@ xyz
 
 ### What
 
+#### Draft Workflow
+
+![Workflow Draft 1](./files/workflow-draft-1.png)
+
 ## Behind-the-scenes
 
 ### How it works
