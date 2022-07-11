@@ -3,9 +3,9 @@ use std::convert::Infallible;
 use async_trait::async_trait;
 use cucumber::{given, when, then, World, WorldInit};
 
+// 
 
-
-// TODO: Refactor Essay into its own struct
+// TODO: Refactor into structs as needed
 /*
 #[derive(Debug)]
 pub struct Essay {
@@ -18,10 +18,19 @@ pub struct Essay {
 // `World` is your shared, likely mutable state.
 #[derive(Debug, WorldInit)]
 pub struct WriterWorld {
-    // TODO: Refactor into an Essay struct
+
+    // TODO: Refactor into structs as needed
+
+    competition_cohort_number: String,
+    competition_week_number: String,
+
     winning_essay_title: String,
-    winning_essay_url: String,
-    winning_essay_address: String,
+    winning_essay_content: String,
+    winning_essay_publication_url: String,
+    winning_essay_votes: String,
+
+    winning_writer_name: String,
+    winning_writer_address: String,
 }
 
 // `World` needs to be implemented, so Cucumber knows how to construct it
@@ -33,9 +42,16 @@ impl World for WriterWorld {
 
     async fn new() -> Result<Self, Infallible> {
         Ok(Self {
+            competition_cohort_number: String::from(""),
+            competition_week_number: String::from(""),
+
             winning_essay_title: String::from(""),
-            winning_essay_url: String::from(""),
-            winning_essay_address: String::from(""),
+            winning_essay_content: String::from(""),
+            winning_essay_publication_url: String::from(""),
+            winning_essay_votes: String::from(""),
+
+            winning_writer_name: String::from(""),
+            winning_writer_address: String::from(""),
         })
     }
 }
@@ -48,41 +64,63 @@ fn main() {
     futures::executor::block_on(WriterWorld::run("tests/features"));
 }
 
-/////////////// STEPDEFS ////////////////////
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Publish Essay
+////////////////////////////////////////////////////////////////
 
 #[given(regex = r"^The Essay NFT contract is deployed$")]
 fn essay_contract_is_deployed(world: &mut WriterWorld) {
-    panic!("Not implemented yet");
+    // TODO: deploy contract
 }
 
-// Given Essay "Save the world" is the winning essay for the week
-#[given(regex = r"^Essay (.*) is the winning essay for the week$")]
+#[given(regex = r"^there are no NFTs minted on the contract$")]
+fn essay_contract_has_no_nfts_minted(world: &mut WriterWorld) {
+    // TODO: just for clarity
+}
+
+#[given(regex = r"^the Cohort is ([\d]*)$")]
+fn cohort_number_is_x(world: &mut WriterWorld, cohort_number: String) {
+    world.competition_cohort_number = cohort_number;
+}
+
+#[given(regex = r"^the Week is ([\d]*)$")]
+fn week_number_is_x(world: &mut WriterWorld, week_number: String) {
+    world.competition_week_number = week_number;
+}
+
+#[given(regex = r"^the winning essay is '([^']*)'$")]
 fn winning_essay_title(world: &mut WriterWorld, essay_title: String) {
     world.winning_essay_title = essay_title;
 }
 
-// The winning is published at https://testpublish.com/savetheworld.html
-#[given(regex = r"^The winning essay is published at (.*)$")]
-fn winning_essay_url(world: &mut WriterWorld, essay_url: String) {
-    world.winning_essay_url = essay_url;
+#[given(regex = r"^the essay content is '([^']*)'$")]
+fn winning_essay_content(world: &mut WriterWorld, essay_content: String) {
+    world.winning_essay_content = essay_content;
 }
 
-// The winning essay is authored by Matt, with address 0xTBD
-#[given(regex = r"^The winning essay is authored by (.*), with address (.*)$")]
-fn winning_essay_address(world: &mut WriterWorld, author_name: String, essay_address: String) {
-    world.winning_essay_address = essay_address;
-    // TODO: Do something with author name, or drop it
+#[given(regex = r"^the writer's name is '([^']*)' and address is '(0x[0-9A-F]*)'$")]
+fn winning_writer(world: &mut WriterWorld, writer_name: String, writer_address: String) {
+    world.winning_writer_name = writer_name;
+    world.winning_writer_address = writer_address;
 }
 
-#[when("I select 'mint NFT'")]
-fn mint_nft(world: &mut WriterWorld) {
+#[given(regex = r"^the publication URL is '(https://[^']*)'$")]
+fn winning_essay_publication_url(world: &mut WriterWorld, essay_publication_url: String) {
+    world.winning_essay_publication_url = essay_publication_url;
+}
+
+#[given(regex = r"^the winning essay received ([\d]*) votes$")]
+fn winning_essay_votes(world: &mut WriterWorld, essay_votes: String) {
+    world.winning_essay_votes = essay_votes;
+}
+
+#[when("I mint, list, and bid on the Essay NFT")]
+fn mint_list_bid_on_nft(world: &mut WriterWorld) {
     // TODO: Unimplemented
 }
 
-// there should be a contract created of type WriterNFT
-#[then("there should be a bid placed for 0.1 ETH by the 1729w multisig account")]
+#[then("There should be PLACEHOLDER STEP XYZ")]
 fn check_contract_type(world: & mut WriterWorld) {
-    // TODO: Stubbed
-    assert!(false, "Essay NFT bid is not found");
-    // panic!("NFT Contract isn't found");
+    // assert!(false, "Essay NFT bid is not found");
+    panic!("STEPDEF not implemented yet");
 }

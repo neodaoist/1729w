@@ -1,7 +1,7 @@
 Feature: Submit an essay
     As a 1729 writer
     So that I contribute to the 1729 community and receive credit for contributing
-    I want to submit my essay for the weekly essay contest
+    I want to submit my essay for the weekly essay competition
 
     Scenario: Submit essay
 # Then attestation of length
