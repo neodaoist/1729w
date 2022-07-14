@@ -14,7 +14,7 @@ xyz
 
 #### Draft Workflow
 
-![Workflow Draft 1](./files/workflow-draft-1.png)
+![Story Map 2](./files/story-map-2.png)
 
 ## Behind-the-scenes
 
