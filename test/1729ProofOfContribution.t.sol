@@ -15,4 +15,8 @@ contract OneSevenTwoNineProofOfContributionTest is Test {
     function testFirst() public {
         assertEq(contribution.uri(0), "");
     }
+
+    function testSayHi() public {
+        assertEq(contribution.sayHi(), "hi");
+    }
 }

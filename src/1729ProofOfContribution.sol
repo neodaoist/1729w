@@ -18,4 +18,8 @@ contract OneSevenTwoNineProofOfContribution is ERC1155 {
     function uri(uint256 id) public view override returns (string memory) {
         return "";
     }
+
+    function sayHi() public pure returns (string memory) {
+        return "hi";
+    }
 }

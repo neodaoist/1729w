@@ -3,6 +3,14 @@ use std::convert::Infallible;
 use async_trait::async_trait;
 use cucumber::{given, when, then, World, WorldInit};
 
+use ethers::{
+    prelude::*,
+    solc::{Project, ProjectPathsConfig},
+    utils::Anvil,
+};
+use eyre::Result;
+use std::{convert::TryFrom, path::PathBuf, sync::Arc, time::Duration};
+
 // 
 
 // TODO: Refactor into structs as needed
@@ -117,10 +125,13 @@ fn winning_essay_votes(world: &mut WriterWorld, essay_votes: String) {
 #[when("I mint, list, and bid on the Essay NFT")]
 fn mint_list_bid_on_nft(world: &mut WriterWorld) {
     // TODO: Unimplemented
+    // panic!("But idk how to do this yet! =)");
+
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("examples");
 }
 
 #[then("There should be PLACEHOLDER STEP XYZ")]
 fn check_contract_type(world: & mut WriterWorld) {
     // assert!(false, "Essay NFT bid is not found");
-    panic!("STEPDEF not implemented yet");
+    // panic!("STEPDEF not implemented yet");
 }
