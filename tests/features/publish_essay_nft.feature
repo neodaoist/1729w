@@ -9,7 +9,7 @@ Feature: Publish Essay NFT for the weekly winning essay
         And the Cohort is 1
         And the Week is 1
         And the winning essay is 'Save the World'
-        And the essay content is 'XYZ'
+        And the essay content is 'XYZ ABC 345'
         And the writer's name is 'Susmitha87539319' and address is '0xCAFE'
         And the publication URL is 'https://testpublish.com/savetheworld'
         And the winning essay received 1337 votes
@@ -20,12 +20,12 @@ Feature: Publish Essay NFT for the weekly winning essay
         And There should be an Essay NFT minted with the following properties:
             | property name                       | property value                       |
             | Token ID                            | 1                                    |
-            | Cohort                              | 1                                    |
+            | Cohort                              | 2                                    |
             | Week                                | 1                                    |
             | Name                                | Save the World                       |
             | Image                               | XYZ                                  |
-            | Description                         | XYZ                                  |
-            | Content Hash                        | XYZ                                  |
+            | Description                         | ABC                                  |
+            | Content Hash                        | DEF                                  |
             | Writer Name                         | Susmitha87539319                     |
             | Writer Address                      | 0xCAFE                               |
             | Publication URL                     | https://testpublish.com/savetheworld |

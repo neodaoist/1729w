@@ -11,7 +11,7 @@ Feature: Deploy smart contracts
 
     Scenario: Deploy Proof of Contribution SBT contract
         #
-        Then should have vanity address starting with '0x172w[0-9]'
+        Then It should have vanity address starting with '0x1729[A-Fa-f]'
         And the contract should be verified on Etherscan
     # TODO ERC1155 ?
     # TODO should we support upgradeability?
