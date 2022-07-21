@@ -200,7 +200,7 @@ fn submit_when_1(world: &mut WriterWorld) {
 }
 
 #[then(regex = r"^I should see an essay titled '([^']+)' in the TODO for Cohort (\d+) Week (\d+)$")]
-fn submit_then_1(world: &mut WriterWorld, ABC: String) {
+fn submit_then_1(world: &mut WriterWorld, essay_title: String, cohort_number: String, week_number: String) {
     // TODO: not implemented yet
     panic!("STEPDEF not implemented yet");
 }
@@ -258,7 +258,7 @@ fn vote_scenario_2_when_1(world: &mut WriterWorld, essay_title: String) {
 }
 
 #[then(regex = r"^I should see the (0x[0-9A-Fa-f]+) account voted (\d) for the essay titled '([^']+)'$")]
-fn vote_scenario_2_then_1(world: &mut WriterWorld, ABC: String) {
+fn vote_scenario_2_then_1(world: &mut WriterWorld, voter_account: String, vote_count: String, essay_title: String) {
     // TODO: not implemented yet
     panic!("STEPDEF not implemented yet");
 }
