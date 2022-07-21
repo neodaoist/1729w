@@ -21,6 +21,9 @@ pub struct WriterWorld {
 
     // TODO: Refactor into structs as needed
 
+    writer_name: String,
+    writer_address: String,
+
     competition_cohort_number: String,
     competition_week_number: String,
 
@@ -42,6 +45,9 @@ impl World for WriterWorld {
 
     async fn new() -> Result<Self, Infallible> {
         Ok(Self {
+            writer_name: String::from(""),
+            writer_address: String::from(""),
+
             competition_cohort_number: String::from(""),
             competition_week_number: String::from(""),
 
@@ -65,7 +71,81 @@ fn main() {
 }
 
 ////////////////////////////////////////////////////////////////
-//                  Step Defs – Publish Essay
+//                  Step Defs TEMPLATES
+////////////////////////////////////////////////////////////////
+
+// #[given("XYZ")]
+// fn XYZ(world: &mut WriterWorld) {
+//     // TODO: not implemented yet
+// }
+
+// #[given(regex = r"^XYZ$")]
+// fn XYZ(world: &mut WriterWorld, ABC: String) {
+//     // TODO: not implemented yet
+//     world.XYZ = ABC;
+// }
+
+// #[when("XYZ")]
+// fn XYZ(world: &mut WriterWorld) {
+//     // TODO: not implemented yet
+// }
+
+// #[then("XYZ")]
+// fn XYZ(world: & mut WriterWorld) {
+//     // TODO: not implemented yet
+//     panic!("STEPDEF not implemented yet");
+// }
+
+// #[then(regex = r"^XYZ$")]
+// fn XYZ(world: &mut WriterWorld, ABC: String) {
+//     // TODO: not implemented yet
+//     panic!("STEPDEF not implemented yet");
+// }
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Deploy Smart Contracts
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Apply to 1729 Writers
+////////////////////////////////////////////////////////////////
+
+#[given("The 1729 Writers application form is live")]
+fn apply_given_1(world: &mut WriterWorld) {
+    // TODO: not implemented yet
+}
+
+#[given(regex = r"^my name is ([^\s]*) and my address is (0x[0-9a-zA-Z]*)$")]
+fn apply_given_2(world: &mut WriterWorld, writer_name: String, writer_address: String) {
+    world.writer_name = writer_name;
+    world.writer_address = writer_address;
+}
+
+#[when("I apply to 1729 Writers")]
+fn apply_when_1(world: &mut WriterWorld) {
+    // TODO: not implemented yet
+}
+
+#[then(regex = r"^There should be a new writer application with name ([^\s]*) and address (0x[0-9a-zA-Z]*)$")]
+fn apply_then_1(world: &mut WriterWorld, writer_name: String, writer_address: String) {
+    // TODO: not implemented yet
+    panic!("STEPDEF not implemented yet");
+}
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Submit Essay
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Vote for Essay
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Determine Winning Essay
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Publish Winning Essay
 ////////////////////////////////////////////////////////////////
 
 #[given(regex = r"^The Essay NFT contract is deployed$")]
@@ -124,3 +204,11 @@ fn check_contract_type(world: & mut WriterWorld) {
     // assert!(false, "Essay NFT bid is not found");
     panic!("STEPDEF not implemented yet");
 }
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Issue Proof of Contribution
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+//                  Step Defs – Address Bad Behavior
+////////////////////////////////////////////////////////////////
