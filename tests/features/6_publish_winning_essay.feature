@@ -18,19 +18,19 @@ Feature: Publish Essay NFT for the weekly winning essay
         When I mint, list, and bid on the Essay NFT
         Then There should be PLACEHOLDER STEP XYZ
         And There should be an Essay NFT minted with the following properties:
-            | property name                       | property value                       |
-            | Token ID                            | 1                                    |
-            | Cohort                              | 2                                    |
-            | Week                                | 1                                    |
-            | Name                                | Save the World                       |
-            | Image                               | XYZ                                  |
-            | Description                         | ABC                                  |
-            | Content Hash                        | DEF                                  |
-            | Writer Name                         | Susmitha87539319                     |
-            | Writer Address                      | 0xCAFE                               |
-            | Publication URL                     | https://testpublish.com/savetheworld |
-            | Archival URL                        | ipfs://[^\s]*                        |
-            | Community-Sourced Attestation Count | 1337                                 |
+            | property name          | property value                       |
+            | Token ID               | 1                                    |
+            | Cohort                 | 2                                    |
+            | Week                   | 1                                    |
+            | Name                   | Save the World                       |
+            | Image                  | XYZ                                  |
+            | Description            | ABC                                  |
+            | Content Hash           | DEF                                  |
+            | Writer Name            | Susmitha87539319                     |
+            | Writer Address         | 0xCAFE                               |
+            | Publication URL        | https://testpublish.com/savetheworld |
+            | Archival URL           | ipfs://[^\s]*                        |
+            | Peer Attestation Count | 1337                                 |
         And there should be an auction listing on Zora with a minimum bid amount of 0.1 ETH
         And there should be a bid placed for 0.1 ETH by the 1729w multisig account
 
