@@ -10,6 +10,11 @@ contract GenerateJsonTest is Test {
     //
     using JsonWriter for JsonWriter.Json;
 
+    uint constant RETURN_SUCCESS = 0;
+    uint constant RETURN_ERROR_INVALID_JSON = 1;
+    uint constant RETURN_ERROR_PART = 2;
+    uint constant RETURN_ERROR_NO_MEM = 3;
+
     function testGenerateJson() public {
         JsonWriter.Json memory writer;
 
@@ -32,6 +37,18 @@ contract GenerateJsonTest is Test {
     }
 
     function testParseJson() public {
-        
+        string memory json = '{"key": "value", "key2": "value2"}';
+
+        uint returnValue;
+        JsmnSolLib.Token[] memory tokens;
+        uint actualNum;
+
+        (returnValue, tokens, actualNum) = JsmnSolLib.parse(json, 5);
+
+        assertEq(returnValue, RETURN_SUCCESS);
+        assertEq(JsmnSolLib.getBytes(json, tokens[1].start, tokens[1].end), 'key');
+        assertEq(JsmnSolLib.getBytes(json, tokens[2].start, tokens[2].end), 'value');
+        assertEq(JsmnSolLib.getBytes(json, tokens[3].start, tokens[3].end), 'key2');
+        assertEq(JsmnSolLib.getBytes(json, tokens[4].start, tokens[4].end), 'value2');
     }
 }
