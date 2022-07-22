@@ -7,3 +7,6 @@
 [submodule "lib/solidity-json-writer"]
 	path = lib/solidity-json-writer
 	url = https://github.com/bmeredith/solidity-json-writer
+[submodule "lib/jsmnSol"]
+	path = lib/jsmnSol
+	url = https://github.com/chrisdotn/jsmnSol
