@@ -4,12 +4,13 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 
 import "solidity-json-writer/JsonWriter.sol";
+import "jsmnSol/JsmnSolLib.sol";
 
 contract GenerateJsonTest is Test {
     //
     using JsonWriter for JsonWriter.Json;
 
-    function testGenerateJSON() public {
+    function testGenerateJson() public {
         JsonWriter.Json memory writer;
 
         // Token ID, on-chain
@@ -28,5 +29,9 @@ contract GenerateJsonTest is Test {
         writer = writer.writeEndObject();
 
         emit log (writer.value);
+    }
+
+    function testParseJson() public {
+        
     }
 }
