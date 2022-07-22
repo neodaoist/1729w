@@ -15,6 +15,20 @@ Feature: Issue Proof of Contribution SBT
         Given There are 150 participating members in 1729 Writers
         And There are 15 total writers in 1729 Writers Cohort 2
 
+    # Data table test from https://cucumber-rs.github.io/cucumber/current/writing/data_tables.html
+    Scenario: Data table test — If we feed a hungry animal it will no longer be hungry
+        Given a hungry animal
+            | animal |
+            | cat    |
+            | dog    |
+            | 🦀     |
+        When I feed the animal multiple times
+            | animal | times |
+            | cat    | 2     |
+            | dog    | 3     |
+            | 🦀     | 4     |
+        Then the animal is not hungry
+
     Scenario: Issue initial 1729 Writers Proof of Contribution SBTs to participating members
         When I issue SBTs to the 150 participating members for reader/voter participation
         Then All 150 applicants should own an SBT

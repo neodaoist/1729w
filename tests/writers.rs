@@ -1,7 +1,8 @@
 use std::convert::Infallible;
 
 use async_trait::async_trait;
-use cucumber::{given, when, then, World, WorldInit};
+use cucumber::{gherkin::Step, given, when, then, World, WorldInit};
+use std::collections::HashMap;
 
 // 
 
@@ -19,6 +20,9 @@ pub struct Essay {
 #[derive(Debug, WorldInit)]
 pub struct WriterWorld {
 
+    // only here for data table test
+    animals: HashMap<String, Animal>,
+
     // TODO: Refactor into structs as needed
 
     writer_name: String,
@@ -31,6 +35,9 @@ pub struct WriterWorld {
     essay_number: String,
 
     essay_submission_count: String,
+
+    participating_member_count: String,
+    total_writer_count: String,
 
     voter_account: String,
     snapshot_block_number: String,
@@ -53,6 +60,9 @@ impl World for WriterWorld {
 
     async fn new() -> Result<Self, Infallible> {
         Ok(Self {
+            // only here for data table test
+            animals: HashMap::new(),
+
             writer_name: String::from(""),
             writer_address: String::from(""),
 
@@ -63,6 +73,9 @@ impl World for WriterWorld {
             essay_number: String::from(""),
 
             essay_submission_count: String::from(""),
+
+            participating_member_count: String::from(""),
+            total_writer_count: String::from(""),
 
             voter_account: String::from(""),
             snapshot_block_number: String::from(""),
@@ -276,58 +289,58 @@ fn vote_scenario_2_then_1(world: &mut WriterWorld, voter_account: String, vote_c
 // TODO, uses data tables
 
 #[given(regex = r"^The Essay NFT contract is deployed$")]
-fn essay_contract_is_deployed(world: &mut WriterWorld) {
+fn publish_given_1(world: &mut WriterWorld) {
     // TODO: deploy contract
 }
 
 #[given(regex = r"^there are no NFTs minted on the contract$")]
-fn essay_contract_has_no_nfts_minted(world: &mut WriterWorld) {
+fn publish_given_2(world: &mut WriterWorld) {
     // TODO: just for clarity
 }
 
-#[given(regex = r"^the Cohort is ([\d]*)$")]
-fn cohort_number_is_x(world: &mut WriterWorld, cohort_number: String) {
+#[given(regex = r"^the Cohort is ([\d]+)$")]
+fn publish_given_3(world: &mut WriterWorld, cohort_number: String) {
     world.cohort_number = cohort_number;
 }
 
-#[given(regex = r"^the Week is ([\d]*)$")]
-fn week_number_is_x(world: &mut WriterWorld, week_number: String) {
+#[given(regex = r"^the Week is ([\d]+)$")]
+fn publish_given_4(world: &mut WriterWorld, week_number: String) {
     world.week_number = week_number;
 }
 
-#[given(regex = r"^the winning essay is '([^']*)'$")]
-fn winning_essay_title(world: &mut WriterWorld, essay_title: String) {
+#[given(regex = r"^the winning essay is '([^']+)'$")]
+fn publish_given_5(world: &mut WriterWorld, essay_title: String) {
     world.winning_essay_title = essay_title;
 }
 
-#[given(regex = r"^the essay content is '([^']*)'$")]
-fn winning_essay_content(world: &mut WriterWorld, essay_content: String) {
+#[given(regex = r"^the essay content is '([^']+)'$")]
+fn publish_given_6(world: &mut WriterWorld, essay_content: String) {
     world.winning_essay_content = essay_content;
 }
 
-#[given(regex = r"^the writer's name is '([^']*)' and address is '(0x[0-9A-Fa-f]*)'$")]
-fn winning_writer(world: &mut WriterWorld, writer_name: String, writer_address: String) {
+#[given(regex = r"^the writer's name is '([^']+)' and address is '(0x[0-9A-Fa-f]+)'$")]
+fn publish_given_7(world: &mut WriterWorld, writer_name: String, writer_address: String) {
     world.winning_writer_name = writer_name;
     world.winning_writer_address = writer_address;
 }
 
-#[given(regex = r"^the publication URL is '(https://[^']*)'$")]
-fn winning_essay_publication_url(world: &mut WriterWorld, essay_publication_url: String) {
+#[given(regex = r"^the publication URL is '(https://[^']+)'$")]
+fn publish_given_8(world: &mut WriterWorld, essay_publication_url: String) {
     world.winning_essay_publication_url = essay_publication_url;
 }
 
-#[given(regex = r"^the winning essay received ([\d]*) votes$")]
-fn winning_essay_votes(world: &mut WriterWorld, essay_votes: String) {
+#[given(regex = r"^the winning essay received ([\d]+) votes$")]
+fn publish_given_9(world: &mut WriterWorld, essay_votes: String) {
     world.winning_essay_votes = essay_votes;
 }
 
 #[when("I mint, list, and bid on the Essay NFT")]
-fn mint_list_bid_on_nft(world: &mut WriterWorld) {
+fn publish_when_1(world: &mut WriterWorld) {
     // TODO: Unimplemented
 }
 
 #[then("There should be PLACEHOLDER STEP XYZ")]
-fn check_contract_type(world: & mut WriterWorld) {
+fn publish_then_1(world: & mut WriterWorld) {
     // assert!(false, "Essay NFT bid is not found");
     panic!("STEPDEF not implemented yet");
 }
@@ -337,6 +350,72 @@ fn check_contract_type(world: & mut WriterWorld) {
 ////////////////////////////////////////////////////////////////
 
 // TODO, uses data tables
+
+#[given(regex = r"^There are ([\d]+) participating members in 1729 Writers$")]
+fn issue_given_1(world: &mut WriterWorld, participating_member_count: String) {
+    world.participating_member_count = participating_member_count;
+}
+
+#[given(regex = r"^There are ([\d]+) total writers in 1729 Writers Cohort ([\d]+)$")]
+fn issue_given_2(world: &mut WriterWorld, total_writer_count: String, cohort_number: String) {
+    world.total_writer_count = total_writer_count;
+    world.cohort_number = cohort_number;
+}
+
+// data table test
+
+#[given(regex = r"^a (hungry|satiated) animal$")]
+fn hungry_animal(world: &mut WriterWorld, step: &Step, state: String) {
+    let state = match state.as_str() {
+        "hungry" => true,
+        "satiated" => false,
+        _ => unreachable!(),
+    };
+
+    if let Some(table) = step.table.as_ref() {
+        for row in table.rows.iter().skip(1) { // skip header
+            let animal = &row[0];
+
+            world
+                .animals
+                .entry(animal.clone())
+                .or_insert(Animal::default())
+                .hungry = state;
+        }
+    }
+}
+
+#[when("I feed the animal multiple times")]
+fn feed_animal(world: &mut WriterWorld, step: &Step) {
+    if let Some(table) = step.table.as_ref() {
+        for row in table.rows.iter().skip(1) { // skip dat header
+            let animal = &row[0];
+            let times = row[1].parse::<usize>().unwrap();
+
+            for _ in 0..times {
+                world.animals.get_mut(animal).map(Animal::feed);
+            }
+        }
+    }
+}
+
+#[then("the animal is not hungry")]
+fn animal_is_fed(world: &mut WriterWorld) {
+    for animal in world.animals.values() {
+        assert!(!animal.hungry); // aaaah — state is changed and saved in the one action step (When)
+    }
+}
+
+#[derive(Debug, Default)]
+struct Animal {
+    pub hungry: bool,
+}
+
+impl Animal {
+    fn feed(&mut self) {
+        self.hungry = false;
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 //                  Step Defs – Address Bad Behavior
