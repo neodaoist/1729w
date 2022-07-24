@@ -1,1 +1,7 @@
+OneSevenTwoNineEssayTest:testInvariantMetadata() (gas: 14976)
+OneSevenTwoNineEssayTest:testReadJsonMetadata() (gas: 252617)
+OneSevenTwoNineEssayTest:testWriteJsonMetadata() (gas: 389135)
+OneSevenTwoNineProofOfContributionTest:testFirst() (gas: 6772)
 ContractTest:testExample() (gas: 279)
+GenerateJsonTest:testGenerateJson() (gas: 145155)
+GenerateJsonTest:testParseJson() (gas: 35741)

@@ -11,12 +11,13 @@ Feature: 1729 member votes on the best essay of the week
         Then I should see 15 essay submissions for Cohort 2 Week 3
 
     Scenario: Vote for best essay
-        Given I navigate to the 1729 Writers Snapshot
-        And There is an active essay competition for Cohort 2 Week 3
-        And I am signed in with Ethereum
-        And I hold a 1729 Writers Participation SBT as of block 1_337_000
-        When I vote for the essay titled "Save the World"
-        Then I should see my account voted 1 for the essay titled "Save the World"
+        Given I navigate to the 1729 Writers Snapshot page
+        And there is an active essay competition for Cohort 2 Week 3
+        And I login with Ethereum using the 0xBABE account
+        And I hold a 1729 Writers Participation SBT as of block 1337000
+        When I vote for the essay titled 'Save the World'
+        Then I should see the 0xBABE account voted 1 for the essay titled 'Save the World'
 
 # TODO on what token do we base the snapshot ? concentric circles — reader/voter, writer, developer, administrator
 # TODO how do we clarify voting criteria ? do we need to ?
+# TODO do we need Cohort and Week for this feature test ?
