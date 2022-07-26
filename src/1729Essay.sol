@@ -15,6 +15,9 @@ contract SevenTeenTwentyNineEssay is ERC721 {
     // network state tax rate / protocol fee
     // secondary sale royalty rate
 
+    address private constant SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS = address(0x1729a); // TODO 1729w multisig
+    uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in basis points
+
     constructor() ERC721("1729 Essay", "1729ESSAY") {}
 
     /// @notice Get the Essay NFT metadata URI
@@ -38,15 +41,36 @@ contract SevenTeenTwentyNineEssay is ERC721 {
         _burn(tokenId);
     }
 
-    function safeMint(address to, uint256 tokenId) public virtual {
-        _safeMint(to, tokenId);
+    /*//////////////////////////////////////////////////////////////
+                        EIP 2981
+    //////////////////////////////////////////////////////////////*/
+
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    ) external view returns (
+        address receiver,
+        uint256 royaltyAmount
+    ) {
+        receiver = SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS;
+        royaltyAmount = (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
     }
 
-    function safeMint(
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) public virtual {
-        _safeMint(to, tokenId, data);
+    /*//////////////////////////////////////////////////////////////
+                        EIP 165
+    //////////////////////////////////////////////////////////////*/
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        pure
+        override(ERC721)
+        returns (bool)
+    {
+        return
+            interfaceId == 0x7f5828d0 || // ERC165 Interface ID for ERC173
+            interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
+            interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC165
+            interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC721Metadata TODO will we use ?
+            interfaceId == 0x2a55205a; // ERC165 Interface ID for ERC2981
     }
 }

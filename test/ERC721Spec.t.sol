@@ -454,88 +454,88 @@ contract ERC721SpecTest is Test {
     ////////////////    Safe Mint    ///////////////
     ////////////////////////////////////////////////
 
-    function testSafeMintToEOA() public {
-        token.safeMint(address(0xBABE), 1337);
+    // function testSafeMintToEOA() public {
+    //     token.safeMint(address(0xBABE), 1337);
 
-        assertEq(token.ownerOf(1337), address(address(0xBABE)));
-        assertEq(token.balanceOf(address(address(0xBABE))), 1);
-    }
+    //     assertEq(token.ownerOf(1337), address(address(0xBABE)));
+    //     assertEq(token.balanceOf(address(address(0xBABE))), 1);
+    // }
 
-    function testSafeMintToERC721Recipient() public {
-        ERC721Recipient recipient = new ERC721Recipient();
+    // function testSafeMintToERC721Recipient() public {
+    //     ERC721Recipient recipient = new ERC721Recipient();
 
-        token.safeMint(address(recipient), 1337);
+    //     token.safeMint(address(recipient), 1337);
 
-        assertEq(token.ownerOf(1337), address(recipient));
-        assertEq(token.balanceOf(address(recipient)), 1);
+    //     assertEq(token.ownerOf(1337), address(recipient));
+    //     assertEq(token.balanceOf(address(recipient)), 1);
 
-        assertEq(recipient.operator(), address(this));
-        assertEq(recipient.from(), (address(0)));
-        assertEq(recipient.id(), 1337);
-        assertEq(recipient.data(), "");
-    }
+    //     assertEq(recipient.operator(), address(this));
+    //     assertEq(recipient.from(), (address(0)));
+    //     assertEq(recipient.id(), 1337);
+    //     assertEq(recipient.data(), "");
+    // }
 
-    function testSafeMintToERC721RecipientWithData() public {
-        ERC721Recipient recipient = new ERC721Recipient();
+    // function testSafeMintToERC721RecipientWithData() public {
+    //     ERC721Recipient recipient = new ERC721Recipient();
 
-        token.safeMint(address(recipient), 1337, "testing 456");
+    //     token.safeMint(address(recipient), 1337, "testing 456");
 
-        assertEq(token.ownerOf(1337), address(recipient));
-        assertEq(token.balanceOf(address(recipient)), 1);
+    //     assertEq(token.ownerOf(1337), address(recipient));
+    //     assertEq(token.balanceOf(address(recipient)), 1);
 
-        assertEq(recipient.operator(), address(this));
-        assertEq(recipient.from(), address(0));
-        assertEq(recipient.id(), 1337);
-        assertEq(recipient.data(), "testing 456");
-    }
+    //     assertEq(recipient.operator(), address(this));
+    //     assertEq(recipient.from(), address(0));
+    //     assertEq(recipient.id(), 1337);
+    //     assertEq(recipient.data(), "testing 456");
+    // }
 
-    function testSafeMintToNonERC721RecipientShouldFail() public {
-        address to = address(new NonERC721Recipient());
+    // function testSafeMintToNonERC721RecipientShouldFail() public {
+    //     address to = address(new NonERC721Recipient());
 
-        vm.expectRevert();
+    //     vm.expectRevert();
 
-        token.safeMint(to, 1337);
-    }
+    //     token.safeMint(to, 1337);
+    // }
 
-    function testSafeMintToNonERC721RecipientWithDataShouldFail() public {
-        address to = address(new NonERC721Recipient());
+    // function testSafeMintToNonERC721RecipientWithDataShouldFail() public {
+    //     address to = address(new NonERC721Recipient());
 
-        vm.expectRevert();
+    //     vm.expectRevert();
 
-        token.safeMint(to, 1337, "testing 456");
-    }
+    //     token.safeMint(to, 1337, "testing 456");
+    // }
 
-    function testSafeMintToRevertingERC721RecipientShouldFail() public {
-        address to = address(new RevertingERC721Recipient());
+    // function testSafeMintToRevertingERC721RecipientShouldFail() public {
+    //     address to = address(new RevertingERC721Recipient());
 
-        vm.expectRevert(ERC721TokenReceiver.onERC721Received.selector);
+    //     vm.expectRevert(ERC721TokenReceiver.onERC721Received.selector);
 
-        token.safeMint(to, 1337);
-    }
+    //     token.safeMint(to, 1337);
+    // }
 
-    function testSafeMintToRevertingERC721RecipientWithDataShouldFail() public {
-        address to = address(new RevertingERC721Recipient());
+    // function testSafeMintToRevertingERC721RecipientWithDataShouldFail() public {
+    //     address to = address(new RevertingERC721Recipient());
 
-        vm.expectRevert(bytes(string(abi.encodePacked(ERC721TokenReceiver.onERC721Received.selector))));
+    //     vm.expectRevert(bytes(string(abi.encodePacked(ERC721TokenReceiver.onERC721Received.selector))));
 
-        token.safeMint(to, 1337, "testing 456");
-    }
+    //     token.safeMint(to, 1337, "testing 456");
+    // }
 
-    function testSafeMintToERC721RecipientWithWrongReturnDataShouldFail() public {
-        address to = address(new WrongReturnDataERC721Recipient());
+    // function testSafeMintToERC721RecipientWithWrongReturnDataShouldFail() public {
+    //     address to = address(new WrongReturnDataERC721Recipient());
 
-        vm.expectRevert("UNSAFE_RECIPIENT");
+    //     vm.expectRevert("UNSAFE_RECIPIENT");
 
-        token.safeMint(to, 1337);
-    }
+    //     token.safeMint(to, 1337);
+    // }
 
-    function testSafeMintToERC721RecipientWithWrongReturnDataWithDataShouldFail() public {
-        address to = address(new WrongReturnDataERC721Recipient());
+    // function testSafeMintToERC721RecipientWithWrongReturnDataWithDataShouldFail() public {
+    //     address to = address(new WrongReturnDataERC721Recipient());
 
-        vm.expectRevert("UNSAFE_RECIPIENT");
+    //     vm.expectRevert("UNSAFE_RECIPIENT");
 
-        token.safeMint(to, 1337, "testing 456");
-    }
+    //     token.safeMint(to, 1337, "testing 456");
+    // }
 
     // TODO add remaining fuzz tests
 
@@ -546,7 +546,7 @@ contract ERC721SpecTest is Test {
     // TODO add ERC721Metadata tests
 
     ////////////////////////////////////////////////
-    ////////////////    Metadata    ////////////////
+    ////////////////    Enumerable    //////////////
     ////////////////////////////////////////////////
 
     // TODO add ERC721Enumerable
