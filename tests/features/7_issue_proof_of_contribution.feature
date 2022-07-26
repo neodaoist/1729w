@@ -1,6 +1,6 @@
 Feature: Issue Proof of Contribution SBT
-    As the 1729 writers guild administrator
-    So that the 1729 community can grow and the contributors can be recognized for their work
+    As the 1729 Writers administrator
+    So that the 1729 Writers community can grow and the contributors can be recognized for their work
     I want to issue Proof of Contribution Soulbound Token (SBT)s to contributors
 
     # QUESTION so do we have 6 user populations and 5 levels of contribution?
@@ -45,7 +45,6 @@ Feature: Issue Proof of Contribution SBT
     # NOTE we're going to have to figure out how to best assert metadata properties (and if they're on-chain, off-chain, or hybrid)
     # NOTE we could define 0x001 through 0x150 as the 150 participating members' addresses, and 0xA1, 0xA2, ... 0xA15 as the 15 writers
     # ^ this is bad hex lol but just an idea, there might be a more elegant way to do it
-    # QUESTION how do 1729 members signal their interest to participate as a reader / voter in the cohort? Airtable form? (e.g., Discord name, ENS / ETH address)
 
     Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for full participation
         Given There are 10 writers who submitted a valid essay all 4 weeks
@@ -85,6 +84,7 @@ Feature: Issue Proof of Contribution SBT
             | 0xB9         | 0.96 ether      |
             | 0xB0         | 1.06 ether      |
     # QUESTION split 0.6 ETH between 10 fully participating writers, after 0.4 ETH goes to 4 winning writers?
+    # or how do we do the math if the multisig doesn't win every auction (i.e., more ETH in treasury than 0.6 ETH)
 
     Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
         Given There are 5 writers who submitted a valid essay in at least 1 week
@@ -140,3 +140,5 @@ Feature: Issue Proof of Contribution SBT
             | 0xA2         | 0.1 ether       |
             | 0xA3         | 1.1 ether       |
             | 0xA4         | 0.9 ether       |
+
+# TODO update this feature and feature 4 to clarify we'll use Juicebox ERC20 as voting token for MVP

@@ -17,7 +17,3 @@ Feature: 1729 member votes on the best essay of the week
         And I hold a 1729 Writers Participation SBT as of block 1337000
         When I vote for the essay titled 'Save the World'
         Then I should see the 0xBABE account voted 1 for the essay titled 'Save the World'
-
-# TODO on what token do we base the snapshot ? concentric circles — reader/voter, writer, developer, administrator
-# TODO how do we clarify voting criteria ? do we need to ?
-# TODO do we need Cohort and Week for this feature test ?

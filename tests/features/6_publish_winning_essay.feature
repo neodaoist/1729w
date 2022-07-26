@@ -1,5 +1,5 @@
 Feature: Publish Essay NFT for the weekly winning essay
-    As the 1729 writers guild admin
+    As the 1729 Writers admin
     So that I can reward the winning writer and create a lasting on-chain body of work for 1729
     I want to mint, list, bid on, and distribute funds for an NFT of the winning essay for the week
 
@@ -50,5 +50,5 @@ Feature: Publish Essay NFT for the weekly winning essay
         Then The Essay NFT should be owned address 0xBEEF
         And address 0xCAFE should have 0.4 ETH
 
-# QUESTION 1729 Writers Union? Guild, Group, Club? What's the right word, aligned with The Network State
-# QUESTION how long to leave the auction open ?
+# TODO add something about network state tax rate to one or more of the Scenarios
+# TODO add Scenario for secondary sales royalty

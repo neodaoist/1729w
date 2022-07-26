@@ -1,5 +1,5 @@
 Feature: Determine the winning essay
-    As the 1729 writers guild administrator
+    As the 1729 Writers administrator
     So that I can know which essay won the competition for a given week
     I want to determine the winning essay
 
@@ -38,6 +38,3 @@ Feature: Determine the winning essay
             | 16           | 0          |
             | 17           | 4          |
         Then The winning essay should be Essay #7 with 17 votes
-
-# DECISION Use Snapshot
-# DECISION Final decisions of voting fraud, etc will be done manually

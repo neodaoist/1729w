@@ -13,7 +13,7 @@ Feature: Deploy smart contracts and setup web3 components
 
     Scenario: Deploy Proof of Contribution SBT contract
         # TODO
-        Then It should have vanity address starting with '0x1729[A-Fa-f]'
+        Then It should have vanity address starting with '0x1729[A-Fa-f][0-9A-Fa-f]{15}'
         And the contract should be verified on Etherscan
     # TODO ERC1155 ?
     # TODO should we support upgradeability?
@@ -22,5 +22,5 @@ Feature: Deploy smart contracts and setup web3 components
 
     Scenario: Deploy Essay NFT contract
         # TODO
-        Then should have vanity address starting with '0x172w[0-9]'
+        Then should have vanity address starting with '0x1729[A-Fa-f][0-9A-Fa-f]{15}'
         And the contract should be verified on Etherscan

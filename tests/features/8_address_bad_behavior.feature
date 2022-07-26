@@ -1,5 +1,5 @@
 Feature: Address bad behavior
-    As the 1729 writers union admin
+    As the 1729 Writers admin
     So that I can handle potential fraud and other types of bad behavior
     I want the ability to take down Essay NFTs or Proof of Contribution SBTs
 
