@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import "jsmnSol/JsmnSolLib.sol";
 import "solidity-json-writer/JsonWriter.sol";
 
-import {Essay} from "./1729Essay.sol";
+import {Essay} from "./models/Essay.sol";
 
 /// @title Fleece
 /// @author neodaoist

@@ -4,14 +4,15 @@ pragma solidity ^0.8.15;
 import "forge-std/Test.sol";
 import {Fleece} from "../src/Fleece.sol";
 
-import "../src/1729Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
+import {Essay} from "../src/models/Essay.sol";
 
-contract OneSevenTwoNineEssayTest is Test {
+contract SevenTeenTwentyNineEssayTest is Test {
     //
-    OneSevenTwoNineEssay essay;
+    SevenTeenTwentyNineEssay essay;
 
     function setUp() public {
-        essay = new OneSevenTwoNineEssay();
+        essay = new SevenTeenTwentyNineEssay();
     }
 
     function testInvariantMetadata() public {

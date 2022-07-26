@@ -3,25 +3,11 @@ pragma solidity ^0.8.15;
 
 import {ERC721} from "solmate/tokens/ERC721.sol";
 
-struct Essay {
-    uint8 cohort;
-    uint8 week;
-    uint16 voteCount; // NOTE moved to here from end for more efficient storage
-    string name;
-    string image;
-    string description;
-    string contentHash; // TODO switch to fixed-size bytes array
-    string writerName;
-    string writerAddress; // TODO switch to address
-    string publicationURL;
-    string archivalURL;
-}
-
 /// @title An essay from the 1729 writers union
 /// @author neodaoist, plaird
 /// @notice A 1729w admin can mint and burn essay NFTs on this contract
 /// @dev XYZ
-contract OneSevenTwoNineEssay is ERC721 {
+contract SevenTeenTwentyNineEssay is ERC721 {
     //
 
     // address network_state;
