@@ -23,6 +23,12 @@ struct Essay {
 /// @dev XYZ
 contract OneSevenTwoNineEssay is ERC721 {
     //
+
+    // address network_state;
+    // mapping(address => uint256) primary sale earnings;
+    // network state tax rate / protocol fee
+    // secondary sale royalty rate
+
     constructor() ERC721("1729 Essay", "1729ESSAY") {}
 
     /// @notice Get the Essay NFT metadata URI
