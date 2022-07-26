@@ -2,12 +2,13 @@
 pragma solidity ^0.8.15;
 
 import {ERC721} from "solmate/tokens/ERC721.sol";
+import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 
 /// @title An essay from the 1729 writers union
 /// @author neodaoist, plaird
 /// @notice A 1729w admin can mint and burn essay NFTs on this contract
 /// @dev XYZ
-contract SevenTeenTwentyNineEssay is ERC721 {
+contract SevenTeenTwentyNineEssay is ERC721, Ownable {
     //
 
     // address network_state;
@@ -15,10 +16,11 @@ contract SevenTeenTwentyNineEssay is ERC721 {
     // network state tax rate / protocol fee
     // secondary sale royalty rate
 
-    address private constant SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS = address(0x1729a); // TODO 1729w multisig
     uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in basis points
 
-    constructor() ERC721("1729 Essay", "1729ESSAY") {}
+    constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
+        transferOwnership(_multisig);
+    }
 
     /// @notice Get the Essay NFT metadata URI
     /// @dev XYZ
@@ -33,11 +35,11 @@ contract SevenTeenTwentyNineEssay is ERC721 {
                         Temporary
     //////////////////////////////////////////////////////////////*/
 
-    function mint(address to, uint256 tokenId) public virtual {
-        _mint(to, tokenId);
+    function mint(uint256 tokenId) public virtual onlyOwner {
+        _mint(owner(), tokenId);
     }
 
-    function burn(uint256 tokenId) public virtual {
+    function burn(uint256 tokenId) public virtual onlyOwner {
         _burn(tokenId);
     }
 
@@ -52,7 +54,7 @@ contract SevenTeenTwentyNineEssay is ERC721 {
         address receiver,
         uint256 royaltyAmount
     ) {
-        receiver = SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS;
+        receiver = owner(); // SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS
         royaltyAmount = (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
     }
 

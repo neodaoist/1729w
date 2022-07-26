@@ -12,7 +12,7 @@ contract SevenTeenTwentyNineEssayTest is Test {
     SevenTeenTwentyNineEssay essay;
 
     function setUp() public {
-        essay = new SevenTeenTwentyNineEssay();
+        essay = new SevenTeenTwentyNineEssay(address(0x1729a));
     }
 
     function testInvariantMetadata() public {
