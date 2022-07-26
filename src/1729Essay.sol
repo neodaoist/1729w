@@ -5,6 +5,16 @@ import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "openzeppelin-contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+//         _ _____ ____   ___    __    __      _ _                        //
+//        / |___  |___ \ / _ \  / / /\ \ \_ __(_) |_ ___ _ __ ___         //
+//        | |  / /  __) | (_) | \ \/  \/ / '__| | __/ _ \ '__/ __|        //
+//        | | / /  / __/ \__, |  \  /\  /| |  | | ||  __/ |  \__ \        //
+//        |_|/_/  |_____|  /_/    \/  \/ |_|  |_|\__\___|_|  |___/        //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
 /// @title An essay from the 1729 writers union
 /// @author neodaoist, plaird
 /// @notice A 1729w admin can mint and burn essay NFTs on this contract
@@ -12,16 +22,32 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     //
 
-    // address network_state;
-    // mapping(address => uint256) primary sale earnings;
-    // network state tax rate / protocol fee
-    // secondary sale royalty rate
+    // mapping(address => uint256) 
+    // mapping(address => uint256) writerPrimarySaleEarnings;
 
-    uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in basis points
+    uint16 private constant NETWORK_STATE_PROTOCOL_FEE_PERCENTAGE = 1000; // in bips
+    uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in bips
 
     constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
         transferOwnership(_multisig);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                        Mint Essay and Distribute Earnings
+    //////////////////////////////////////////////////////////////*/
+
+    // function mintEssay(uint256 _tokenId, address _writerAddress) public onlyOwner {
+    //     writerPrimarySaleEarnings[_writerAddress] = 0 ether;
+    //     _safeMint(owner(), _tokenId);
+    // }
+
+    // function distributeEarnings() public {
+        
+    // }
+
+    /*//////////////////////////////////////////////////////////////
+                        OZ
+    //////////////////////////////////////////////////////////////*/
 
     // function tokenURI(uint256 id) public view override returns (string memory) {
     //     return
@@ -31,8 +57,6 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     function _baseURI() internal pure override returns (string memory) {
         return "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/";
     }
-
-    // The following functions are overrides required by Solidity.
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);

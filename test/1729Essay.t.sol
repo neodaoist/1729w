@@ -15,15 +15,6 @@ contract SevenTeenTwentyNineEssayTest is Test {
         essay = new SevenTeenTwentyNineEssay(address(0x1729a));
     }
 
-    function testInvariantMetadata() public {
-        assertEq(essay.name(), "1729 Essay");
-        assertEq(essay.symbol(), "1729ESSAY");
-    }
-
-    // function testTokenURI() public {
-        
-    // }
-
     /*//////////////////////////////////////////////////////////////
                         JSON tests
     //////////////////////////////////////////////////////////////*/

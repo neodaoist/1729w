@@ -12,7 +12,13 @@ contract ERC721SpecTest is Test {
 
     SevenTeenTwentyNineEssay token;
 
+    string constant EXPECTED_BASE_URI = "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4";
+
     address multisig = address(0x1729a);
+    address writer1 = address(0xA1);
+    address writer2 = address(0xA2);
+    address writer3 = address(0xA3);
+    address writer4 = address(0xA4);
 
     event Transfer(address indexed from, address indexed to, uint256 indexed id);
     event Approval(address indexed owner, address indexed spender, uint256 indexed id);
@@ -28,6 +34,26 @@ contract ERC721SpecTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        Mint Essay and Distribute Earnings
+    //////////////////////////////////////////////////////////////*/
+
+    // function testMintEssay() public {
+    //     vm.prank(multisig);
+    //     token.mintEssay(1, writer1);
+
+    //     assertEq(token.ownerOf(1), multisig);
+    //     assertEq(token.writerOf(1), writer1);
+    // }
+
+    // function testMintEssayWhenNotOwnerShouldFail() public {
+        
+    // }
+
+    // function testDistributeEarnings() public {
+        
+    // }
+
+    /*//////////////////////////////////////////////////////////////
                         URI Storage
     //////////////////////////////////////////////////////////////*/
 
@@ -38,10 +64,10 @@ contract ERC721SpecTest is Test {
         token.mint(3);
         token.mint(4);
 
-        assertEq(token.tokenURI(1), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/1");
-        assertEq(token.tokenURI(2), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/2");
-        assertEq(token.tokenURI(3), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/3");
-        assertEq(token.tokenURI(4), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/4");
+        assertEq(token.tokenURI(1), string(abi.encodePacked(EXPECTED_BASE_URI, "/1")));
+        assertEq(token.tokenURI(2), string(abi.encodePacked(EXPECTED_BASE_URI, "/2")));
+        assertEq(token.tokenURI(3), string(abi.encodePacked(EXPECTED_BASE_URI, "/3")));
+        assertEq(token.tokenURI(4), string(abi.encodePacked(EXPECTED_BASE_URI, "/4")));
     }
 
     ////////////////////////////////////////////////
