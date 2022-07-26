@@ -10,6 +10,3 @@
 [submodule "lib/jsmnSol"]
 	path = lib/jsmnSol
 	url = https://github.com/BlockInfinity/jsmnSol
-[submodule "lib/hot-chain-svg"]
-	path = lib/hot-chain-svg
-	url = https://github.com/w1nt3r-eth/hot-chain-svg
