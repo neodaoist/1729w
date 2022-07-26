@@ -2,7 +2,7 @@
 pragma solidity >=0.8.15;
 
 import "forge-std/Test.sol";
-import "solmate/tokens/ERC721.sol";
+import {IERC721Receiver} from "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
 import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
 
@@ -27,6 +27,23 @@ contract ERC721SpecTest is Test {
         assertEq(token.symbol(), "1729ESSAY");
     }
 
+    /*//////////////////////////////////////////////////////////////
+                        URI Storage
+    //////////////////////////////////////////////////////////////*/
+
+    function testURIStorage() public {
+        vm.startPrank(multisig);
+        token.mint(1);
+        token.mint(2);
+        token.mint(3);
+        token.mint(4);
+
+        assertEq(token.tokenURI(1), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/1");
+        assertEq(token.tokenURI(2), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/2");
+        assertEq(token.tokenURI(3), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/3");
+        assertEq(token.tokenURI(4), "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/4");
+    }
+
     ////////////////////////////////////////////////
     ////////////////    Mint    ////////////////////
     ////////////////////////////////////////////////
@@ -43,7 +60,7 @@ contract ERC721SpecTest is Test {
         vm.startPrank(multisig);
         token.mint(1337);
 
-        vm.expectRevert("ALREADY_MINTED");
+        vm.expectRevert("ERC721: token already minted");
 
         token.mint(1337);
     }
@@ -73,12 +90,12 @@ contract ERC721SpecTest is Test {
 
         assertEq(token.balanceOf(multisig), 0);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert("ERC721: invalid token ID");
         token.ownerOf(1337);
     }
 
     function testBurnUnmintedShouldFail() public {
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert("ERC721: invalid token ID");
 
         vm.prank(multisig);
         token.burn(1337);
@@ -90,7 +107,7 @@ contract ERC721SpecTest is Test {
 
         token.burn(1337);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert("ERC721: invalid token ID");
 
         token.burn(1337);
     }
@@ -112,7 +129,7 @@ contract ERC721SpecTest is Test {
 
         assertEq(token.balanceOf(multisig), 0);
 
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert("ERC721: invalid token ID");
         token.ownerOf(id);
     }
 
@@ -152,10 +169,10 @@ contract ERC721SpecTest is Test {
         token.burn(1337);
 
         assertEq(token.balanceOf(multisig), 0);
-        assertEq(token.getApproved(1337), address(0));
 
-        vm.expectRevert("NOT_MINTED");
-        token.ownerOf(1337);
+        vm.expectRevert("ERC721: invalid token ID");
+
+        token.getApproved(1337);
     }
 
     function testApproveAll() public {
@@ -169,7 +186,7 @@ contract ERC721SpecTest is Test {
     }
 
     function testApproveUnmintedShouldFail() public {
-        vm.expectRevert("NOT_AUTHORIZED");
+        vm.expectRevert("ERC721: invalid token ID");
 
         token.approve(address(0xBABE), 1337);
     }
@@ -178,7 +195,7 @@ contract ERC721SpecTest is Test {
         vm.prank(multisig);
         token.mint(1337);
 
-        vm.expectRevert("NOT_AUTHORIZED");
+        vm.expectRevert("ERC721: approve caller is not token owner or approved for all");
 
         token.approve(address(0xBABE), 1337);
     }
@@ -237,7 +254,7 @@ contract ERC721SpecTest is Test {
     }
 
     function testBalanceOfZeroAddressShouldFail() public {
-        vm.expectRevert("ZERO_ADDRESS");
+        vm.expectRevert("ERC721: address zero is not a valid owner");
 
         token.balanceOf(address(0));
     }
@@ -254,7 +271,7 @@ contract ERC721SpecTest is Test {
     }
 
     function testOwnerOfUnmintedShouldFail() public {
-        vm.expectRevert("NOT_MINTED");
+        vm.expectRevert("ERC721: invalid token ID");
 
         token.ownerOf(1337);
     }
@@ -319,7 +336,7 @@ contract ERC721SpecTest is Test {
     }
 
     function testTransferFromUnownedShouldFail() public {
-        vm.expectRevert("WRONG_FROM");
+        vm.expectRevert("ERC721: invalid token ID");
 
         token.transferFrom(address(0xABCD), address(0xBABE), 1337);
     }
@@ -328,7 +345,7 @@ contract ERC721SpecTest is Test {
         vm.prank(multisig);
         token.mint(1337);
 
-        vm.expectRevert("WRONG_FROM");
+        vm.expectRevert("ERC721: caller is not token owner or approved");
 
         token.transferFrom(address(0xBABE), address(0xABCD), 1337);
     }
@@ -337,7 +354,7 @@ contract ERC721SpecTest is Test {
         vm.prank(multisig);
         token.mint(1337);
 
-        vm.expectRevert("INVALID_RECIPIENT");
+        vm.expectRevert("ERC721: caller is not token owner or approved");
 
         token.transferFrom(multisig, address(0), 1337);
     }
@@ -346,7 +363,7 @@ contract ERC721SpecTest is Test {
         vm.prank(multisig);
         token.mint(1337);
 
-        vm.expectRevert("NOT_AUTHORIZED");
+        vm.expectRevert("ERC721: caller is not token owner or approved");
 
         token.transferFrom(multisig, address(0xABCD), 1337);
     }
@@ -422,7 +439,7 @@ contract ERC721SpecTest is Test {
         token.mint(1337);
         address to = address(new NonERC721Recipient());
 
-        vm.expectRevert();
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         token.safeTransferFrom(multisig, to, 1337);
     }
@@ -433,7 +450,7 @@ contract ERC721SpecTest is Test {
 
         address to = address(new NonERC721Recipient());
 
-        vm.expectRevert();
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         token.safeTransferFrom(multisig, to, 1337, "testing 456");
     }
@@ -444,7 +461,7 @@ contract ERC721SpecTest is Test {
 
         address to = address(new NonERC721Recipient());
 
-        vm.expectRevert();
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         token.safeTransferFrom(multisig, to, 1337);
     }
@@ -455,7 +472,7 @@ contract ERC721SpecTest is Test {
 
         address to = address(new WrongReturnDataERC721Recipient());
 
-        vm.expectRevert("UNSAFE_RECIPIENT");
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         token.safeTransferFrom(multisig, to, 1337);
     }
@@ -466,7 +483,7 @@ contract ERC721SpecTest is Test {
 
         address to = address(new WrongReturnDataERC721Recipient());
 
-        vm.expectRevert("UNSAFE_RECIPIENT");
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         token.safeTransferFrom(multisig, to, 1337, "testing 456");
     }
@@ -478,7 +495,7 @@ contract ERC721SpecTest is Test {
     // TODO add ERC721Metadata tests
 }
 
-contract ERC721Recipient is ERC721TokenReceiver {
+contract ERC721Recipient is IERC721Receiver {
     address public operator;
     address public from;
     uint256 public id;
@@ -495,13 +512,13 @@ contract ERC721Recipient is ERC721TokenReceiver {
         id = _id;
         data = _data;
 
-        return ERC721TokenReceiver.onERC721Received.selector;
+        return IERC721Receiver.onERC721Received.selector;
     }
 }
 
 contract NonERC721Recipient {}
 
-contract RevertingERC721Recipient is ERC721TokenReceiver {
+contract RevertingERC721Recipient is IERC721Receiver {
     event log(string info);
 
     function onERC721Received(
@@ -510,11 +527,11 @@ contract RevertingERC721Recipient is ERC721TokenReceiver {
         uint256,
         bytes calldata
     ) public virtual override returns (bytes4) {
-        revert(string(abi.encodePacked(ERC721TokenReceiver.onERC721Received.selector)));
+        revert(string(abi.encodePacked(IERC721Receiver.onERC721Received.selector)));
     }
 }
 
-contract WrongReturnDataERC721Recipient is ERC721TokenReceiver {
+contract WrongReturnDataERC721Recipient is IERC721Receiver {
     function onERC721Received(
         address,
         address,
