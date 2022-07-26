@@ -25,4 +25,28 @@ contract SevenTeenTwentyNineEssay is ERC721 {
         return
             '{"Cohort": 2,"Week": 3,"Vote Count": 1337,"Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
     }
+
+    /*//////////////////////////////////////////////////////////////
+                        Temporary
+    //////////////////////////////////////////////////////////////*/
+
+    function mint(address to, uint256 tokenId) public virtual {
+        _mint(to, tokenId);
+    }
+
+    function burn(uint256 tokenId) public virtual {
+        _burn(tokenId);
+    }
+
+    function safeMint(address to, uint256 tokenId) public virtual {
+        _safeMint(to, tokenId);
+    }
+
+    function safeMint(
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public virtual {
+        _safeMint(to, tokenId, data);
+    }
 }

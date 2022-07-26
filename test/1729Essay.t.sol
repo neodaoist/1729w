@@ -20,6 +20,14 @@ contract SevenTeenTwentyNineEssayTest is Test {
         assertEq(essay.symbol(), "1729ESSAY");
     }
 
+    // function testTokenURI() public {
+        
+    // }
+
+    /*//////////////////////////////////////////////////////////////
+                        JSON tests
+    //////////////////////////////////////////////////////////////*/
+
     function testReadJsonMetadata() public {
         string memory json = essay.tokenURI(1);
         Essay memory winningEssay = Fleece.parseJson(json);
