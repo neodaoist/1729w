@@ -9,7 +9,7 @@ import "../src/zListerBidderSettler.sol";
 contract zListerBidderSettlerTest is Test {
     //
     SevenTeenTwentyNineEssay nft;
-    ReserveAuctionCoreETH auctionHouse;
+    ReserveAuctionCoreETH auctionHouse;    
 
     zListerBidderSettler settler;
 
@@ -20,19 +20,27 @@ contract zListerBidderSettlerTest is Test {
     address writer3 = address(0xC);
     address writer4 = address(0xD);
 
+    address otherBidder = address(0xBEEF);
+
+    address constant ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN = 0xF57A73D355680Df3945Da7853A1F1F9149C7DA4D;
+    address constant ZORA_ERC721_TRANSFER_HELPER_ROPSTEN = 0x0afB6A47C303f85c5A6e0DC6c9b4c2001E6987ED;
+    address constant ZORA_MODULE_MANAGER_ROPSTEN = 0x3120f8A161bf8ae8C4287A66920E7Fd875b41805;
+
     function setUp() public {
         vm.createSelectFork("https://ropsten.infura.io/v3/3b59d7ee7a5f4378911a8a8789911ed1", 12673131);
 
-        auctionHouse = ReserveAuctionCoreETH(address(0xF57A73D355680Df3945Da7853A1F1F9149C7DA4D));
+        auctionHouse = ReserveAuctionCoreETH(ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
 
         nft = new SevenTeenTwentyNineEssay(multisig);
-        vm.prank(multisig);
+        vm.startPrank(multisig);
         nft.mint(1);
 
-        settler = new zListerBidderSettler(
-            multisig,
-            address(0xF57A73D355680Df3945Da7853A1F1F9149C7DA4D) // Zora v3 Reserve Auction CoreETH – Ropsten
-        );
+        settler = new zListerBidderSettler(multisig, ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
+
+        nft.setApprovalForAll(ZORA_ERC721_TRANSFER_HELPER_ROPSTEN, true);
+        ModuleManager(ZORA_MODULE_MANAGER_ROPSTEN).setApprovalForModule(ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN, true);
+
+        vm.stopPrank();
     }
 
     function testPreconditions() public {
@@ -62,10 +70,13 @@ contract zListerBidderSettlerTest is Test {
         assertEq(startTime, block.timestamp);
     }
 
-    function testListIsOnlyOwner() public {
+    function testOnlyOwner() public {
         vm.expectRevert("Ownable: caller is not the owner");
-
         settler.list(address(nft), 1, writer1);
+        vm.expectRevert("Ownable: caller is not the owner");
+        settler.bid{value: 0.1 ether}(address(nft), 1);
+        vm.expectRevert("Ownable: caller is not the owner");
+        settler.settle(address(nft), 1);
     }
 
     function testListWhenNotTokenOwnerOrOperatorShouldFail() public {
@@ -75,13 +86,47 @@ contract zListerBidderSettlerTest is Test {
         settler.list(address(nft), 1, writer1);
     }
 
-    // function testBid() public {
-        
-    // }
+    function testBid() public {
+        startHoax(multisig, 1 ether);
+        nft.setApprovalForAll(address(settler), true);
+        settler.list(address(nft), 1, writer1);
 
-    // function testSettleAsWinner() public {
-        
-    // }
+        settler.bid{value: 0.1 ether}(address(nft), 1);
+
+        (
+            ,
+            ,
+            ,
+            uint96 highestBid,
+            address highestBidder,
+            ,
+            ,
+
+        ) = auctionHouse.auctionForNFT(address(nft), 1);
+
+        assertEq(highestBid, 0.1 ether);
+        assertEq(highestBidder, address(settler)); // TODO this is a problem — the NFT will go to the settler contract
+    }
+
+    function testSettleAsWinner() public {
+        startHoax(multisig, 1 ether);
+        nft.setApprovalForAll(address(settler), true);
+        settler.list(address(nft), 1, writer1);
+
+        assertEq(multisig.balance, 1 ether);
+        assertEq(writer1.balance, 0 ether);
+        assertEq(nft.ownerOf(1), multisig);
+
+        settler.bid{value: 0.1 ether}(address(nft), 1);
+
+        // vm.warpFork(123); // NOTE I knew I was going to need fork warping soon !
+
+        settler.settle(address(nft), 1);
+
+        assertEq(multisig.balance, 0.9 ether);
+        assertEq(writer1.balance, 0.1 ether);
+        assertEq(nft.ownerOf(1), address(settler)); // reverting with AUCTION_NOT_OVER =)
+    }
 
     // function testSettleAsLoser() public {
         
