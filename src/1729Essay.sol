@@ -22,7 +22,7 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     //
 
-    // mapping(address => uint256) 
+    // mapping(address => uint256)
     // mapping(address => uint256) writerPrimarySaleEarnings;
 
     uint16 private constant NETWORK_STATE_PROTOCOL_FEE_PERCENTAGE = 1000; // in bips
@@ -42,7 +42,7 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     // }
 
     // function distributeEarnings() public {
-        
+
     // }
 
     /*//////////////////////////////////////////////////////////////
@@ -62,12 +62,7 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
@@ -87,13 +82,11 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
                         EIP 2981
     //////////////////////////////////////////////////////////////*/
 
-    function royaltyInfo(
-        uint256 _tokenId,
-        uint256 _salePrice
-    ) external view returns (
-        address receiver,
-        uint256 royaltyAmount
-    ) {
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+        external
+        view
+        returns (address receiver, uint256 royaltyAmount)
+    {
         receiver = owner(); // SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS
         royaltyAmount = (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
     }
@@ -102,17 +95,12 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
                         EIP 165
     //////////////////////////////////////////////////////////////*/
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        pure
-        override(ERC721)
-        returns (bool)
-    {
+    function supportsInterface(bytes4 interfaceId) public pure override(ERC721) returns (bool) {
         return
             interfaceId == 0x7f5828d0 || // ERC165 Interface ID for ERC173
             interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
             interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC165
-            interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC721Metadata TODO will we use ?
+            interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC721Metadata TODO replace with ERC721URIStorage ?
             interfaceId == 0x2a55205a; // ERC165 Interface ID for ERC2981
     }
 }

@@ -12,7 +12,8 @@ contract ERC721SpecTest is Test {
 
     SevenTeenTwentyNineEssay token;
 
-    string constant EXPECTED_BASE_URI = "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4";
+    string constant EXPECTED_BASE_URI =
+        "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4";
 
     address multisig = address(0x1729a);
     address writer1 = address(0xA1);
@@ -46,11 +47,11 @@ contract ERC721SpecTest is Test {
     // }
 
     // function testMintEssayWhenNotOwnerShouldFail() public {
-        
+
     // }
 
     // function testDistributeEarnings() public {
-        
+
     // }
 
     /*//////////////////////////////////////////////////////////////

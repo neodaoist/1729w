@@ -32,10 +32,7 @@ contract SevenTeenTwentyNineEssayTest is Test {
         assertEq(winningEssay.contentHash, "DEF");
         assertEq(winningEssay.writerName, "Susmitha87539319");
         assertEq(winningEssay.writerAddress, "0xCAFE");
-        assertEq(
-            winningEssay.publicationURL,
-            "https://testpublish.com/savetheworld"
-        );
+        assertEq(winningEssay.publicationURL, "https://testpublish.com/savetheworld");
         assertEq(winningEssay.archivalURL, "ipfs://xyzxyzxyz");
     }
 
