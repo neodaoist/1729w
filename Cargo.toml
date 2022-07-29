@@ -6,12 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+log = "0.4.17"
 
 
 [dev-dependencies]
 async-trait = "0.1"
 cucumber = "0.13"
 futures = "0.3"
+tokio = { version = "1.20.1", features = ["macros", "rt-multi-thread", "time"] }
+ethers = { git = "https://github.com/gakonst/ethers-rs" }
 
 [[test]]
 name = "writers" # this should be the same as the filename of your test target

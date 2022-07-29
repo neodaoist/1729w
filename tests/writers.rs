@@ -1,8 +1,13 @@
 use std::convert::Infallible;
 
 use async_trait::async_trait;
-use cucumber::{gherkin::Step, given, when, then, World, WorldInit};
+use cucumber::{gherkin::Step, given, when, then, World, WorldInit, Cucumber};
 use std::collections::HashMap;
+use std::panic::AssertUnwindSafe;
+use futures::FutureExt;
+use log::{info, warn};
+use tokio::time;
+use ethers::utils::Anvil;
 
 // 
 
@@ -91,12 +96,60 @@ impl World for WriterWorld {
     }
 }
 
+#[tokio::main]
 // Test runner
-fn main() {
+async fn main() {
     // You may choose any executor you like (`tokio`, `async-std`, etc.).
     // You may even have an `async` main, it doesn't matter. The point is that
     // Cucumber is composable. :)
-    futures::executor::block_on(WriterWorld::run("tests/features"));
+
+    let world = WriterWorld::cucumber()
+        .before(move |_, _, _, _| {
+            async move {
+                let anvil = Anvil::new();
+                println!("Starting anvil");
+
+            }.boxed()
+        })
+        .run_and_exit("tests/features");
+
+    let err = AssertUnwindSafe(world).catch_unwind().await.expect_err("should_err");
+    warn!("Error: {}", err.downcast_ref::<String>().unwrap());
+/*
+    futures::executor::block_on(WriterWorld::new()
+        .before(feature("Publish Essay NFT for the weekly winning essay"), |ctx| {
+            info!("Starting anvil")
+    })
+        .run("tests/features"));
+
+ */
+
+    /*
+        let pool = init_db().await;
+
+    Cucumber::<WriterWorld>::new()
+        // Specifies where our feature files exist
+        //.features(&["./features"])
+        // Adds the implementation of our steps to the runner
+        //.steps(steps::example::steps())
+        // Add some global context for all the tests, like databases.
+        //.context(Context::new().add(pool))
+        // Add some lifecycle functions to manage our database nightmare
+        .before(feature("Example feature"), |ctx| {
+            info!("Starting anvil")
+            //let pool = ctx.get::<SqlitePool>().unwrap().clone();
+            //async move { create_tables(&pool).await }.boxed()
+        })
+        //.after(feature("Example feature"), |ctx| {
+        //    let pool = ctx.get::<SqlitePool>().unwrap().clone();
+        //    async move { drop_tables(&pool).await }.boxed()
+        //})
+        // Parses the command line arguments if passed
+        .cli()
+        // Runs the Cucumber tests and then exists
+        .run_and_exit()
+*/
+
 }
 
 ////////////////////////////////////////////////////////////////
@@ -466,3 +519,4 @@ fn address_scenario_2_then_2(world: &mut WriterWorld, essay_number: String) {
     // TODO: not implemented yet
     panic!("STEPDEF not implemented yet");
 }
+
