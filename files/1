@@ -1,0 +1,38 @@
+{
+    "name": "Social Token Design",
+    "image": "https://nftstorage.link/ipfs/bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
+    "description": "Essay: Social Token Design\n\nWriter: Jeremy J. Wade\n\nPublication date: 2022-07-26\n\nPublication URL: https://www.jwade.xyz/post/social-token-design\n\nArchival URL: https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq\n\n_This is winning essay #1 from 1729Writers Cohort #2. 1729Writers (https://paper.li/1729writers) is an experiment in coordinating independent writing with decentralized funding, focused on truth, health, wealth, and other ideas related to Balaji Srinivasan’s new book The Network State (https://thenetworkstate.com)_",
+    "external_url": "https://www.jwade.xyz/post/social-token-design",
+    "attributes": [
+        {
+            "trait_type": "Cohort",
+            "value": "2"
+        },
+        {
+            "trait_type": "Week",
+            "value": "1"
+        },
+        {
+            "trait_type": "Status",
+            "value": "Weekly Winner"
+        },
+        {
+            "trait_type": "Writer",
+            "value": "Jeremy J. Wade"
+        }
+    ],
+    "1729Essay": {
+        "id": "1",
+        "cohort": "2",
+        "week": "1",
+        "status": "Weekly Winner",
+        "name": "Social Token Design",
+        "image": "https://nftstorage.link/ipfs/bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
+        "description": "**- Writer name:** Jeremy J. Wade\n**- Writer address:** 0x000000000000000000000000000000000000000A\n**- Original publication date:** 2022-07-26\n**- Original publication URL:** https://www.jwade.xyz/post/social-token-design\n- **Archival URL:** https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq\n\n_This is winning essay #1 from the 4-week 1729Writers Cohort #2. 1729Writers (https://paper.li/1729writers) is a collective that writes about ideas related to Balaji Srinivasan’s new book The Network State (thenetworkstate.com)_",
+        "content_hash": "6b7daa8738677ffd8ae563c0f75ed042a1431756c406d650e0f358fefc863f3f",
+        "writer_name": "Jeremy J. Wade",
+        "writer_address": "0x000000000000000000000000000000000000000A",
+        "original_publication_url": "https://www.jwade.xyz/post/social-token-design",
+        "archival_url": "https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq"        
+    }
+}

@@ -3,6 +3,7 @@ pragma solidity ^0.8.15;
 
 import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "openzeppelin-contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import {ERC2981} from "openzeppelin-contracts/token/common/ERC2981.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 
 ////////////////////////////////////////////////////////////////////////////
@@ -15,11 +16,11 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 //                                                                        //
 ////////////////////////////////////////////////////////////////////////////
 
-/// @title An essay from the 1729 writers union
+/// @title A collection of winning essays from 1729Writers
 /// @author neodaoist, plaird
-/// @notice A 1729w admin can mint and burn essay NFTs on this contract
+/// @notice A 1729Writers admin can mint and burn essay NFTs on this contract
 /// @dev XYZ
-contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
+contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, ERC2981, Ownable {
     //
 
     // mapping(address => uint256)
@@ -28,7 +29,7 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     uint16 private constant NETWORK_STATE_PROTOCOL_FEE_PERCENTAGE = 1000; // in bips
     uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in bips
 
-    constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
+    constructor(address _multisig) ERC721("F1729 Essay", "F1729ESSAY") {
         transferOwnership(_multisig);
     }
 
@@ -49,13 +50,8 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
                         OZ
     //////////////////////////////////////////////////////////////*/
 
-    // function tokenURI(uint256 id) public view override returns (string memory) {
-    //     return
-    //         '{"Cohort": 2,"Week": 3,"Vote Count": 1337,"Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
-    // }
-
     function _baseURI() internal pure override returns (string memory) {
-        return "https://nftstorage.link/ipfs/bafybeibcrameoggj7i2y7yprniytdb5mp76kiukpl5omkancchb7q3uwv4/";
+        return "https://nftstorage.link/ipfs/bafybeiblfxmzzzhllcappbk5t2ujmmton5wfkmaujueqrvluh237bpzale/";
     }
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
@@ -79,11 +75,16 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        TODO fix both below
+    //////////////////////////////////////////////////////////////*/
+
+    /*//////////////////////////////////////////////////////////////
                         EIP 2981
     //////////////////////////////////////////////////////////////*/
 
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        external
+        override(ERC2981)
+        public
         view
         returns (address receiver, uint256 royaltyAmount)
     {
@@ -95,12 +96,7 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, Ownable {
                         EIP 165
     //////////////////////////////////////////////////////////////*/
 
-    function supportsInterface(bytes4 interfaceId) public pure override(ERC721) returns (bool) {
-        return
-            interfaceId == 0x7f5828d0 || // ERC165 Interface ID for ERC173
-            interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
-            interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC165
-            interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC721Metadata TODO replace with ERC721URIStorage ?
-            interfaceId == 0x2a55205a; // ERC165 Interface ID for ERC2981
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC2981) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }

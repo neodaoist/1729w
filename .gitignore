@@ -4,3 +4,4 @@ target/
 node_modules/
 Cargo.lock
 .vscode/
+script/commands.sh
