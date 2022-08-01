@@ -106,9 +106,8 @@ async fn main() {
     let world = WriterWorld::cucumber()
         .before(move |_, _, _, _| {
             async move {
-                let anvil = Anvil::new();
-                println!("Starting anvil");
-
+                let anvil = Anvil::new().spawn();
+                println!("Anvil running at `{}`", anvil.endpoint());
             }.boxed()
         })
         .run_and_exit("tests/features");

@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 log = "0.4.17"
 
-
 [dev-dependencies]
 async-trait = "0.1"
 cucumber = "0.13"
