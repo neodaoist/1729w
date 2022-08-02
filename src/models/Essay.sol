@@ -1,10 +1,10 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
 struct Essay {
     uint8 cohort;
     uint8 week;
-    uint16 voteCount; // NOTE moved to here from end for more efficient storage
+    string status;
     string name;
     string image;
     string description;

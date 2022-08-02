@@ -9,7 +9,7 @@ import "../src/zListerBidderSettler.sol";
 contract zListerBidderSettlerTest is Test {
     //
     SevenTeenTwentyNineEssay nft;
-    ReserveAuctionCoreETH auctionHouse;    
+    ReserveAuctionCoreETH auctionHouse;
 
     zListerBidderSettler settler;
 
@@ -22,23 +22,40 @@ contract zListerBidderSettlerTest is Test {
 
     address otherBidder = address(0xBEEF);
 
-    address constant ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN = 0xF57A73D355680Df3945Da7853A1F1F9149C7DA4D;
-    address constant ZORA_ERC721_TRANSFER_HELPER_ROPSTEN = 0x0afB6A47C303f85c5A6e0DC6c9b4c2001E6987ED;
-    address constant ZORA_MODULE_MANAGER_ROPSTEN = 0x3120f8A161bf8ae8C4287A66920E7Fd875b41805;
+    address constant ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN =
+        0xF57A73D355680Df3945Da7853A1F1F9149C7DA4D;
+    address constant ZORA_ERC721_TRANSFER_HELPER_ROPSTEN =
+        0x0afB6A47C303f85c5A6e0DC6c9b4c2001E6987ED;
+    address constant ZORA_MODULE_MANAGER_ROPSTEN =
+        0x3120f8A161bf8ae8C4287A66920E7Fd875b41805;
 
     function setUp() public {
-        vm.createSelectFork("https://ropsten.infura.io/v3/3b59d7ee7a5f4378911a8a8789911ed1", 12673131);
+        // create and select Ropsten fork, roll to block which has Zora v3 contracts
+        vm.createSelectFork(
+            "https://ropsten.infura.io/v3/3b59d7ee7a5f4378911a8a8789911ed1",
+            12673131
+        );
 
-        auctionHouse = ReserveAuctionCoreETH(ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
+        // get Zora auction house
+        auctionHouse =
+            ReserveAuctionCoreETH(ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
 
+        // deploy Essay NFT contract and mint 1 token
         nft = new SevenTeenTwentyNineEssay(multisig);
         vm.startPrank(multisig);
         nft.mint(1);
 
-        settler = new zListerBidderSettler(multisig, ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
+        // deploy lister/bidder/settler
+        settler =
+        new zListerBidderSettler(multisig, ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN);
 
+        // grant both approvals necessary to run a Zora v3 reserve auction from the multisig:
+        // - one approves Zora ERC721 Transfer Helper as an operator on the Essay NFT contract
+        // - one approves Zora Reserve Auction Core ETH module on the Zora Module Manager contract
         nft.setApprovalForAll(ZORA_ERC721_TRANSFER_HELPER_ROPSTEN, true);
-        ModuleManager(ZORA_MODULE_MANAGER_ROPSTEN).setApprovalForModule(ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN, true);
+        ModuleManager(ZORA_MODULE_MANAGER_ROPSTEN).setApprovalForModule(
+            ZORA_RESERVE_AUCTION_CORE_ETH_ROPSTEN, true
+        );
 
         vm.stopPrank();
     }
@@ -60,7 +77,6 @@ contract zListerBidderSettlerTest is Test {
             ,
             uint256 duration,
             uint256 startTime,
-
         ) = auctionHouse.auctionForNFT(address(nft), 1);
 
         assertEq(seller, multisig);
@@ -93,16 +109,8 @@ contract zListerBidderSettlerTest is Test {
 
         settler.bid{value: 0.1 ether}(address(nft), 1);
 
-        (
-            ,
-            ,
-            ,
-            uint96 highestBid,
-            address highestBidder,
-            ,
-            ,
-
-        ) = auctionHouse.auctionForNFT(address(nft), 1);
+        (,,, uint96 highestBid, address highestBidder,,,) =
+            auctionHouse.auctionForNFT(address(nft), 1);
 
         assertEq(highestBid, 0.1 ether);
         assertEq(highestBidder, address(settler)); // TODO this is a problem — the NFT will go to the settler contract
@@ -127,8 +135,5 @@ contract zListerBidderSettlerTest is Test {
         assertEq(writer1.balance, 0.1 ether);
         assertEq(nft.ownerOf(1), address(settler)); // reverting with AUCTION_NOT_OVER =)
     }
-
-    // function testSettleAsLoser() public {
-        
-    // }
-}
+// function testSettleAsLoser() public {
+} // }

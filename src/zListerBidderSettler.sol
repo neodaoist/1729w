@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
@@ -41,7 +41,10 @@ contract zListerBidderSettler is Ownable {
         address _contractAddress,
         uint256 _tokenId,
         address _writerAddress
-    ) public onlyOwner {
+    )
+        public
+        onlyOwner
+    {
         auctionHouse.createAuction(
             _contractAddress,
             _tokenId,
@@ -52,11 +55,19 @@ contract zListerBidderSettler is Ownable {
         );
     }
 
-    function bid(address _contractAddress, uint256 _tokenId) public payable onlyOwner {
+    function bid(address _contractAddress, uint256 _tokenId)
+        public
+        payable
+        onlyOwner
+    {
         auctionHouse.createBid{value: msg.value}(_contractAddress, _tokenId);
     }
 
-    function settle(address _contractAddress, uint256 _tokenId) public payable onlyOwner {
+    function settle(address _contractAddress, uint256 _tokenId)
+        public
+        payable
+        onlyOwner
+    {
         auctionHouse.settleAuction(_contractAddress, _tokenId);
     }
 }
@@ -70,26 +81,39 @@ abstract contract ReserveAuctionCoreETH {
         uint256 _reservePrice,
         address _sellerFundsRecipient,
         uint256 _startTime
-    ) public virtual;
+    )
+        public
+        virtual;
 
     function setAuctionReservePrice(
         address _tokenContract,
         uint256 _tokenId,
         uint256 _reservePrice
-    ) public virtual;
+    )
+        public
+        virtual;
 
-    function cancelAuction(address _tokenContract, uint256 _tokenId) public virtual;
+    function cancelAuction(address _tokenContract, uint256 _tokenId)
+        public
+        virtual;
 
-    function createBid(address _tokenContract, uint256 _tokenId) public payable virtual;
+    function createBid(address _tokenContract, uint256 _tokenId)
+        public
+        payable
+        virtual;
 
-    function settleAuction(address _tokenContract, uint256 _tokenId) public virtual;
+    function settleAuction(address _tokenContract, uint256 _tokenId)
+        public
+        virtual;
 
     /// @dev ERC-721 token contract => ERC-721 token id => Auction
     mapping(address => mapping(uint256 => Auction)) public auctionForNFT;
 }
 
 abstract contract ModuleManager {
-    function setApprovalForModule(address _moduleAddress, bool _approved) public virtual;
+    function setApprovalForModule(address _moduleAddress, bool _approved)
+        public
+        virtual;
 }
 
 struct Auction {

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
 import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
@@ -29,7 +29,7 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, ERC2981, Ownable 
     uint16 private constant NETWORK_STATE_PROTOCOL_FEE_PERCENTAGE = 1000; // in bips
     uint16 private constant SECONDARY_SALES_ROYALTY_PERCENTAGE = 1000; // in bips
 
-    constructor(address _multisig) ERC721("F1729 Essay", "F1729ESSAY") {
+    constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
         transferOwnership(_multisig);
     }
 
@@ -51,14 +51,23 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, ERC2981, Ownable 
     //////////////////////////////////////////////////////////////*/
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://nftstorage.link/ipfs/bafybeiblfxmzzzhllcappbk5t2ujmmton5wfkmaujueqrvluh237bpzale/";
+        return
+        "https://nftstorage.link/ipfs/bafybeiblfxmzzzhllcappbk5t2ujmmton5wfkmaujueqrvluh237bpzale/";
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override (ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override (ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
     }
 
@@ -83,20 +92,26 @@ contract SevenTeenTwentyNineEssay is ERC721, ERC721URIStorage, ERC2981, Ownable 
     //////////////////////////////////////////////////////////////*/
 
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        override(ERC2981)
         public
         view
+        override (ERC2981)
         returns (address receiver, uint256 royaltyAmount)
     {
         receiver = owner(); // SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS
-        royaltyAmount = (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
+        royaltyAmount =
+            (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
     }
 
     /*//////////////////////////////////////////////////////////////
                         EIP 165
     //////////////////////////////////////////////////////////////*/
 
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC2981) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override (ERC721, ERC2981)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }
