@@ -14,6 +14,7 @@ Feature: Publish Essay NFT for the weekly winning essay
         And the publication URL is 'https://testpublish.com/savetheworld'
         And the winning essay received 1337 votes
 
+    @blockchain
     Scenario: Publish winning Essay NFT
         When I mint, list, and bid on the Essay NFT
         Then There should be PLACEHOLDER STEP XYZ

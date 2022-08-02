@@ -1,8 +1,14 @@
 use std::convert::Infallible;
 
 use async_trait::async_trait;
-use cucumber::{gherkin::Step, given, when, then, World, WorldInit};
+use cucumber::{gherkin::Step, given, when, then, World, WorldInit, Cucumber};
 use std::collections::HashMap;
+use std::fmt::Formatter;
+use std::panic::AssertUnwindSafe;
+use futures::FutureExt;
+use log::{info, warn};
+use tokio::time;
+use ethers::utils::{Anvil, AnvilInstance};
 
 // 
 
@@ -17,7 +23,8 @@ pub struct Essay {
  */
 
 // `World` is your shared, likely mutable state.
-#[derive(Debug, WorldInit)]
+//#[derive(Debug, WorldInit)]
+#[derive(WorldInit)]
 pub struct WriterWorld {
 
     // only here for data table test
@@ -49,6 +56,20 @@ pub struct WriterWorld {
 
     winning_writer_name: String,
     winning_writer_address: String,
+
+    anvil: Option<AnvilInstance>,
+}
+
+
+// TODO: Incomplete
+// Necessary because AnvilInstance doesn't implement Debug so can't derive
+impl std::fmt::Debug for WriterWorld {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("WriterWorld")
+            .field("writer_name", &self.writer_name)
+            .field("anvil initialized", &self.anvil.is_some())
+            .finish()
+    }
 }
 
 // `World` needs to be implemented, so Cucumber knows how to construct it
@@ -87,16 +108,32 @@ impl World for WriterWorld {
 
             winning_writer_name: String::from(""),
             winning_writer_address: String::from(""),
+
+            anvil: Option::None, // Anvil is started and stopped in before/after hooks. Better way to do this?
         })
     }
 }
 
+
+#[tokio::main]
 // Test runner
-fn main() {
-    // You may choose any executor you like (`tokio`, `async-std`, etc.).
-    // You may even have an `async` main, it doesn't matter. The point is that
-    // Cucumber is composable. :)
-    futures::executor::block_on(WriterWorld::run("tests/features"));
+async fn main() -> eyre::Result<()> {
+
+    let world = WriterWorld::cucumber()
+        // Start a fresh anvil before each scenario
+        .before(move |_, _, _, world| {
+            async move {
+                world.anvil = Option::Some(Anvil::new().spawn());
+                let endpoint = world.anvil.as_ref().unwrap().endpoint();
+                println!("Anvil running at `{}`", endpoint);
+            }.boxed()
+        })
+        .run_and_exit("tests/features");
+
+    let err = AssertUnwindSafe(world).catch_unwind().await.expect_err("should_err");
+    warn!("Error: {}", err.downcast_ref::<String>().unwrap());
+
+    Ok(())
 }
 
 ////////////////////////////////////////////////////////////////
@@ -466,3 +503,4 @@ fn address_scenario_2_then_2(world: &mut WriterWorld, essay_number: String) {
     // TODO: not implemented yet
     panic!("STEPDEF not implemented yet");
 }
+
