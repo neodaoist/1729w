@@ -5,10 +5,18 @@ use cucumber::{gherkin::Step, given, when, then, World, WorldInit, Cucumber};
 use std::collections::HashMap;
 use std::fmt::Formatter;
 use std::panic::AssertUnwindSafe;
+use std::path::Path;
+use std::sync::Arc;
+use std::time::Duration;
 use futures::FutureExt;
 use log::{info, warn};
 use tokio::time;
-use ethers::utils::{Anvil, AnvilInstance};
+use ethers::{
+    prelude::*,
+    utils::{Anvil, AnvilInstance}
+};
+use ethers_solc::Solc;
+
 
 // 
 
@@ -327,7 +335,32 @@ fn vote_scenario_2_then_1(world: &mut WriterWorld, voter_account: String, vote_c
 
 #[given(regex = r"^The Essay NFT contract is deployed$")]
 fn publish_given_1(world: &mut WriterWorld) {
-    // TODO: deploy contract
+    let anvil = world.anvil.as_ref().unwrap();
+    let source = Path::new(&env!("CARGO_MANIFEST_DIR")).join("src/1729Essay.sol");
+    let compiled = Solc::default().compile_source(source).expect("Could not compile contracts");
+    let (abi, bytecode, _runtime_bytecode) =
+        compiled.find("OneSevenTwoNineEssay").expect("could not find contract").into_parts_or_default();
+
+    // 2. instantiate our wallet
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+
+    /* TODO: Figure out async/await pattern within a cucumber stepdef
+    // 3. connect to the network
+    let provider =
+        Provider::<Http>::try_from(anvil.endpoint())?.interval(Duration::from_millis(10u64));
+
+    // 4. instantiate the client with the wallet
+    let client = SignerMiddleware::new(provider, wallet);
+    let client = Arc::new(client);
+
+    // 5. create a factory which will be used to deploy instances of the contract
+    let factory = ContractFactory::new(abi, bytecode, client.clone());
+
+    // 6. deploy it with the constructor arguments
+    let contract = factory.deploy("initial value".to_string())?.send().await?;
+
+     */
+
 }
 
 #[given(regex = r"^there are no NFTs minted on the contract$")]
