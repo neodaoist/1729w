@@ -15,6 +15,8 @@ futures = "0.3"
 tokio = { version = "1.20.1", features = ["macros", "rt-multi-thread", "time"] }
 ethers = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-solc = { git = "https://github.com/gakonst/ethers-rs" }
+ethers-contract = { git = "https://github.com/gakonst/ethers-rs" }
+ethers-contract-derive = { git = "https://github.com/gakonst/ethers-rs" }
 eyre = "0.6"
 
 [build-dependencies]

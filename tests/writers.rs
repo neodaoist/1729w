@@ -16,9 +16,13 @@ use ethers::{
     utils::{Anvil, AnvilInstance}
 };
 use ethers_solc::Solc;
+use ethers_contract_derive::*;
 
+abigen!(MyContract,
+    "src/1729Essay.sol",
+    event_derives(serde::Deserialize, serde::Serialize)
+);
 
-// 
 
 // TODO: Refactor into structs as needed
 /*
@@ -336,13 +340,31 @@ fn vote_scenario_2_then_1(world: &mut WriterWorld, voter_account: String, vote_c
 #[given(regex = r"^The Essay NFT contract is deployed$")]
 fn publish_given_1(world: &mut WriterWorld) {
     let anvil = world.anvil.as_ref().unwrap();
-    let source = Path::new(&env!("CARGO_MANIFEST_DIR")).join("src/1729Essay.sol");
-    let compiled = Solc::default().compile_source(source).expect("Could not compile contracts");
+
+    let contract_path = Path::new(&env!("CARGO_MANIFEST_DIR")).join("src/1729Essay.sol");
+    assert!(contract_path.exists(), "Can't find contract at {}", contract_path.display());
+
+    //println!("Cargo Manifest Dir: {}", &env!("CARGO_MANIFEST_DIR"));
+    //let source = Path::new(&env!("CARGO_MANIFEST_DIR")).join("src/1729Essay.sol");
+    let compiled = Solc::default().compile_source(contract_path).expect("Could not compile contract");
     let (abi, bytecode, _runtime_bytecode) =
         compiled.find("OneSevenTwoNineEssay").expect("could not find contract").into_parts_or_default();
 
-    // 2. instantiate our wallet
+    // instantiate our wallet
     let wallet: LocalWallet = anvil.keys()[0].clone().into();
+
+    // connect to the anvil network
+    let provider = Provider::<Http>::try_from(anvil.endpoint())
+        .expect("Could not connect to anvil network").interval(Duration::from_millis(10u64));
+
+    // instantiate the client with the wallet
+    let client = SignerMiddleware::new(provider, wallet);
+    let client = Arc::new(client);
+
+    // deploy the contract using a factory
+    let factory = ContractFactory::new(abi, bytecode, client.clone());
+    let contract = factory.deploy("initial value".to_string()).expect("Failed to deploy contract");
+    println!("Deployed contract");
 
     /* TODO: Figure out async/await pattern within a cucumber stepdef
     // 3. connect to the network
