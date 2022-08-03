@@ -18,9 +18,9 @@ use ethers::{
 use ethers_solc::Solc;
 use ethers_contract_derive::*;
 
-abigen!(MyContract,
-    "src/1729Essay.sol",
-    event_derives(serde::Deserialize, serde::Serialize)
+abigen!(OneSevenTwoNineEssay,
+    "out/1729Essay.sol/OneSevenTwoNineEssay.json"
+    //event_derives(serde::Deserialize, serde::Serialize)
 );
 
 
