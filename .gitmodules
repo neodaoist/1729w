@@ -10,3 +10,6 @@
 [submodule "lib/jsmnSol"]
 	path = lib/jsmnSol
 	url = https://github.com/BlockInfinity/jsmnSol
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
