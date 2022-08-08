@@ -10,6 +10,8 @@ contract OneSevenTwoNineEssayTest is Test {
     //
     OneSevenTwoNineEssay essay;
 
+    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
+
     function setUp() public {
         essay = new OneSevenTwoNineEssay();
     }
@@ -74,5 +76,9 @@ contract OneSevenTwoNineEssayTest is Test {
 
         // assertEq(winningEssay.publicationURL, parsedEssay.publicationURL);
         // assertEq(winningEssay.archivalURL, parsedEssay.archivalURL);
+    }
+
+    function testImplementsInterface() public {
+        assertTrue(essay.supportsInterface(_INTERFACE_ID_ERC2981));
     }
 }

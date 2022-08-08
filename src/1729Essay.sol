@@ -2,6 +2,7 @@
 pragma solidity ^0.8.15;
 
 import {ERC721} from "solmate/tokens/ERC721.sol";
+import "./IERC165.sol";
 
 struct Essay {
     uint8 cohort;
@@ -23,7 +24,14 @@ struct Essay {
 /// @dev XYZ
 contract OneSevenTwoNineEssay is ERC721 {
     //
-    constructor() ERC721("1729 Essay", "1729ESSAY") {}
+    constructor() ERC721("1729 Essay", "1729ESSAY") {
+        // register the supported interfaces to conform to ERC721 via ERC165
+        _registerInterface(_INTERFACE_ID_ERC721);
+        _registerInterface(_INTERFACE_ID_ERC721_METADATA);
+        _registerInterface(_INTERFACE_ID_ERC721_ENUMERABLE);
+        // Royalties interface
+        _registerInterface(_INTERFACE_ID_ERC2981);
+    }
 
     /// @notice Get the Essay NFT metadata URI
     /// @dev XYZ
