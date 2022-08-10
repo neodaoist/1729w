@@ -6,6 +6,8 @@ import {ERC721} from "solmate/tokens/ERC721.sol";
 import {IERC2981} from "openzeppelin-contracts/contracts/interfaces/IERC2981.sol";
 import "openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
 import "openzeppelin-contracts/contracts/utils/introspection/IERC165.sol";
+import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
+
 
     struct Essay {
     uint8 cohort;
@@ -21,19 +23,24 @@ import "openzeppelin-contracts/contracts/utils/introspection/IERC165.sol";
     string archivalURL;
 }
 
+
 /// @title An essay from the 1729 writers union
 /// @author neodaoist, plaird
 /// @notice A 1729w admin can mint and burn essay NFTs on this contract
 /// @dev XYZ
-contract OneSevenTwoNineEssay is ERC721, IERC2981 {
+contract OneSevenTwoNineEssay is Ownable, ERC721, IERC2981 {
     using SafeMath for uint256;
     //
 
-    bytes2 public royaltyMills;
+    struct EssayItem {
+        address author;
+        uint16 royalty;  // millis (tenths of percent)
+        string url;
+    }
 
-    /// @param _royaltyMills royalty for this contract, in thousandths (tenths of percent)
-    constructor(bytes2 _royaltyMills) ERC721("1729 Essay", "1729ESSAY") {
-        royaltyMills = _royaltyMills;
+    mapping(uint256 => EssayItem) public essays;
+
+    constructor() ERC721("1729 Essay", "1729ESSAY") {
     }
 
 
@@ -53,14 +60,19 @@ contract OneSevenTwoNineEssay is ERC721, IERC2981 {
     /// @param id The Token ID for a specific Essay NFT
     /// @return Fully-qualified URI of an Essay NFT, e.g., XYZ
     function tokenURI(uint256 id) public view override returns (string memory) {
-        return
-            '{"Cohort": 2,"Week": 3,"Vote Count": 1337,"Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
+        return essays[id].url;
+            //'{"Cohort": 2,"Week": 3,"Vote Count": 1337,"Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
     }
 
     function royaltyInfo(uint256 tokenId, uint256 salePrice)
         external
         view
         returns (address receiver, uint256 royaltyAmount) {
-          return (0xCAFE, royaltyAmount / 10);
+          return (essays[tokenId].author, salePrice * essays[tokenId].royalty / 1000);
+    }
+
+    function mint(uint256 tokenId, address author, uint16 royaltyAmount, string calldata url) public onlyOwner {
+        EssayItem memory essay = EssayItem(author, royaltyAmount, url);
+        essays[tokenId] = essay;
     }
 }

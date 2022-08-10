@@ -5,6 +5,9 @@ import "forge-std/Test.sol";
 import {Fleece} from "../src/Fleece.sol";
 
 import "../src/1729Essay.sol";
+import "openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import "openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 contract OneSevenTwoNineEssayTest is Test {
     //
@@ -80,5 +83,17 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testImplementsInterface() public {
         assertTrue(essay.supportsInterface(_INTERFACE_ID_ERC2981));
+        assertTrue(essay.supportsInterface(0x80ac58cd));  // ERC721
+        assertTrue(essay.supportsInterface(0x5b5e139f)); // IERC721Metadata
+        //assertTrue(essay.supportsInterface(0x780e9d63)); // IERC721Enumerable -- FIXME: do we need this?
+        assertFalse(essay.supportsInterface(0x00));
+    }
+
+    function testRoyalty() public {
+        address author = 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045;
+        essay.mint(7,author,100,"https://testpublish.com/savetheworld");
+        (address recipient, uint256 amount) = essay.royaltyInfo(7, 100000);
+        assertEq(author, recipient);
+        assertEq(amount, 10000); // 10%
     }
 }
