@@ -19,26 +19,26 @@ interface ISoulbound {
         uint256 _value
     );
 
-    event IssueBatch(
-        address indexed _issuer,
-        address indexed _issuee,
-        uint256[] _tokenIDs,
-        uint256[] _values
-    );
+    // event IssueBatch(
+    //     address indexed _issuer,
+    //     address indexed _issuee,
+    //     uint256[] _tokenIDs,
+    //     uint256[] _values
+    // );
 
-    event RevokeSingle(
-        address indexed _revoker,
-        address indexed _revokee,
-        uint256 _tokenID,
-        uint256 _value
-    );
+    // event RevokeSingle(
+    //     address indexed _revoker,
+    //     address indexed _revokee,
+    //     uint256 _tokenID,
+    //     uint256 _value
+    // );
 
-    event RevokeBatch(
-        address indexed _revoker,
-        address indexed _revokee,
-        uint256[] _tokenIDs,
-        uint256[] _values
-    );
+    // event RevokeBatch(
+    //     address indexed _revoker,
+    //     address indexed _revokee,
+    //     uint256[] _tokenIDs,
+    //     uint256[] _values
+    // );
 
     /*//////////////////////////////////////////////////////////////
                         Views
@@ -72,7 +72,7 @@ interface ISoulbound {
 
     function issueBatch(
         address[] calldata _recipients,
-        uint256[] calldata _tokenIDs
+        uint256 _tokenID
     ) external;
 
     /*//////////////////////////////////////////////////////////////
@@ -83,6 +83,6 @@ interface ISoulbound {
 
     function revokeBatch(
         address[] calldata _recipients,
-        uint256[] calldata _tokenIDs
+        uint256 _tokenID
     ) external;
 }
