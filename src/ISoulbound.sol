@@ -12,49 +12,34 @@ interface ISoulbound {
                         Events
     //////////////////////////////////////////////////////////////*/
 
-    event IssueSingle(
+    event Issue(
         address indexed _issuer,
         address indexed _issuee,
-        uint256 _tokenID,
-        uint256 _value
+        uint256 _tokenId
     );
 
-    // event IssueBatch(
-    //     address indexed _issuer,
-    //     address indexed _issuee,
-    //     uint256[] _tokenIDs,
-    //     uint256[] _values
-    // );
-
-    // event RevokeSingle(
+    // event Revoke(
     //     address indexed _revoker,
     //     address indexed _revokee,
-    //     uint256 _tokenID,
+    //     uint256 _tokenId,
     //     uint256 _value
-    // );
-
-    // event RevokeBatch(
-    //     address indexed _revoker,
-    //     address indexed _revokee,
-    //     uint256[] _tokenIDs,
-    //     uint256[] _values
     // );
 
     /*//////////////////////////////////////////////////////////////
                         Views
     //////////////////////////////////////////////////////////////*/
 
-    function hasToken(address _owner, uint256 _tokenID)
+    function hasToken(address _owner, uint256 _tokenId)
         external
         view
         returns (bool);
 
     function hasTokenBatch(
         address[] calldata _owners,
-        uint256[] calldata _tokenIDs
+        uint256 _tokenId
     ) external view returns (bool[] memory);
 
-    function allOwnersOf(uint256 _tokenID)
+    function allOwnersOf(uint256 _tokenId)
         external
         view
         returns (address[] memory);
@@ -68,21 +53,21 @@ interface ISoulbound {
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 
-    function issue(address _recipient, uint256 _tokenID) external;
+    function issue(address _recipient, uint256 _tokenId) external;
 
     function issueBatch(
         address[] calldata _recipients,
-        uint256 _tokenID
+        uint256 _tokenId
     ) external;
 
     /*//////////////////////////////////////////////////////////////
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
-    function revoke(address _recipient, uint256 _tokenID) external;
+    function revoke(address _recipient, uint256 _tokenId) external;
 
     function revokeBatch(
         address[] calldata _recipients,
-        uint256 _tokenID
+        uint256 _tokenId
     ) external;
 }

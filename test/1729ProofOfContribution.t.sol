@@ -15,6 +15,10 @@ contract SBTTest is Test {
         sbt = new SBTExample();
     }
 
+    /*//////////////////////////////////////////////////////////////
+                        Issuing
+    //////////////////////////////////////////////////////////////*/
+
     // Issue initial 1729 Writers Proof of Contribution SBTs to participating members
     // Issue 1729 Writers Proof of Contribution SBTs to writers for full participation
     // Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
@@ -22,54 +26,119 @@ contract SBTTest is Test {
     // Issue 1729 Writers Proof of Contribution SBTs to the winning writers
     // 
 
-    function test_IssueSingle() public {
+    // TODO should we enforce 1 credential of each type per user ?
+
+    function test_issue() public {
         vm.expectEmit(true, true, true, true);
-        emit Events.IssueSingle(address(sbt), address(0xA), 1, 1);
+        emit Events.Issue(address(sbt), address(0xA), 1);
 
         sbt.issue(address(0xA), 1);
-        assertEq(sbt.balanceOf(address(0xA), 1), 1);
+        assertTrue(sbt.hasToken(address(0xA), 1));
     }
 
     // TODO fix biz logic — batch issuance is about single SBT to multiple people, not vice versa
-    function test_IssueBatch() public {
-        address[] memory issuees = new address[](2);
+    function test_issueBatch() public {
+        address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
         issuees[1] = address(0xB);
+        issuees[2] = address(0xC);
+
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), issuees[i], 1);
+        }
 
         sbt.issueBatch(issuees, 1);
 
-        assertEq(sbt.balanceOf(address(0xA), 1), 1);
-        assertEq(sbt.balanceOf(address(0xB), 1), 1);
+        for (uint256 j = 0; j < issuees.length; j++) {
+            assertTrue(sbt.hasToken(issuees[j], 1));
+        }
     }
+
+    /*//////////////////////////////////////////////////////////////
+                        Revoking
+    //////////////////////////////////////////////////////////////*/
+
+    // TODO
+
+    /*//////////////////////////////////////////////////////////////
+                        Views
+    //////////////////////////////////////////////////////////////*/
+
+    function test_hasToken() public {
+        sbt.issue(address(0xA), 1);
+
+        assertTrue(sbt.hasToken(address(0xA), 1));
+    }
+
+    function test_hasTokenBatch() public {
+        address[] memory issuees = new address[](3);
+        issuees[0] = address(0xA);
+        issuees[1] = address(0xB);
+        issuees[2] = address(0xC);
+
+        sbt.issueBatch(issuees, 1);
+
+        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1);
+
+        assertEq(hasTokens.length, issuees.length);
+        for (uint256 i = 0; i < issuees.length; i++) {
+            assertTrue(hasTokens[i]);
+        }
+    }
+
+    // function test_allOwnersOf() public {
+        
+    // }
+
+    // function test_allTokensOf() public {
+        
+    // }
+
+    /*//////////////////////////////////////////////////////////////
+                        ERC1155 Spec Adherance
+    //////////////////////////////////////////////////////////////*/
+
+    function test_issue_AdheresToERC1155Spec() public {
+        vm.expectEmit(true, true, true, true);
+        emit Events.TransferSingle(address(this), address(0), address(0xA), 1, 1);
+
+        sbt.issue(address(0xA), 1);
+    }
+
+    function test_hasToken_AdheresToERC1155Spec() public {
+        sbt.issue(address(0xA), 1);
+
+        assertEq(sbt.balanceOf(address(0xA), 1), 1);
+        assertTrue(sbt.hasToken(address(0xA), 1));
+    }
+
+    // TODO hasTokenBatch
+    // TODO allOwnersOf
+    // TODO allTokensOf
 }
 
 // TODO DRY up
 library Events {
-    event IssueSingle(
+    /*//////////////////////////////////////////////////////////////
+                        SBT
+    //////////////////////////////////////////////////////////////*/
+
+    event Issue(
         address indexed _issuer,
         address indexed _issuee,
-        uint256 _tokenID,
-        uint256 _value
+        uint256 _tokenID
     );
 
-    // event IssueBatch(
-    //     address indexed _issuer,
-    //     address indexed _issuee,
-    //     uint256[] _tokenIDs,
-    //     uint256[] _values
-    // );
-
-    // event RevokeSingle(
+    // event Revoke(
     //     address indexed _revoker,
     //     address indexed _revokee,
-    //     uint256 _tokenID,
-    //     uint256 _value
+    //     uint256 _tokenID
     // );
 
-    // event RevokeBatch(
-    //     address indexed _revoker,
-    //     address indexed _revokee,
-    //     uint256[] _tokenIDs,
-    //     uint256[] _values
-    // );
+    /*//////////////////////////////////////////////////////////////
+                        ERC1155
+    //////////////////////////////////////////////////////////////*/
+
+    event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
 }
