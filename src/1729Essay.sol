@@ -69,7 +69,8 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     function mint(uint256 _tokenId, address author, string calldata url) public onlyOwner {
         EssayItem memory essay = EssayItem(author, url);
         essays[_tokenId] = essay;
-        _safeMint(author, _tokenId);
+        _safeMint(owner(), _tokenId);
+        _setTokenRoyalty(_tokenId, author, 1000);  // FIXME: Hardcoded
     }
 
     /*//////////////////////////////////////////////////////////////

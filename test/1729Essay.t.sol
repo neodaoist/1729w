@@ -81,11 +81,11 @@ contract OneSevenTwoNineEssayTest is Test {
     function testURIStorage() public {
         vm.startPrank(multisig);
         token.mint(1, TESTAUTHOR, EXPECTED_BASE_URI);
-        token.mint(2, TESTAUTHOR, EXPECTED_BASE_URI);
-        token.mint(3, TESTAUTHOR, EXPECTED_BASE_URI);
-        token.mint(4, TESTAUTHOR, EXPECTED_BASE_URI);
+        token.mint(2, TESTAUTHOR, string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
+        token.mint(3, TESTAUTHOR, string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
+        token.mint(4, TESTAUTHOR, string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
 
-        assertEq(token.tokenURI(1), string(abi.encodePacked(EXPECTED_BASE_URI, "1")));
+        assertEq(token.tokenURI(1), EXPECTED_BASE_URI);
         assertEq(token.tokenURI(2), string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
         assertEq(token.tokenURI(3), string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
         assertEq(token.tokenURI(4), string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
@@ -190,6 +190,7 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testRoyalty() public {
+        vm.prank(multisig);
         address author = 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045;
         token.mint(7,author,"https://testpublish.com/savetheworld");
         (address recipient, uint256 amount) = token.royaltyInfo(7, 100000);
