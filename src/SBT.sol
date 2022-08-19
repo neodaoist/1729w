@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
 /// @title An idea for an 1155-flavored SBT / cryptocredential standard
@@ -52,7 +52,10 @@ interface SBT {
     function hasTokenBatch(
         address[] calldata _owners,
         uint256[] calldata _tokenIDs
-    ) external view returns (bool[] memory);
+    )
+        external
+        view
+        returns (bool[] memory);
 
     function allOwnersOf(uint256 _tokenID)
         external
@@ -73,7 +76,8 @@ interface SBT {
     function issueBatch(
         address[] calldata _recipients,
         uint256[] calldata _tokenIDs
-    ) external;
+    )
+        external;
 
     /*//////////////////////////////////////////////////////////////
                         Revoking
@@ -84,5 +88,6 @@ interface SBT {
     function revokeBatch(
         address[] calldata _recipients,
         uint256[] calldata _tokenIDs
-    ) external;
+    )
+        external;
 }
