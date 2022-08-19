@@ -7,7 +7,6 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 import "../src/zListerBidderSettler.sol";
 
 contract zListerBidderSettlerTest is Test {
-    /* TO-DO: Fix compiler error on createSelectFork below
     //
     OneSevenTwoNineEssay nft;
     ReserveAuctionCoreETH auctionHouse;
@@ -137,5 +136,5 @@ contract zListerBidderSettlerTest is Test {
         assertEq(nft.ownerOf(1), address(settler)); // reverting with AUCTION_NOT_OVER =)
     }
 // function testSettleAsLoser() public {
-    */
+    
 } // }
