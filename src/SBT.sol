@@ -2,10 +2,12 @@
 pragma solidity ^0.8.13;
 
 import "./ISoulbound.sol";
+
 import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
+import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 
 /// @dev See {ISBT}.
-abstract contract SBT is ISoulbound, ERC1155 {
+abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //
 
     /*//////////////////////////////////////////////////////////////
@@ -58,7 +60,7 @@ abstract contract SBT is ISoulbound, ERC1155 {
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 
-    function issue(address _recipient, uint256 _tokenId) external {
+    function issue(address _recipient, uint256 _tokenId) external onlyOwner {
         _issue(_recipient, _tokenId);
     }
 
@@ -67,7 +69,7 @@ abstract contract SBT is ISoulbound, ERC1155 {
         _mint(_recipient, _tokenId, 1, "");
     }
 
-    function issueBatch(address[] calldata _recipients, uint256 _tokenId) external {
+    function issueBatch(address[] calldata _recipients, uint256 _tokenId) external onlyOwner {
         for (uint256 i = 0; i < _recipients.length; i++) {
             _issue(_recipients[i], _tokenId);
         }
@@ -77,7 +79,7 @@ abstract contract SBT is ISoulbound, ERC1155 {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
-    function revoke(address _owner, uint256 _tokenId, string calldata _reason) external {
+    function revoke(address _owner, uint256 _tokenId, string calldata _reason) external onlyOwner {
         _revoke(_owner, _tokenId, _reason);
     }
 
@@ -86,7 +88,7 @@ abstract contract SBT is ISoulbound, ERC1155 {
         _burn(_owner, _tokenId, 1);
     }
 
-    function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external {
+    function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external onlyOwner {
         for (uint256 i = 0; i < _owners.length; i++) {
             _revoke(_owners[i], _tokenId, _reason);
         }

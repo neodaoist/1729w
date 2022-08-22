@@ -38,6 +38,13 @@ contract SBTTest is Test {
         assertTrue(sbt.hasToken(address(0xA), 1));
     }
 
+    function test_issue_whenNotOwner_shouldRevert() public {
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // from random EOA
+        sbt.issue(address(0xA), 1);
+    }
+
     function test_issueBatch() public {
         address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
@@ -56,6 +63,18 @@ contract SBTTest is Test {
         }
     }
 
+    function test_issueBatch_whenNotOwner_shouldRevert() public {
+        address[] memory issuees = new address[](3);
+        issuees[0] = address(0xA);
+        issuees[1] = address(0xB);
+        issuees[2] = address(0xC);
+
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // from random EOA
+        sbt.issueBatch(issuees, 1);
+    }
+
     /*//////////////////////////////////////////////////////////////
                         Revoking
     //////////////////////////////////////////////////////////////*/
@@ -69,6 +88,15 @@ contract SBTTest is Test {
         sbt.revoke(address(0xA), 1, "did something naughty");
 
         assertFalse(sbt.hasToken(address(0xA), 1));
+    }
+
+    function test_revoke_whenNotOwner_shouldRevert() public {
+        sbt.issue(address(0xA), 1);
+
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // from random EOA
+        sbt.revoke(address(0xA), 1, "did something naughty");
     }
 
     function test_revokeBatch() public {
@@ -88,6 +116,20 @@ contract SBTTest is Test {
         for (uint256 j = 0; j < issuees.length; j++) {
             assertFalse(sbt.hasToken(issuees[j], 1));
         }
+    }
+
+    function test_revokeBatch_whenNotOwner_shouldRevert() public {
+        address[] memory issuees = new address[](3);
+        issuees[0] = address(0xA);
+        issuees[1] = address(0xB);
+        issuees[2] = address(0xC);
+
+        sbt.issueBatch(issuees, 1);
+
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // from random EOA
+        sbt.revokeBatch(issuees, 1, "did something naughty");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -150,7 +192,7 @@ contract SBTTest is Test {
 // TODO DRY up
 library Events {
     //
-    
+
     /*//////////////////////////////////////////////////////////////
                         SBT
     //////////////////////////////////////////////////////////////*/
