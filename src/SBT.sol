@@ -77,7 +77,18 @@ abstract contract SBT is ISoulbound, ERC1155 {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
-    function revoke(address _recipient, uint256 _tokenId) external {}
+    function revoke(address _owner, uint256 _tokenId, string calldata _reason) external {
+        _revoke(_owner, _tokenId, _reason);
+    }
 
-    function revokeBatch(address[] calldata _recipients, uint256 _tokenId) external {}
+    function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal {
+        emit Revoke(address(this), _owner, _tokenId, _reason);
+        _burn(_owner, _tokenId, 1);
+    }
+
+    function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external {
+        for (uint256 i = 0; i < _owners.length; i++) {
+            _revoke(_owners[i], _tokenId, _reason);
+        }
+    }
 }

@@ -18,12 +18,12 @@ interface ISoulbound {
         uint256 _tokenId
     );
 
-    // event Revoke(
-    //     address indexed _revoker,
-    //     address indexed _revokee,
-    //     uint256 _tokenId,
-    //     uint256 _value
-    // );
+    event Revoke(
+        address indexed _revoker,
+        address indexed _revokee,
+        uint256 _tokenId,
+        string _reason
+    );
 
     /*//////////////////////////////////////////////////////////////
                         Views
@@ -64,10 +64,11 @@ interface ISoulbound {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
-    function revoke(address _recipient, uint256 _tokenId) external;
+    function revoke(address _owner, uint256 _tokenId, string calldata _reason) external;
 
     function revokeBatch(
-        address[] calldata _recipients,
-        uint256 _tokenId
+        address[] calldata _owners,
+        uint256 _tokenId,
+        string calldata _reason
     ) external;
 }

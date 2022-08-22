@@ -15,6 +15,8 @@ contract SBTTest is Test {
         sbt = new SBTExample();
     }
 
+    // TODO add onlyOwner protection to Issuing and Revoking
+
     /*//////////////////////////////////////////////////////////////
                         Issuing
     //////////////////////////////////////////////////////////////*/
@@ -24,7 +26,7 @@ contract SBTTest is Test {
     // Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
     // Issue 1729 Writers Proof of Contribution SBTs to members for voting
     // Issue 1729 Writers Proof of Contribution SBTs to the winning writers
-    // 
+    //
 
     // TODO should we enforce 1 credential of each type per user ?
 
@@ -36,7 +38,6 @@ contract SBTTest is Test {
         assertTrue(sbt.hasToken(address(0xA), 1));
     }
 
-    // TODO fix biz logic — batch issuance is about single SBT to multiple people, not vice versa
     function test_issueBatch() public {
         address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
@@ -59,7 +60,35 @@ contract SBTTest is Test {
                         Revoking
     //////////////////////////////////////////////////////////////*/
 
-    // TODO
+    function test_revoke() public {
+        sbt.issue(address(0xA), 1);
+
+        vm.expectEmit(true, true, true, true);
+        emit Events.Revoke(address(sbt), address(0xA), 1, "did something naughty");
+
+        sbt.revoke(address(0xA), 1, "did something naughty");
+
+        assertFalse(sbt.hasToken(address(0xA), 1));
+    }
+
+    function test_revokeBatch() public {
+        address[] memory issuees = new address[](3);
+        issuees[0] = address(0xA);
+        issuees[1] = address(0xB);
+        issuees[2] = address(0xC);
+        sbt.issueBatch(issuees, 1);
+
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Revoke(address(sbt), issuees[i], 1, "did something naughty");
+        }
+
+        sbt.revokeBatch(issuees, 1, "did something naughty");
+
+        for (uint256 j = 0; j < issuees.length; j++) {
+            assertFalse(sbt.hasToken(issuees[j], 1));
+        }
+    }
 
     /*//////////////////////////////////////////////////////////////
                         Views
@@ -88,11 +117,11 @@ contract SBTTest is Test {
     }
 
     // function test_allOwnersOf() public {
-        
+
     // }
 
     // function test_allTokensOf() public {
-        
+
     // }
 
     /*//////////////////////////////////////////////////////////////
@@ -120,21 +149,15 @@ contract SBTTest is Test {
 
 // TODO DRY up
 library Events {
+    //
+    
     /*//////////////////////////////////////////////////////////////
                         SBT
     //////////////////////////////////////////////////////////////*/
 
-    event Issue(
-        address indexed _issuer,
-        address indexed _issuee,
-        uint256 _tokenID
-    );
+    event Issue(address indexed _issuer, address indexed _issuee, uint256 _tokenId);
 
-    // event Revoke(
-    //     address indexed _revoker,
-    //     address indexed _revokee,
-    //     uint256 _tokenID
-    // );
+    event Revoke(address indexed _revoker, address indexed _revokee, uint256 _tokenId, string _reason);
 
     /*//////////////////////////////////////////////////////////////
                         ERC1155
