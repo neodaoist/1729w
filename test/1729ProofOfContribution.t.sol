@@ -15,8 +15,6 @@ contract SBTTest is Test {
         sbt = new SBTExample();
     }
 
-    // TODO add onlyOwner protection to Issuing and Revoking
-
     /*//////////////////////////////////////////////////////////////
                         Issuing
     //////////////////////////////////////////////////////////////*/
@@ -29,6 +27,8 @@ contract SBTTest is Test {
     //
 
     // TODO should we enforce 1 credential of each type per user ?
+    // if yes — replace amount of 1 in SBT with something other than a magic number
+    // if no — add to functions and events, consider adding an immutable constructor arg
 
     function test_issue() public {
         vm.expectEmit(true, true, true, true);

@@ -14,6 +14,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
                         Views
     //////////////////////////////////////////////////////////////*/
 
+    /// @inheritdoc	ISoulbound
     function hasToken(address _owner, uint256 _tokenId)
         external
         view
@@ -30,6 +31,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         return balanceOf(_owner, _tokenId) >= 1;
     }
 
+    /// @inheritdoc	ISoulbound
     function hasTokenBatch(address[] calldata _owners, uint256 _tokenId)
         external
         view
@@ -44,12 +46,14 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         return hasTokens;
     }
 
+    /// @inheritdoc	ISoulbound
     function allOwnersOf(uint256 _tokenId)
         external
         view
         returns (address[] memory)
     {}
 
+    /// @inheritdoc	ISoulbound
     function allTokensOf(address _owner)
         external
         view
@@ -60,6 +64,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 
+    /// @inheritdoc	ISoulbound
     function issue(address _recipient, uint256 _tokenId) external onlyOwner {
         _issue(_recipient, _tokenId);
     }
@@ -69,6 +74,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _mint(_recipient, _tokenId, 1, "");
     }
 
+    /// @inheritdoc	ISoulbound
     function issueBatch(address[] calldata _recipients, uint256 _tokenId) external onlyOwner {
         for (uint256 i = 0; i < _recipients.length; i++) {
             _issue(_recipients[i], _tokenId);
@@ -79,6 +85,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
+    /// @inheritdoc	ISoulbound
     function revoke(address _owner, uint256 _tokenId, string calldata _reason) external onlyOwner {
         _revoke(_owner, _tokenId, _reason);
     }
@@ -88,6 +95,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _burn(_owner, _tokenId, 1);
     }
 
+    /// @inheritdoc	ISoulbound
     function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external onlyOwner {
         for (uint256 i = 0; i < _owners.length; i++) {
             _revoke(_owners[i], _tokenId, _reason);

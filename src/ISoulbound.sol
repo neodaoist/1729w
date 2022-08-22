@@ -12,12 +12,23 @@ interface ISoulbound {
                         Events
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _issuer Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _issuee Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
     event Issue(
         address indexed _issuer,
         address indexed _issuee,
         uint256 _tokenId
     );
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _revoker Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _revokee Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _reason Documents a parameter just like in doxygen (must be followed by parameter name)
     event Revoke(
         address indexed _revoker,
         address indexed _revokee,
@@ -29,21 +40,38 @@ interface ISoulbound {
                         Views
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _owner Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
     function hasToken(address _owner, uint256 _tokenId)
         external
         view
         returns (bool);
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _owners Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @return Documents the return variables of a contract’s function state variable
     function hasTokenBatch(
         address[] calldata _owners,
         uint256 _tokenId
     ) external view returns (bool[] memory);
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @return Documents the return variables of a contract’s function state variable
     function allOwnersOf(uint256 _tokenId)
         external
         view
         returns (address[] memory);
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _owner Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @return Documents the return variables of a contract’s function state variable
     function allTokensOf(address _owner)
         external
         view
@@ -53,8 +81,16 @@ interface ISoulbound {
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _recipient Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
     function issue(address _recipient, uint256 _tokenId) external;
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _recipients Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
     function issueBatch(
         address[] calldata _recipients,
         uint256 _tokenId
@@ -64,8 +100,18 @@ interface ISoulbound {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _owner Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _reason Documents a parameter just like in doxygen (must be followed by parameter name)
     function revoke(address _owner, uint256 _tokenId, string calldata _reason) external;
 
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param _owners Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @param _reason Documents a parameter just like in doxygen (must be followed by parameter name)
     function revokeBatch(
         address[] calldata _owners,
         uint256 _tokenId,
