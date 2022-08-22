@@ -46,20 +46,6 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         return hasTokens;
     }
 
-    /// @inheritdoc	ISoulbound
-    function allOwnersOf(uint256 _tokenId)
-        external
-        view
-        returns (address[] memory)
-    {}
-
-    /// @inheritdoc	ISoulbound
-    function allTokensOf(address _owner)
-        external
-        view
-        returns (uint256[] memory)
-    {}
-
     /*//////////////////////////////////////////////////////////////
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/

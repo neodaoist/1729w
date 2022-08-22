@@ -59,24 +59,6 @@ interface ISoulbound {
         uint256 _tokenId
     ) external view returns (bool[] memory);
 
-    /// @notice Explain to an end user what this does
-    /// @dev Explain to a developer any extra details
-    /// @param _tokenId Documents a parameter just like in doxygen (must be followed by parameter name)
-    /// @return Documents the return variables of a contract’s function state variable
-    function allOwnersOf(uint256 _tokenId)
-        external
-        view
-        returns (address[] memory);
-
-    /// @notice Explain to an end user what this does
-    /// @dev Explain to a developer any extra details
-    /// @param _owner Documents a parameter just like in doxygen (must be followed by parameter name)
-    /// @return Documents the return variables of a contract’s function state variable
-    function allTokensOf(address _owner)
-        external
-        view
-        returns (uint256[] memory);
-
     /*//////////////////////////////////////////////////////////////
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/

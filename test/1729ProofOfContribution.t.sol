@@ -26,9 +26,11 @@ contract SBTTest is Test {
     // Issue 1729 Writers Proof of Contribution SBTs to the winning writers
     //
 
-    // TODO should we enforce 1 credential of each type per user ?
+    // TODO decide if we should enforce 1 credential of each type per user or support multiple / max
     // if yes — replace amount of 1 in SBT with something other than a magic number
-    // if no — add to functions and events, consider adding an immutable constructor arg
+    // if no — add to functions and events, consider adding an immutable constructor arg for max
+
+    // TODO decide if we should support ownership transfer in SBT constructor, or leave to implementers
 
     function test_issue() public {
         vm.expectEmit(true, true, true, true);
@@ -158,14 +160,6 @@ contract SBTTest is Test {
         }
     }
 
-    // function test_allOwnersOf() public {
-
-    // }
-
-    // function test_allTokensOf() public {
-
-    // }
-
     /*//////////////////////////////////////////////////////////////
                         ERC1155 Spec Adherance
     //////////////////////////////////////////////////////////////*/
@@ -185,11 +179,9 @@ contract SBTTest is Test {
     }
 
     // TODO hasTokenBatch
-    // TODO allOwnersOf
-    // TODO allTokensOf
 }
 
-// TODO DRY up
+// TODO DRY up via an Event-specific interface
 library Events {
     //
 
