@@ -54,25 +54,6 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(token.symbol(), "1729ESSAY");
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        Mint Essay and Distribute Earnings
-    //////////////////////////////////////////////////////////////*/
-
-    // function testMintEssay() public {
-    //     vm.prank(multisig);
-    //     token.mintEssay(1, writer1);
-
-    //     assertEq(token.ownerOf(1), multisig);
-    //     assertEq(token.writerOf(1), writer1);
-    // }
-
-    // function testMintEssayWhenNotOwnerShouldFail() public {
-
-    // }
-
-    // function testDistributeEarnings() public {
-
-    // }
 
     /*//////////////////////////////////////////////////////////////
                         URI Storage
@@ -125,25 +106,21 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(token.tokenURI(4), "hello world 4");
     }
 
-    // function testReadJsonMetadata() public {
-    //     vm.prank(multisig);
-    //     token.mint(1);
-
-    //     string memory json = token.tokenURI(1);
-    //     Essay memory winningEssay = Fleece.parseJson(json);
-
-    //     assertEq(winningEssay.cohort, 2);
-    //     assertEq(winningEssay.week, 3);
-    //     assertEq(winningEssay.status, "Weekly Winner");
-    //     assertEq(winningEssay.name, "Save the World");
-    //     assertEq(winningEssay.image, "XYZ");
-    //     assertEq(winningEssay.description, "ABC");
-    //     assertEq(winningEssay.contentHash, "DEF");
-    //     assertEq(winningEssay.writerName, "Susmitha87539319");
-    //     assertEq(winningEssay.writerAddress, "0xCAFE");
-    //     assertEq(winningEssay.publicationURL, "https://testpublish.com/savetheworld");
-    //     assertEq(winningEssay.archivalURL, "ipfs://xyzxyzxyz");
-    // }
+    function testParseJsonMetadata() public {
+        string memory json = '{"Cohort": 2,"Week": 3,"Status": "Weekly Winner","Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
+        Essay memory winningEssay = Fleece.parseJson(json);
+        assertEq(winningEssay.cohort, 2);
+        assertEq(winningEssay.week, 3);
+        assertEq(winningEssay.status, "Weekly Winner");
+        assertEq(winningEssay.name, "Save the World");
+        assertEq(winningEssay.image, "XYZ");
+        assertEq(winningEssay.description, "ABC");
+        assertEq(winningEssay.contentHash, "DEF");
+        assertEq(winningEssay.writerName, "Susmitha87539319");
+        assertEq(winningEssay.writerAddress, "0xCAFE");
+        assertEq(winningEssay.publicationURL, "https://testpublish.com/savetheworld");
+        assertEq(winningEssay.archivalURL, "ipfs://xyzxyzxyz");
+    }
 
     function testWriteJsonMetadata() public {
         Essay memory winningEssay = Essay(
