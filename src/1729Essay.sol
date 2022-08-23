@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
-//import {IERC2981} from "openzeppelin-contracts/contracts/interfaces/IERC2981.sol";
 import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "openzeppelin-contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC2981} from "openzeppelin-contracts/token/common/ERC2981.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
-//import "openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
-//import {IERC165} from "openzeppelin-contracts/utils/introspection/IERC165.sol";
 
 ////////////////////////////////////////////////////////////////////////////
 //                                                                        //
@@ -23,12 +20,8 @@ import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 /// @title A collection of winning essays from 1729Writers
 /// @author neodaoist, plaird
 /// @notice A 1729Writers admin can mint and burn essay NFTs on this contract
-/// @dev XYZ
 contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     using Counters for Counters.Counter;
-
-    //using SafeMath for uint256;
-    //
 
     struct EssayItem {
         address author;
@@ -43,6 +36,7 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
         nextTokenId.increment();  // start tokenId counter at 1
     }
 
+    /// @dev see ERC2981
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
         return
         interfaceId == 0x2a55205a || // ERC165 Interface ID for ERC2981
@@ -51,9 +45,6 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
         interfaceId == 0x5b5e139f; // ERC165 Interface ID for ERC721Metadata
     }
 
-
-    // Use implementation from OpenZepplin that supports _registerInterface
-
     /// @notice Get the Essay NFT metadata URI
     /// @dev XYZ
     /// @param id The Token ID for a specific Essay NFT
@@ -61,14 +52,6 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     function tokenURI(uint256 id) public view override returns (string memory) {
         return essays[id].url;
     }
-
-/* Use zepplin 2981
-    function royaltyInfo(uint256 tokenId, uint256 salePrice)
-        external
-        view
-        returns (address receiver, uint256 royaltyAmount) {
-          return (essays[tokenId].author, salePrice * essays[tokenId].royalty / 1000);
-    } */
 
     /// @notice Mint a new token, using the next available token ID
     /// @param author the address of the writer, who will receive royalty payments
@@ -81,6 +64,7 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
         return tokenId;
     }
 
+    /// @dev Visible for testing, should not be called externally
     function _mint(uint256 _tokenId, address author, string calldata url) public onlyOwner {
         EssayItem memory essay = EssayItem(author, url);
         essays[_tokenId] = essay;
@@ -93,53 +77,17 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
         return nextTokenId.current() - 1;
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        Mint Essay and Distribute Earnings
-    //////////////////////////////////////////////////////////////*/
-
-    // function mintEssay(uint256 _tokenId, address _writerAddress) public onlyOwner {
-    //     writerPrimarySaleEarnings[_writerAddress] = 0 ether;
-    //     _safeMint(owner(), _tokenId);
-    // }
-
-    // function distributeEarnings() public {
-
-    // }
-
-    /*//////////////////////////////////////////////////////////////
-                        OZ
-    //////////////////////////////////////////////////////////////*/
-
+    /// @notice Removes the specified tokenId's details
     function _burn(uint256 tokenId)
         internal
         override (ERC721)
     {
+        delete essays[tokenId];
         super._burn(tokenId);
     }
-
-    /*//////////////////////////////////////////////////////////////
-                        Temporary
-    //////////////////////////////////////////////////////////////*/
-
+    
     function burn(uint256 tokenId) public virtual onlyOwner {
         _burn(tokenId);
     }
-
-    /*//////////////////////////////////////////////////////////////
-                        EIP 2981
-    //////////////////////////////////////////////////////////////*/
-
-/* Use zepplin 2981
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        public
-        view
-        override (ERC2981)
-        returns (address receiver, uint256 royaltyAmount)
-    {
-        receiver = owner(); // SECONDARY_SALES_ROYALTY_PAYOUT_ADDRESS
-        royaltyAmount =
-            (_salePrice * SECONDARY_SALES_ROYALTY_PERCENTAGE) / 10000; // same for all tokens
-    }
-*/
 
 }
