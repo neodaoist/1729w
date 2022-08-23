@@ -12,8 +12,6 @@ contract MintEssayScript is Script {
 
 
 
-    uint256 tokenId = 1; // BUMP ME
-
     function run(address authorAddress, string calldata essayUrl) public {
         // generate hash for Essay markdown
 
@@ -30,7 +28,7 @@ contract MintEssayScript is Script {
 
         // mint Essay NFT
         vm.broadcast(multisig);
-        token.mint(1, authorAddress, essayUrl);
+        token.mint(authorAddress, essayUrl);
 
         // verify thangs look good (in what ways?)
 

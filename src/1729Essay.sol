@@ -6,6 +6,7 @@ import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "openzeppelin-contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC2981} from "openzeppelin-contracts/token/common/ERC2981.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 //import "openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
 //import {IERC165} from "openzeppelin-contracts/utils/introspection/IERC165.sol";
 
@@ -24,6 +25,8 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 /// @notice A 1729Writers admin can mint and burn essay NFTs on this contract
 /// @dev XYZ
 contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
+    using Counters for Counters.Counter;
+
     //using SafeMath for uint256;
     //
 
@@ -33,9 +36,11 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     }
 
     mapping(uint256 => EssayItem) public essays;
+    Counters.Counter internal nextTokenId;
 
     constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
         transferOwnership(_multisig);
+        nextTokenId.increment();  // start tokenId counter at 1
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
@@ -65,12 +70,27 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
           return (essays[tokenId].author, salePrice * essays[tokenId].royalty / 1000);
     } */
 
+    /// @notice Mint a new token, using the next available token ID
+    /// @param author the address of the writer, who will receive royalty payments
+    /// @param url the URL containing the essay JSON metadata
+    /// @return the tokenId for the newly minted token
+    function mint(address author, string calldata url) public onlyOwner returns (uint256) {
+        uint256 tokenId = nextTokenId.current();
+        _mint(tokenId, author, url);
+        nextTokenId.increment();
+        return tokenId;
+    }
 
-    function mint(uint256 _tokenId, address author, string calldata url) public onlyOwner {
+    function _mint(uint256 _tokenId, address author, string calldata url) public onlyOwner {
         EssayItem memory essay = EssayItem(author, url);
         essays[_tokenId] = essay;
         _safeMint(owner(), _tokenId);
         _setTokenRoyalty(_tokenId, author, 1000);  // FIXME: Hardcoded
+}
+
+    /// @notice Returns the total of all tokens ever minted (includes tokens which have been burned)
+    function totalSupply() public view returns (uint256) {
+        return nextTokenId.current() - 1;
     }
 
     /*//////////////////////////////////////////////////////////////

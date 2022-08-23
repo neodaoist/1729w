@@ -43,7 +43,7 @@ contract zListerBidderSettlerTest is Test {
         // deploy Essay NFT contract and mint 1 token
         nft = new OneSevenTwoNineEssay(multisig);
         vm.startPrank(multisig);
-        nft.mint(1, address(0xABCD), "");
+        nft.mint(address(0xABCD), "");
 
         // deploy lister/bidder/settler
         settler =
