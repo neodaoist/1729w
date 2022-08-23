@@ -59,13 +59,12 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     /// @return the tokenId for the newly minted token
     function mint(address author, string calldata url) public onlyOwner returns (uint256) {
         uint256 tokenId = nextTokenId.current();
-        _mint(tokenId, author, url);
         nextTokenId.increment();
+        _mint(tokenId, author, url);
         return tokenId;
     }
 
-    /// @dev Visible for testing, should not be called externally
-    function _mint(uint256 _tokenId, address author, string calldata url) public onlyOwner {
+    function _mint(uint256 _tokenId, address author, string calldata url) private onlyOwner {
         EssayItem memory essay = EssayItem(author, url);
         essays[_tokenId] = essay;
         _safeMint(owner(), _tokenId);
