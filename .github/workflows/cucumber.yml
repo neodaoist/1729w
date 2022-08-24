@@ -17,7 +17,9 @@ jobs:
           toolchain: stable
           override: true
 
-      - run: cargo update -Z minimal-versions
+#      - run: cargo update +nightly -Z minimal-versions
+
+      - run: cargo check
 
       - run: cargo test
         env:
