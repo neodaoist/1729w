@@ -1,8 +1,27 @@
-name: cucumber-tests
+name: forge-unit-tests
 on: [pull_request]
 
 jobs:
-  check:
+  forge:
+    name: Foundry project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run tests
+        run: forge test -vvv
+
+      - name: Run snapshot
+        run: forge snapshot
+  cucumber:
+    needs: forge
     name: Cucumber tests
     runs-on: ubuntu-latest
     steps:
