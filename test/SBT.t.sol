@@ -2,29 +2,19 @@
 pragma solidity ^0.8.15;
 
 import "forge-std/Test.sol";
-// import {OneSevenTwoNineProofOfContribution} from "../src/1729ProofOfContribution.sol";
-import {SBTExample} from "../src/SBTExample.sol";
+import {SevenTeenTwentyNineProofOfContribution} from "../src/SevenTeenTwentyNineProofOfContribution.sol";
 
 contract SBTTest is Test {
     //
-    // OneSevenTwoNineProofOfContribution contribution;
-    SBTExample sbt;
+    SevenTeenTwentyNineProofOfContribution sbt;
 
     function setUp() public {
-        // contribution = new OneSevenTwoNineProofOfContribution();
-        sbt = new SBTExample();
+        sbt = new SevenTeenTwentyNineProofOfContribution();
     }
 
     /*//////////////////////////////////////////////////////////////
                         Issuing
     //////////////////////////////////////////////////////////////*/
-
-    // Issue initial 1729 Writers Proof of Contribution SBTs to participating members
-    // Issue 1729 Writers Proof of Contribution SBTs to writers for full participation
-    // Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
-    // Issue 1729 Writers Proof of Contribution SBTs to members for voting
-    // Issue 1729 Writers Proof of Contribution SBTs to the winning writers
-    //
 
     // TODO decide if we should enforce 1 credential of each type per user or support multiple / max
     // if yes — replace amount of 1 in SBT with something other than a magic number
@@ -181,7 +171,7 @@ contract SBTTest is Test {
     // TODO hasTokenBatch
 }
 
-// TODO DRY up via an Event-specific interface
+// TODO DRY up via an Event-specific library
 library Events {
     //
 

@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
-import {ERC1155} from "solmate/tokens/ERC1155.sol";
+import {SBT} from "./SBT.sol";
+import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 
 /// @title A proof of contribution by members of the 1729 writers union
 /// @author neodaoist, plaird
 /// @notice A 1729w admin can issue proof of contribution tokens on this contract
 /// @dev XYZ
-contract OneSevenTwoNineProofOfContribution is ERC1155 {
-    constructor() {}
+contract SevenTeenTwentyNineProofOfContribution is SBT {
+    //
+    
+    constructor() ERC1155("") {}
 
     /// @notice Get the Proof of Contribution token metadata URI
     /// @dev XYZ

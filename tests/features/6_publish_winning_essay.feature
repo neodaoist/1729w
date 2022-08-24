@@ -49,7 +49,7 @@ Feature: Publish Essay NFT for the weekly winning essay
         And address 0xCAFE has 0.3 ETH
         When I finalize the auction and distribute the funds
         Then The Essay NFT should be owned address 0xBEEF
-        And address 0xCAFE should have 0.4 ETH
+        And address 0xCAFE should have 0.72 ETH
 
-# TODO add something about network state tax rate to one or more of the Scenarios
-# TODO add Scenario for secondary sales royalty
+# TODO add Scenario for secondary sales royalty, 10% (use a 0% network state tax rate)
+# TODO decide if we should add Zora auction field checks, including duration ?
