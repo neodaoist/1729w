@@ -31,8 +31,8 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     Counters.Counter internal nextTokenId;
 
     constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
-        transferOwnership(_multisig);
         nextTokenId.increment();  // start tokenId counter at 1
+        transferOwnership(_multisig);
     }
 
     /// @dev see ERC2981
