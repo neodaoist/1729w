@@ -1,9 +1,9 @@
-name: forge-unit-tests
+name: cucumber-tests
 on: [pull_request]
 
 jobs:
   check:
-    name: Foundry project
+    name: Cucumber tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +17,7 @@ jobs:
           toolchain: stable
           override: true
 
-      - run: cargo +nightly update -Z minimal-versions
+      - run: cargo update -Z minimal-versions
 
       - run: cargo test
         env:
