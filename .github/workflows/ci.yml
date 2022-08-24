@@ -1,9 +1,9 @@
-name: forge-unit-tests
+name: ci
 on: [pull_request]
 
 jobs:
   forge:
-    name: Foundry project
+    name: Foundry build and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
