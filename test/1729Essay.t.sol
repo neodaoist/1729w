@@ -628,9 +628,10 @@ contract OneSevenTwoNineEssayTest is Test {
 
     // Contract should NOT support receiving funds directly
     function testReceiveFundsDisabled() public {
-        vm.startPrank(multisig);
+        vm.prank(multisig);
         vm.expectRevert("Contract should not accept payment directly");
         (bool result, bytes memory data) = address(token).call{value:1000000000}("");
+
         assertFalse(result, "Contract should not accept payment");
     }
 
