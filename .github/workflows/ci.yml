@@ -2,11 +2,12 @@ name: ci
 on: [pull_request]
 
 jobs:
-  forge:
+  build-test:
     name: Foundry build and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
@@ -15,18 +16,13 @@ jobs:
         with:
           version: nightly
 
-      - name: Run tests
+      - name: Run Forge Tests
         run: forge test -vvv
 
-      - name: Run snapshot
+      - name: Run Forge Snapshot
         run: forge snapshot
-  cucumber:
-    needs: forge
-    name: Cucumber tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
@@ -38,8 +34,10 @@ jobs:
 
 #      - run: cargo update +nightly -Z minimal-versions
 
-      - run: cargo check
+      - name: Cargo Check
+        run: cargo check
 
-      - run: cargo test
+      - name: Cargo Test
+        run: cargo test
         env:
           RUSTFLAGS: -D warnings
