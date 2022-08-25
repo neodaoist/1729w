@@ -29,7 +29,7 @@ Feature: Issue Proof of Contribution SBT
         Then The partially participating writers should own an SBT
         And the SBT should have the following properties:
             | property name     | property value                              |
-            | Token ID          | 1                                           |
+            | Token ID          | 2                                           |
             | Name              | 1729 Writers - Writer Partial Participation |
             | Image             | XYZ                                         |
             | Description       | ABC                                         |
@@ -43,7 +43,7 @@ Feature: Issue Proof of Contribution SBT
         Then The winning writers should own an SBT
         And the SBT should have the following properties:
             | property name     | property value                      |
-            | Token ID          | 1                                   |
+            | Token ID          | 3                                   |
             | Name              | 1729 Writers - Winning Essay Writer |
             | Image             | XYZ                                 |
             | Description       | ABC                                 |
@@ -57,7 +57,7 @@ Feature: Issue Proof of Contribution SBT
         Then The participating readers/voters should own an SBT
         And the SBT should have the following properties:
             | property name     | property value                            |
-            | Token ID          | 1                                         |
+            | Token ID          | 4                                         |
             | Name              | 1729 Writers - Reader/Voter Participation |
             | Image             | XYZ                                       |
             | Description       | ABC                                       |
@@ -66,12 +66,12 @@ Feature: Issue Proof of Contribution SBT
         And the SBT should not be transferrable
 
     Scenario: Issue 1729 Writers Proof of Contribution SBTs to members for bidding
-        Given There are 135 members who bidding on an Essay NFT in at least 1 auction
+        Given There are 15 members who bidding on an Essay NFT in at least 1 auction
         When I issue SBTs for bidder participation
         Then The participating bidders should own an SBT
         And the SBT should have the following properties:
             | property name     | property value                      |
-            | Token ID          | 1                                   |
+            | Token ID          | 5                                   |
             | Name              | 1729 Writers - bidder Participation |
             | Image             | XYZ                                 |
             | Description       | ABC                                 |
