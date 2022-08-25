@@ -29,10 +29,7 @@ contract GenerateJsonTest is Test {
         writer = writer.writeStringProperty("Content Hash", "DEF");
         writer = writer.writeStringProperty("Writer Name", "Susmitha87539319");
         writer = writer.writeStringProperty("Writer Address", "0xCAFE");
-        writer = writer.writeStringProperty(
-            "Publication URL",
-            "https://testpublish.com/savetheworld"
-        );
+        writer = writer.writeStringProperty("Publication URL", "https://testpublish.com/savetheworld");
         writer = writer.writeStringProperty("Archival URL", "ipfs://xyzxyzxyz");
         writer = writer.writeEndObject();
 
@@ -49,21 +46,9 @@ contract GenerateJsonTest is Test {
         (returnValue, tokens, actualNum) = JsmnSolLib.parse(json, 5);
 
         assertEq(returnValue, RETURN_SUCCESS);
-        assertEq(
-            JsmnSolLib.getBytes(json, tokens[1].start, tokens[1].end),
-            "key"
-        );
-        assertEq(
-            JsmnSolLib.getBytes(json, tokens[2].start, tokens[2].end),
-            "value"
-        );
-        assertEq(
-            JsmnSolLib.getBytes(json, tokens[3].start, tokens[3].end),
-            "key2"
-        );
-        assertEq(
-            JsmnSolLib.getBytes(json, tokens[4].start, tokens[4].end),
-            "value2"
-        );
+        assertEq(JsmnSolLib.getBytes(json, tokens[1].start, tokens[1].end), "key");
+        assertEq(JsmnSolLib.getBytes(json, tokens[2].start, tokens[2].end), "value");
+        assertEq(JsmnSolLib.getBytes(json, tokens[3].start, tokens[3].end), "key2");
+        assertEq(JsmnSolLib.getBytes(json, tokens[4].start, tokens[4].end), "value2");
     }
 }

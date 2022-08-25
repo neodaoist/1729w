@@ -1,0 +1,13 @@
+{
+    "Cohort":2,
+    "Week":1,
+    "Vote Count":1337,
+    "Name":"Save the World",
+    "Image":"XYZ",
+    "Description":"ABC",
+    "Content Hash":"DEF",
+    "Writer Name":"Susmitha87539319",
+    "Writer Address":"0xCAFE",
+    "Publication URL":"https://testpublish.com/savetheworld",
+    "Archival URL":"ipfs://xyzxyzxyz"
+ }

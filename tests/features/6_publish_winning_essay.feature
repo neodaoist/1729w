@@ -17,37 +17,36 @@ Feature: Publish Essay NFT for the weekly winning essay
     @blockchain
     Scenario: Publish winning Essay NFT
         When I mint, list, and bid on the Essay NFT
-        Then There should be PLACEHOLDER STEP XYZ
-        And There should be an Essay NFT minted with the following properties:
-            | property name          | property value                       |
-            | Token ID               | 1                                    |
-            | Cohort                 | 2                                    |
-            | Week                   | 1                                    |
-            | Name                   | Save the World                       |
-            | Image                  | XYZ                                  |
-            | Description            | ABC                                  |
-            | Content Hash           | DEF                                  |
-            | Writer Name            | Susmitha87539319                     |
-            | Writer Address         | 0xCAFE                               |
-            | Publication URL        | https://testpublish.com/savetheworld |
-            | Archival URL           | ipfs://[^\s]*                        |
-            | Peer Attestation Count | 1337                                 |
+        Then There should be an Essay NFT minted with the following properties:
+            | property name   | property value                       |
+            | Token ID        | 1                                    |
+            | Cohort          | 2                                    |
+            | Week            | 1                                    |
+            | Name            | Save the World                       |
+            | Image           | XYZ                                  |
+            | Description     | ABC                                  |
+            | Content Hash    | DEF                                  |
+            | Writer Name     | Susmitha87539319                     |
+            | Writer Address  | 0xCAFE                               |
+            | Publication URL | https://testpublish.com/savetheworld |
+            | Archival URL    | ipfs://[^\s]*                        |
+            | Vote Count      | 1337                                 |
         And there should be an auction listing on Zora with a minimum bid amount of 0.1 ETH
         And there should be a bid placed for 0.1 ETH by the 1729w multisig account
 
-    Scenario: Finalize auction as winning bidder
+    Scenario: Settle auction as winning bidder
         Given The auction is complete
         And the 1729 writers union's bid of 0.1 ETH won
         And address 0xCAFE has 0.3 ETH
-        When I finalize the auction and distribute the funds
+        When I settle the auction and distribute the funds
         Then The Essay NFT should be owned by the 1729 writers union multisig
         And address 0xCAFE should have 0.4 ETH
 
-    Scenario: Finalize auction as losing bidder
+    Scenario: Settle auction as losing bidder
         Given The auction is complete
         And address 0xBEEF bid of 0.42 ETH won
         And address 0xCAFE has 0.3 ETH
-        When I finalize the auction and distribute the funds
+        When I settle the auction and distribute the funds
         Then The Essay NFT should be owned address 0xBEEF
         And address 0xCAFE should have 0.72 ETH
 
