@@ -23,6 +23,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         return _hasToken(_owner, _tokenId);
     }
 
+    /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
     function _hasToken(address _owner, uint256 _tokenId)
         internal
         view
@@ -55,6 +56,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _issue(_recipient, _tokenId);
     }
 
+    /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
     function _issue(address _recipient, uint256 _tokenId) internal {
         emit Issue(address(this), _recipient, _tokenId);
         _mint(_recipient, _tokenId, 1, "");
@@ -76,6 +78,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _revoke(_owner, _tokenId, _reason);
     }
 
+    /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
     function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal {
         emit Revoke(address(this), _owner, _tokenId, _reason);
         _burn(_owner, _tokenId, 1);
