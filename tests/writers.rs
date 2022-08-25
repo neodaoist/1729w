@@ -131,7 +131,7 @@ async fn main() -> eyre::Result<()> {
         .run_and_exit("tests/features");
 
     let err = AssertUnwindSafe(world).catch_unwind().await.expect_err("should_err");
-    warn!("Error: {}", err.downcast_ref::<String>().unwrap());
+    panic!("Error: {}", err.downcast_ref::<String>().unwrap());
 
     Ok(())
 }

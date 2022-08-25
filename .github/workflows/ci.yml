@@ -34,7 +34,7 @@ jobs:
 
 #      - run: cargo update +nightly -Z minimal-versions
   cucumber:
-    name: Foundry build and test
+    name: Cucumber Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
