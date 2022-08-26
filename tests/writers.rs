@@ -9,6 +9,7 @@ use futures::FutureExt;
 use log::{info, warn};
 use tokio::time;
 use ethers::utils::{Anvil, AnvilInstance};
+use futures::executor::block_on;
 
 // 
 
@@ -115,9 +116,10 @@ impl World for WriterWorld {
 }
 
 
-#[tokio::main]
+//#[tokio::main]
 // Test runner
-async fn main() -> eyre::Result<()> {
+//fn main() -> eyre::Result<()> {
+fn main()  {
 
     let world = WriterWorld::cucumber()
         // Start a fresh anvil before each scenario
@@ -128,12 +130,13 @@ async fn main() -> eyre::Result<()> {
                 println!("Anvil running at `{}`", endpoint);
             }.boxed()
         })
-        .run_and_exit("tests/features");
+        .run_and_exit("tests/features/implemented");
 
-    let err = AssertUnwindSafe(world).catch_unwind().await.expect_err("should_err");
-    panic!("Error: {}", err.downcast_ref::<String>().unwrap());
+    block_on(world);
+    //let err = AssertUnwindSafe(world).catch_unwind().await.expect_err("should_err");
+    //panic!("Error: {}", err.downcast_ref::<String>().unwrap());
 
-    Ok(())
+    //Ok(())
 }
 
 ////////////////////////////////////////////////////////////////
