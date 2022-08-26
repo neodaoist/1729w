@@ -15,10 +15,6 @@ Feature: Deploy smart contracts and setup web3 components
         # TODO
         Then It should have vanity address starting with '0x1729[A-Fa-f][0-9A-Fa-f]{15}'
         And the contract should be verified on Etherscan
-    # TODO ERC1155 ?
-    # TODO should we support upgradeability?
-    # TODO what functions should be protected by onlyOwner modifier?
-    # TODO do we need more roles other than owner?
 
     Scenario: Deploy Essay NFT contract
         # TODO

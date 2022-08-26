@@ -13,68 +13,68 @@ Feature: Issue Proof of Contribution SBT
         When I issue SBTs for full writer participation
         Then The fully participating writers should own an SBT
         And the SBT should have the following properties:
-            | property name     | property value                           |
-            | Token ID          | 1                                        |
-            | Name              | 1729 Writers - Writer Full Participation |
-            | Image             | XYZ                                      |
-            | Description       | ABC                                      |
-            | Cohort            | 2                                        |
-            | Contribution Date | 2022 August                              |
+            | property name | property value |
+            | Token ID      | 1              |
+        #            | Name              | 1729 Writers - Writer Full Participation |
+        #            | Image             | XYZ                                      |
+        #            | Description       | ABC                                      |
+        #            | Cohort            | 2                                        |
+        #            | Contribution Date | 2022 August                              |
         And the SBT should not be transferrable
 
-    Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
-        Given There are 5 writers who submitted a valid essay in at least 1 week
-        But they did not submit a valid essay all 4 weeks
-        When I issue SBTs for partial writer participation
-        Then The partially participating writers should own an SBT
-        And the SBT should have the following properties:
-            | property name     | property value                              |
-            | Token ID          | 2                                           |
-            | Name              | 1729 Writers - Writer Partial Participation |
-            | Image             | XYZ                                         |
-            | Description       | ABC                                         |
-            | Cohort            | 2                                           |
-            | Contribution Date | 2022 August                                 |
-        And the SBT should not be transferrable
+# Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
+#     Given There are 5 writers who submitted a valid essay in at least 1 week
+#     But they did not submit a valid essay all 4 weeks
+#     When I issue SBTs for partial writer participation
+#     Then The partially participating writers should own an SBT
+#     And the SBT should have the following properties:
+#         | property name     | property value                              |
+#         | Token ID          | 2                                           |
+#         | Name              | 1729 Writers - Writer Partial Participation |
+#         | Image             | XYZ                                         |
+#         | Description       | ABC                                         |
+#         | Cohort            | 2                                           |
+#         | Contribution Date | 2022 August                                 |
+#     And the SBT should not be transferrable
 
-    Scenario: Issue 1729 Writers Proof of Contribution SBTs to the winning writers
-        Given There are 4 writers who submitted a winning essay
-        When I issue SBTs for the winning essays
-        Then The winning writers should own an SBT
-        And the SBT should have the following properties:
-            | property name     | property value                      |
-            | Token ID          | 3                                   |
-            | Name              | 1729 Writers - Winning Essay Writer |
-            | Image             | XYZ                                 |
-            | Description       | ABC                                 |
-            | Cohort            | 2                                   |
-            | Contribution Date | 2022 August                         |
-        And the SBT should not be transferrable
+# Scenario: Issue 1729 Writers Proof of Contribution SBTs to the winning writers
+#     Given There are 4 writers who submitted a winning essay
+#     When I issue SBTs for the winning essays
+#     Then The winning writers should own an SBT
+#     And the SBT should have the following properties:
+#         | property name     | property value                      |
+#         | Token ID          | 3                                   |
+#         | Name              | 1729 Writers - Winning Essay Writer |
+#         | Image             | XYZ                                 |
+#         | Description       | ABC                                 |
+#         | Cohort            | 2                                   |
+#         | Contribution Date | 2022 August                         |
+#     And the SBT should not be transferrable
 
-    Scenario: Issue 1729 Writers Proof of Contribution SBTs to members for voting
-        Given There are 135 members who voted for a winning essay at least 1 week
-        When I issue SBTs for reader/voter participation
-        Then The participating readers/voters should own an SBT
-        And the SBT should have the following properties:
-            | property name     | property value                            |
-            | Token ID          | 4                                         |
-            | Name              | 1729 Writers - Reader/Voter Participation |
-            | Image             | XYZ                                       |
-            | Description       | ABC                                       |
-            | Cohort            | 2                                         |
-            | Contribution Date | 2022 August                               |
-        And the SBT should not be transferrable
+# Scenario: Issue 1729 Writers Proof of Contribution SBTs to members for voting
+#     Given There are 135 members who voted for a winning essay at least 1 week
+#     When I issue SBTs for reader/voter participation
+#     Then The participating readers/voters should own an SBT
+#     And the SBT should have the following properties:
+#         | property name     | property value                            |
+#         | Token ID          | 4                                         |
+#         | Name              | 1729 Writers - Reader/Voter Participation |
+#         | Image             | XYZ                                       |
+#         | Description       | ABC                                       |
+#         | Cohort            | 2                                         |
+#         | Contribution Date | 2022 August                               |
+#     And the SBT should not be transferrable
 
-    Scenario: Issue 1729 Writers Proof of Contribution SBTs to members for bidding
-        Given There are 15 members who bidding on an Essay NFT in at least 1 auction
-        When I issue SBTs for bidder participation
-        Then The participating bidders should own an SBT
-        And the SBT should have the following properties:
-            | property name     | property value                      |
-            | Token ID          | 5                                   |
-            | Name              | 1729 Writers - bidder Participation |
-            | Image             | XYZ                                 |
-            | Description       | ABC                                 |
-            | Cohort            | 2                                   |
-            | Contribution Date | 2022 August                         |
-        And the SBT should not be transferrable
+# Scenario: Issue 1729 Writers Proof of Contribution SBTs to members for bidding
+#     Given There are 15 members who bidding on an Essay NFT in at least 1 auction
+#     When I issue SBTs for bidder participation
+#     Then The participating bidders should own an SBT
+#     And the SBT should have the following properties:
+#         | property name     | property value                      |
+#         | Token ID          | 5                                   |
+#         | Name              | 1729 Writers - bidder Participation |
+#         | Image             | XYZ                                 |
+#         | Description       | ABC                                 |
+#         | Cohort            | 2                                   |
+#         | Contribution Date | 2022 August                         |
+#     And the SBT should not be transferrable
