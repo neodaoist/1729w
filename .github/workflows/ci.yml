@@ -1,0 +1,58 @@
+name: ci
+on: [pull_request]
+
+jobs:
+  build-test:
+    name: Foundry build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Forge Tests
+        run: forge test -vvv
+
+      - name: Run Forge Snapshot
+        run: forge snapshot
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+#      - run: cargo update +nightly -Z minimal-versions
+  cucumber:
+    name: Cucumber Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Forge Build
+        run: forge build
+      - name: Cargo Check
+        run: cargo check
+
+      - name: Cargo Test
+        run: cargo test
+#        env:
+#          RUSTFLAGS: -D warnings
