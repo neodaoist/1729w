@@ -20,6 +20,8 @@ import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 /// @author neodaoist, plaird
 /// @notice A 1729Writers admin can mint and burn essay NFTs on this contract
 contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
+    //
+
     using Counters for Counters.Counter;
 
     struct EssayItem {
@@ -29,6 +31,11 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
 
     mapping(uint256 => EssayItem) public essays;
     Counters.Counter internal nextTokenId;
+
+    uint96 public royaltyPercentageInBips = 1_000; // 10%
+    uint96 public constant MAXIMUM_ROYALTY_PERCENTAGE_IN_BIPS = 1_500; // 15%
+
+    event RoyaltyPercentageUpdated(uint96 newPercentageInBips);
 
     constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
         nextTokenId.increment();  // start tokenId counter at 1
@@ -68,8 +75,8 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
         EssayItem memory essay = EssayItem(author, url);
         essays[_tokenId] = essay;
         _safeMint(owner(), _tokenId);
-        _setTokenRoyalty(_tokenId, author, 1000);  // FIXME: Hardcoded
-}
+        _setTokenRoyalty(_tokenId, author, royaltyPercentageInBips);
+    }
 
     /// @notice Returns the total of all tokens ever minted (includes tokens which have been burned)
     function totalSupply() public view returns (uint256) {
@@ -87,6 +94,19 @@ contract OneSevenTwoNineEssay is Ownable, ERC721, ERC2981 {
     
     function burn(uint256 tokenId) public virtual onlyOwner {
         _burn(tokenId);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Royalty
+    //////////////////////////////////////////////////////////////*/
+
+    function updateRoyaltyPercentage(uint96 _newPercentageInBips) public onlyOwner {
+        require(_newPercentageInBips <= MAXIMUM_ROYALTY_PERCENTAGE_IN_BIPS, "New royalty percentage cannot be greater than 15%");
+
+        emit RoyaltyPercentageUpdated(_newPercentageInBips);
+
+        royaltyPercentageInBips = _newPercentageInBips;
+        // _setDefaultRoyalty(receiver, feeNumerator);
     }
 
 }

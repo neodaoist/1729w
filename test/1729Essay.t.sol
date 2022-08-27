@@ -41,6 +41,7 @@ contract OneSevenTwoNineEssayTest is Test {
         address indexed operator,
         bool approved
     );
+    event RoyaltyPercentageUpdated(uint96 newPercentageInBips);
 
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
@@ -166,14 +167,6 @@ contract OneSevenTwoNineEssayTest is Test {
         assertFalse(token.supportsInterface(0x00));
     }
 
-    function testRoyalty() public {
-        vm.prank(multisig);
-        address author = 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045;
-        token.mint(author,"https://testpublish.com/savetheworld");
-        (address recipient, uint256 amount) = token.royaltyInfo(1, 100000);
-        assertEq(author, recipient);
-        assertEq(amount, 10000); // 10%
-    }
     ////////////////////////////////////////////////
     ////////////////    Mint    ////////////////////
     ////////////////////////////////////////////////
@@ -661,6 +654,75 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(token.totalSupply(), 4);
     }
 
+    /*//////////////////////////////////////////////////////////////
+                        Royalty
+    //////////////////////////////////////////////////////////////*/
+
+    function testRoyalty() public {
+        vm.startPrank(multisig);
+        token.mint(writer1,"https://testpublish.com/savetheworld");
+        token.mint(writer2,"https://testpublish2.com/abc");
+        token.mint(writer3,"https://testpublish3.com/xyz");
+
+        (address recipient, uint256 amount) = token.royaltyInfo(1, 100_000);
+        assertEq(writer1, recipient);
+        assertEq(amount, 10_000); // 10%
+
+        (recipient, amount) = token.royaltyInfo(2, 7_777);
+        assertEq(writer2, recipient);
+        assertEq(amount, 777); // 10%
+
+        (recipient, amount) = token.royaltyInfo(3, 1_337_001);
+        assertEq(writer3, recipient);
+        assertEq(amount, 133_700); // 10%
+    }
+
+    function testUpdateRoyaltyPercentage(uint256 input) public {
+        uint96 newPercentageInBips = uint96(bound(input, 0, 1_500));
+
+        vm.expectEmit(true, true, true, true);
+        emit RoyaltyPercentageUpdated(newPercentageInBips);
+
+        vm.startPrank(multisig);
+        token.updateRoyaltyPercentage(newPercentageInBips);
+        
+        token.mint(writer1,"https://testpublish.com/savetheworld");
+
+        (, uint256 amount) = token.royaltyInfo(1, 100_000);
+        assertEq(amount, 100_000 * newPercentageInBips / 10_000);
+    }
+
+    // FIXME failing bc we only set token royalty on mint, and therefore 
+    //existing token entries in ERC2981#_tokenRoyaltyInfo are never updated
+    function testUpdateRoyaltyPercentageAfterMint() public {
+        vm.startPrank(multisig);        
+        token.mint(writer1,"https://testpublish.com/savetheworld");
+
+        (, uint256 amount) = token.royaltyInfo(1, 100_000);
+        assertEq(amount, 10_000); // 10%
+
+        token.updateRoyaltyPercentage(900);
+
+        (, amount) = token.royaltyInfo(1, 100_000);
+        assertEq(amount, 9_000); // 9%
+    }
+
+    function testUpdateRoyaltyPercentageWhenGreaterThanMaximumShouldFail() public {
+        vm.expectRevert("New royalty percentage cannot be greater than 15%");
+
+        vm.startPrank(multisig);
+        token.updateRoyaltyPercentage(1600); // 16%
+
+        // all good, no revert
+        token.updateRoyaltyPercentage(1500); // 15%
+    }
+
+    function testUpdateRoyaltyPercentageWhenNotOwnerShouldFail() public {
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // random EOA
+        token.updateRoyaltyPercentage(900);
+    }
 }
 
 contract ERC721Recipient is IERC721Receiver {
