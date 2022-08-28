@@ -11,7 +11,6 @@ import "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
 contract OneSevenTwoNineEssayTest is Test {
     //
-    using stdStorage for StdStorage;
 
     OneSevenTwoNineEssay token;
     address constant TESTAUTHOR = 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045;
@@ -37,8 +36,6 @@ contract OneSevenTwoNineEssayTest is Test {
         bool approved
     );
     event RoyaltyPercentageUpdated(uint96 newPercentageInBips);
-
-    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     function setUp() public {
         token = new OneSevenTwoNineEssay(multisig);
@@ -155,10 +152,9 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testImplementsInterface() public {
-        assertTrue(token.supportsInterface(_INTERFACE_ID_ERC2981));
         assertTrue(token.supportsInterface(0x80ac58cd));  // ERC721
-        assertTrue(token.supportsInterface(0x5b5e139f)); // IERC721Metadata
-        //assertTrue(essay.supportsInterface(0x780e9d63)); // IERC721Enumerable -- FIXME: do we need this?
+        assertTrue(token.supportsInterface(0x5b5e139f)); // ERC721Metadata
+        assertTrue(token.supportsInterface(0x2a55205a)); // ERC2981
         assertFalse(token.supportsInterface(0x00));
     }
 
