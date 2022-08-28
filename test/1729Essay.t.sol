@@ -1,18 +1,13 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.15;
-
-import "forge-std/Test.sol";
-import {IERC721Receiver} from
-    "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.13;
 
 import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 import {Fleece} from "../src/Fleece.sol";
 import {Essay} from "../src/models/Essay.sol";
 
-import "../src/1729Essay.sol";
-import "openzeppelin-contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import "openzeppelin-contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "openzeppelin-contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "forge-std/Test.sol";
+
+import "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
 contract OneSevenTwoNineEssayTest is Test {
     //
