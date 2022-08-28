@@ -13,7 +13,7 @@ import "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 contract OneSevenTwoNineEssayTest is Test {
     //
 
-    OneSevenTwoNineEssay token;
+    OneSevenTwoNineEssay essay;
 
     TestAddresses addresses;
 
@@ -38,12 +38,12 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function setUp() public {
         addresses = getAddresses();
-        token = new OneSevenTwoNineEssay(addresses.multisig);
+        essay= new OneSevenTwoNineEssay(addresses.multisig);
     }
 
     function testInvariantMetadata() public {
-        assertEq(token.name(), "1729 Essay");
-        assertEq(token.symbol(), "1729ESSAY");
+        assertEq(essay.name(), "1729 Essay");
+        assertEq(essay.symbol(), "1729ESSAY");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -52,15 +52,15 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testURIStorage() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
-        token.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
-        token.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
-        token.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
+        essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
+        essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
+        essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
 
-        assertEq(token.tokenURI(1), EXPECTED_BASE_URI);
-        assertEq(token.tokenURI(2), string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
-        assertEq(token.tokenURI(3), string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
-        assertEq(token.tokenURI(4), string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
+        assertEq(essay.tokenURI(1), EXPECTED_BASE_URI);
+        assertEq(essay.tokenURI(2), string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
+        assertEq(essay.tokenURI(3), string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
+        assertEq(essay.tokenURI(4), string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -71,30 +71,30 @@ contract OneSevenTwoNineEssayTest is Test {
         // mock 4 tokens for unit testing JSON metadata returned from tokenURI() view
         // TODO load example JSON
         vm.mockCall(
-            address(token),
+            address(essay),
             abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 1),
             abi.encode("hello world 1")
         );
         vm.mockCall(
-            address(token),
+            address(essay),
             abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 2),
             abi.encode("hello world 2")
         );
         vm.mockCall(
-            address(token),
+            address(essay),
             abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 3),
             abi.encode("hello world 3")
         );
         vm.mockCall(
-            address(token),
+            address(essay),
             abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 4),
             abi.encode("hello world 4")
         );
 
-        assertEq(token.tokenURI(1), "hello world 1");
-        assertEq(token.tokenURI(2), "hello world 2");
-        assertEq(token.tokenURI(3), "hello world 3");
-        assertEq(token.tokenURI(4), "hello world 4");
+        assertEq(essay.tokenURI(1), "hello world 1");
+        assertEq(essay.tokenURI(2), "hello world 2");
+        assertEq(essay.tokenURI(3), "hello world 3");
+        assertEq(essay.tokenURI(4), "hello world 4");
     }
 
     function testParseJsonMetadata() public {
@@ -150,10 +150,10 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testImplementsInterface() public {
-        assertTrue(token.supportsInterface(0x80ac58cd));  // ERC721
-        assertTrue(token.supportsInterface(0x5b5e139f)); // ERC721Metadata
-        assertTrue(token.supportsInterface(0x2a55205a)); // ERC2981
-        assertFalse(token.supportsInterface(0x00));
+        assertTrue(essay.supportsInterface(0x80ac58cd));  // ERC721
+        assertTrue(essay.supportsInterface(0x5b5e139f)); // ERC721Metadata
+        assertTrue(essay.supportsInterface(0x2a55205a)); // ERC2981
+        assertFalse(essay.supportsInterface(0x00));
     }
 
     ////////////////////////////////////////////////
@@ -162,34 +162,34 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testMint() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        assertEq(token.balanceOf(addresses.multisig), 1);
-        assertEq(token.ownerOf(1), addresses.multisig);
+        assertEq(essay.balanceOf(addresses.multisig), 1);
+        assertEq(essay.ownerOf(1), addresses.multisig);
     }
 
 /* FIXME: Can't test due to private _mint function
     function testDoubleMintShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token._mint(1337, addresses.writer1, EXPECTED_BASE_URI);
+        essay._mint(1337, addresses.writer1, EXPECTED_BASE_URI);
 
-        vm.expectRevert("ERC721: token already minted");
+        vm.expectRevert("ERC721: essayalready minted");
 
-        token._mint(1337, addresses.writer1, EXPECTED_BASE_URI);
+        essay._mint(1337, addresses.writer1, EXPECTED_BASE_URI);
     }
 
     function testMintFuzzy(uint256 id) public {
         vm.prank(addresses.multisig);
-        token._mint(id, addresses.writer1, EXPECTED_BASE_URI);
+        essay._mint(id, addresses.writer1, EXPECTED_BASE_URI);
 
-        assertEq(token.balanceOf(addresses.multisig), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 1);
     }
     */
 
     function testMintWhenNotOwnerShouldFail() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
     }
 
     ////////////////////////////////////////////////
@@ -198,54 +198,54 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testBurn() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
         vm.prank(addresses.multisig);
-        token.burn(1);
+        essay.burn(1);
 
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
 
         vm.expectRevert("ERC721: invalid token ID");
-        token.ownerOf(1);
+        essay.ownerOf(1);
     }
 
     function testBurnUnmintedShouldFail() public {
         vm.expectRevert("ERC721: invalid token ID");
 
         vm.prank(addresses.multisig);
-        token.burn(1337);
+        essay.burn(1337);
     }
 
     function testDoubleBurnShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.burn(1);
+        essay.burn(1);
 
         vm.expectRevert("ERC721: invalid token ID");
 
-        token.burn(1);
+        essay.burn(1);
     }
 
     function testBurnWhenNotOwnerShouldFail() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        token.burn(1);
+        essay.burn(1);
     }
 
 /* Disabled due to private _mint function
     function testBurnFuzzy(uint256 id) public {
         vm.prank(addresses.multisig);
-        token._mint(id, addresses.writer1, EXPECTED_BASE_URI);
+        essay._mint(id, addresses.writer1, EXPECTED_BASE_URI);
         vm.prank(addresses.multisig);
-        token.burn(id);
+        essay.burn(id);
 
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
 
         vm.expectRevert("ERC721: invalid token ID");
-        token.ownerOf(id);
+        essay.ownerOf(id);
     }
 */
 
@@ -255,40 +255,40 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testApprove() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectEmit(true, true, true, true);
         emit Approval(addresses.multisig, address(0xBABE), 1);
 
         vm.prank(addresses.multisig);
-        token.approve(address(0xBABE), 1);
+        essay.approve(address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0xBABE));
+        assertEq(essay.getApproved(1), address(0xBABE));
     }
 
     function testMultipleApprove() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.approve(address(0xABCD), 1);
-        token.approve(address(0xBABE), 1);
+        essay.approve(address(0xABCD), 1);
+        essay.approve(address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0xBABE));
+        assertEq(essay.getApproved(1), address(0xBABE));
     }
 
     function testApproveBurn() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.approve(address(0xBABE), 1);
+        essay.approve(address(0xBABE), 1);
 
-        token.burn(1);
+        essay.burn(1);
 
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
 
         vm.expectRevert("ERC721: invalid token ID");
 
-        token.getApproved(1);
+        essay.getApproved(1);
     }
 
     function testApproveAll() public {
@@ -296,26 +296,26 @@ contract OneSevenTwoNineEssayTest is Test {
         emit ApprovalForAll(addresses.multisig, address(0xBABE), true);
 
         vm.prank(addresses.multisig);
-        token.setApprovalForAll(address(0xBABE), true);
+        essay.setApprovalForAll(address(0xBABE), true);
 
-        assertTrue(token.isApprovedForAll(addresses.multisig, address(0xBABE)));
+        assertTrue(essay.isApprovedForAll(addresses.multisig, address(0xBABE)));
     }
 
     function testApproveUnmintedShouldFail() public {
         vm.expectRevert("ERC721: invalid token ID");
 
-        token.approve(address(0xBABE), 1337);
+        essay.approve(address(0xBABE), 1337);
     }
 
     function testApproveUnauthorizedShouldFail() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectRevert(
             "ERC721: approve caller is not token owner or approved for all"
         );
 
-        token.approve(address(0xBABE), 1);
+        essay.approve(address(0xBABE), 1);
     }
 
     ////////////////////////////////////////////////
@@ -324,57 +324,57 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testBalanceOf() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        assertEq(token.balanceOf(addresses.multisig), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 1);
     }
 
     function testBalanceOfWithTwoMints() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);  // 2
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 2
 
-        assertEq(token.balanceOf(addresses.multisig), 2);
+        assertEq(essay.balanceOf(addresses.multisig), 2);
     }
 
     function testBalanceOfWhenOwningNone() public {
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
     }
 
     function testBalanceOfAfterBurn() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.burn(1);
+        essay.burn(1);
 
-        assertEq(token.balanceOf(addresses.multisig), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 1);
     }
 
     function testBalanceOfAfterTransferring() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.transferFrom(addresses.multisig, address(this), 1);
+        essay.transferFrom(addresses.multisig, address(this), 1);
 
-        assertEq(token.balanceOf(addresses.multisig), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 1);
     }
 
     function testBalanceOfAfterReceivingTransfer() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.transferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.transferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.balanceOf(address(0xBABE)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.balanceOf(address(0xBABE)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
     }
 
     function testBalanceOfZeroAddressShouldFail() public {
         vm.expectRevert("ERC721: address zero is not a valid owner");
 
-        token.balanceOf(address(0));
+        essay.balanceOf(address(0));
     }
 
     ////////////////////////////////////////////////
@@ -383,26 +383,26 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testOwnerOf() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        assertEq(token.ownerOf(1), addresses.multisig);
+        assertEq(essay.ownerOf(1), addresses.multisig);
     }
 
     function testOwnerOfUnmintedShouldFail() public {
         vm.expectRevert("ERC721: invalid token ID");
 
-        token.ownerOf(1337);
+        essay.ownerOf(1337);
     }
 
     function testOwnerOfAfterTransfer() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        assertEq(token.ownerOf(1), addresses.multisig);
+        assertEq(essay.ownerOf(1), addresses.multisig);
 
-        token.transferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.transferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.ownerOf(1), address(0xBABE));
+        assertEq(essay.ownerOf(1), address(0xBABE));
     }
 
     ////////////////////////////////////////////////
@@ -411,79 +411,79 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testTransferFrom() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.approve(address(this), 1);
+        essay.approve(address(this), 1);
 
         vm.expectEmit(true, true, true, true);
         emit Transfer(addresses.multisig, address(0xBABE), 1);
 
-        token.transferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.transferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(0xBABE));
-        assertEq(token.balanceOf(address(0xBABE)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(0xBABE));
+        assertEq(essay.balanceOf(address(0xBABE)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
     }
 
     function testTransferFromSelf() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        token.transferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.transferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(0xBABE));
-        assertEq(token.balanceOf(address(0xBABE)), 1);
-        assertEq(token.balanceOf(address(this)), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(0xBABE));
+        assertEq(essay.balanceOf(address(0xBABE)), 1);
+        assertEq(essay.balanceOf(address(this)), 0);
     }
 
     function testTransferFromApproveAll() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.prank(addresses.multisig);
-        token.setApprovalForAll(address(this), true);
+        essay.setApprovalForAll(address(this), true);
 
-        token.transferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.transferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(0xBABE));
-        assertEq(token.balanceOf(address(0xBABE)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(0xBABE));
+        assertEq(essay.balanceOf(address(0xBABE)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
     }
 
     function testTransferFromUnownedShouldFail() public {
         vm.expectRevert("ERC721: invalid token ID");
 
-        token.transferFrom(address(0xABCD), address(0xBABE), 1337);
+        essay.transferFrom(address(0xABCD), address(0xBABE), 1337);
     }
 
     function testTransferFromWithWrongFromShouldFail() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectRevert("ERC721: caller is not token owner or approved");
 
-        token.transferFrom(address(0xBABE), address(0xABCD), 1);
+        essay.transferFrom(address(0xBABE), address(0xABCD), 1);
     }
 
     function testTransferFromToZeroAddressShouldFail() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectRevert("ERC721: caller is not token owner or approved");
 
-        token.transferFrom(addresses.multisig, address(0), 1);
+        essay.transferFrom(addresses.multisig, address(0), 1);
     }
 
     function testTransferFromWithNotOwnerOrUnapprovedSpenderShouldFail() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.expectRevert("ERC721: caller is not token owner or approved");
 
-        token.transferFrom(addresses.multisig, address(0xABCD), 1);
+        essay.transferFrom(addresses.multisig, address(0xABCD), 1);
     }
 
     ////////////////////////////////////////////////
@@ -492,37 +492,37 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testSafeTransferFromToEOA() public {
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.prank(addresses.multisig);
-        token.setApprovalForAll(address(this), true);
+        essay.setApprovalForAll(address(this), true);
 
         vm.expectEmit(true, true, true, true);
         emit Transfer(addresses.multisig, address(0xBABE), 1);
 
-        token.safeTransferFrom(addresses.multisig, address(0xBABE), 1);
+        essay.safeTransferFrom(addresses.multisig, address(0xBABE), 1);
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(0xBABE));
-        assertEq(token.balanceOf(address(0xBABE)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(0xBABE));
+        assertEq(essay.balanceOf(address(0xBABE)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
     }
 
     function testSafeTransferFromToERC721Recipient() public {
         ERC721Recipient recipient = new ERC721Recipient();
 
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.prank(addresses.multisig);
-        token.setApprovalForAll(address(this), true);
+        essay.setApprovalForAll(address(this), true);
 
-        token.safeTransferFrom(addresses.multisig, address(recipient), 1);
+        essay.safeTransferFrom(addresses.multisig, address(recipient), 1);
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(recipient));
-        assertEq(token.balanceOf(address(recipient)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(recipient));
+        assertEq(essay.balanceOf(address(recipient)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
 
         assertEq(recipient.operator(), address(this));
         assertEq(recipient.from(), addresses.multisig);
@@ -534,19 +534,19 @@ contract OneSevenTwoNineEssayTest is Test {
         ERC721Recipient recipient = new ERC721Recipient();
 
         vm.prank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         vm.prank(addresses.multisig);
-        token.setApprovalForAll(address(this), true);
+        essay.setApprovalForAll(address(this), true);
 
-        token.safeTransferFrom(
+        essay.safeTransferFrom(
             addresses.multisig, address(recipient), 1, "testing 456"
         );
 
-        assertEq(token.getApproved(1), address(0));
-        assertEq(token.ownerOf(1), address(recipient));
-        assertEq(token.balanceOf(address(recipient)), 1);
-        assertEq(token.balanceOf(addresses.multisig), 0);
+        assertEq(essay.getApproved(1), address(0));
+        assertEq(essay.ownerOf(1), address(recipient));
+        assertEq(essay.balanceOf(address(recipient)), 1);
+        assertEq(essay.balanceOf(addresses.multisig), 0);
 
         assertEq(recipient.operator(), address(this));
         assertEq(recipient.from(), addresses.multisig);
@@ -556,63 +556,63 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testSafeTransferFromToNonERC721RecipientShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
         address to = address(new NonERC721Recipient());
 
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
-        token.safeTransferFrom(addresses.multisig, to, 1);
+        essay.safeTransferFrom(addresses.multisig, to, 1);
     }
 
     function testSafeTransferFromToNonERC721RecipientWithDataShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         address to = address(new NonERC721Recipient());
 
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
-        token.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
+        essay.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
     }
 
     function testSafeTransferFromToRevertingERC721RecipientShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         address to = address(new NonERC721Recipient());
 
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
-        token.safeTransferFrom(addresses.multisig, to, 1);
+        essay.safeTransferFrom(addresses.multisig, to, 1);
     }
 
     function testSafeTransferFromToERC721RecipientWithWrongReturnDataShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         address to = address(new WrongReturnDataERC721Recipient());
 
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
-        token.safeTransferFrom(addresses.multisig, to, 1);
+        essay.safeTransferFrom(addresses.multisig, to, 1);
     }
 
     function testSafeTransferFromToERC721RecipientWithWrongReturnDataWithDataShouldFail() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
         address to = address(new WrongReturnDataERC721Recipient());
 
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
-        token.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
+        essay.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
     }
 
     // Contract should NOT support receiving funds directly
     function testReceiveFundsDisabled() public {
         vm.prank(addresses.multisig);
         vm.expectRevert("Contract should not accept payment directly");
-        (bool result, bytes memory data) = address(token).call{value:1000000000}("");
+        (bool result, bytes memory data) = address(essay).call{value:1000000000}("");
 
         assertFalse(result, "Contract should not accept payment");
     }
@@ -623,24 +623,24 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testFirstMintIsOne() public {
         vm.startPrank(addresses.multisig);
-        uint256 newId = token.mint(addresses.writer1, EXPECTED_BASE_URI);
+        uint256 newId = essay.mint(addresses.writer1, EXPECTED_BASE_URI);
         assertEq(newId, 1);
     }
 
     function testTotalSupply() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
-        uint256 two = token.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
+        uint256 two = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
         assertEq(two, 2);
-        assertEq(token.totalSupply(), 2);
-        uint256 three = token.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(essay.totalSupply(), 2);
+        uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
         assertEq(three, 3);
-        assertEq(token.totalSupply(), 3);
-        token.burn(2);  // burning does not reduce total supply
-        assertEq(token.totalSupply(), 3);
-        uint256 four = token.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(essay.totalSupply(), 3);
+        essay.burn(2);  // burning does not reduce total supply
+        assertEq(essay.totalSupply(), 3);
+        uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
         assertEq(four, 4);
-        assertEq(token.totalSupply(), 4);
+        assertEq(essay.totalSupply(), 4);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -649,19 +649,19 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testRoyalty() public {
         vm.startPrank(addresses.multisig);
-        token.mint(addresses.writer1,"https://testpublish.com/savetheworld");
-        token.mint(addresses.writer2,"https://testpublish2.com/abc");
-        token.mint(addresses.writer3,"https://testpublish3.com/xyz");
+        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer2,"https://testpublish2.com/abc");
+        essay.mint(addresses.writer3,"https://testpublish3.com/xyz");
 
-        (address recipient, uint256 amount) = token.royaltyInfo(1, 100_000);
+        (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
         assertEq(addresses.writer1, recipient);
         assertEq(amount, 10_000); // 10%
 
-        (recipient, amount) = token.royaltyInfo(2, 7_777);
+        (recipient, amount) = essay.royaltyInfo(2, 7_777);
         assertEq(addresses.writer2, recipient);
         assertEq(amount, 777); // 10%
 
-        (recipient, amount) = token.royaltyInfo(3, 1_337_001);
+        (recipient, amount) = essay.royaltyInfo(3, 1_337_001);
         assertEq(addresses.writer3, recipient);
         assertEq(amount, 133_700); // 10%
     }
@@ -673,26 +673,26 @@ contract OneSevenTwoNineEssayTest is Test {
         emit RoyaltyPercentageUpdated(newPercentageInBips);
 
         vm.startPrank(addresses.multisig);
-        token.updateRoyaltyPercentage(newPercentageInBips);
+        essay.updateRoyaltyPercentage(newPercentageInBips);
         
-        token.mint(addresses.writer1,"https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
 
-        (, uint256 amount) = token.royaltyInfo(1, 100_000);
+        (, uint256 amount) = essay.royaltyInfo(1, 100_000);
         assertEq(amount, 100_000 * newPercentageInBips / 10_000);
     }
 
-    // FIXME failing bc we only set token royalty on mint, and therefore 
-    //existing token entries in ERC2981#_tokenRoyaltyInfo are never updated
+    // FIXME failing bc we only set essayroyalty on mint, and therefore 
+    //existing essayentries in ERC2981#_essayoyaltyInfo are never updated
     function testUpdateRoyaltyPercentageAfterMint() public {
         vm.startPrank(addresses.multisig);        
-        token.mint(addresses.writer1,"https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
 
-        (, uint256 amount) = token.royaltyInfo(1, 100_000);
+        (, uint256 amount) = essay.royaltyInfo(1, 100_000);
         assertEq(amount, 10_000); // 10%
 
-        token.updateRoyaltyPercentage(900);
+        essay.updateRoyaltyPercentage(900);
 
-        (, amount) = token.royaltyInfo(1, 100_000);
+        (, amount) = essay.royaltyInfo(1, 100_000);
         assertEq(amount, 9_000); // 9%
     }
 
@@ -700,17 +700,17 @@ contract OneSevenTwoNineEssayTest is Test {
         vm.expectRevert("New royalty percentage cannot be greater than 15%");
 
         vm.startPrank(addresses.multisig);
-        token.updateRoyaltyPercentage(1600); // 16%
+        essay.updateRoyaltyPercentage(1600); // 16%
 
         // all good, no revert
-        token.updateRoyaltyPercentage(1500); // 15%
+        essay.updateRoyaltyPercentage(1500); // 15%
     }
 
     function testUpdateRoyaltyPercentageWhenNotOwnerShouldFail() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(address(0xABCD)); // random EOA
-        token.updateRoyaltyPercentage(900);
+        essay.updateRoyaltyPercentage(900);
     }
 }
 
