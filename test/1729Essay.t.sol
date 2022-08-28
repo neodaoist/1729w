@@ -681,8 +681,8 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(amount, 100_000 * newPercentageInBips / 10_000);
     }
 
-    // FIXME failing bc we only set essayroyalty on mint, and therefore 
-    //existing essayentries in ERC2981#_essayoyaltyInfo are never updated
+    // FIXME failing bc we only set token royalty on mint, and therefore 
+    // existing entries in ERC2981#_tokenRoyaltyInfo are never updated
     function testUpdateRoyaltyPercentageAfterMint() public {
         vm.startPrank(addresses.multisig);        
         essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
