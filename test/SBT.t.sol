@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
-import "forge-std/Test.sol";
 import {SevenTeenTwentyNineProofOfContribution} from "../src/SevenTeenTwentyNineProofOfContribution.sol";
+
+import "forge-std/Test.sol";
+import "./Fixtures.sol";
 
 contract SBTTest is Test {
     //
     SevenTeenTwentyNineProofOfContribution sbt;
 
-    address MULTISIG = address(0x1729);
+    TestAddresses addresses;
 
     function setUp() public {
-        sbt = new SevenTeenTwentyNineProofOfContribution(MULTISIG);
+        addresses = getAddresses();
+        sbt = new SevenTeenTwentyNineProofOfContribution(addresses.multisig);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -26,7 +29,7 @@ contract SBTTest is Test {
         vm.expectEmit(true, true, true, true);
         emit Events.Issue(address(sbt), address(0xA), 1);
 
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issue(address(0xA), 1);
         assertTrue(sbt.hasToken(address(0xA), 1));
     }
@@ -49,7 +52,7 @@ contract SBTTest is Test {
             emit Events.Issue(address(sbt), issuees[i], 1);
         }
 
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issueBatch(issuees, 1);
 
         for (uint256 j = 0; j < issuees.length; j++) {
@@ -74,7 +77,7 @@ contract SBTTest is Test {
     //////////////////////////////////////////////////////////////*/
 
     function test_revoke() public {
-        vm.startPrank(MULTISIG);
+        vm.startPrank(addresses.multisig);
         sbt.issue(address(0xA), 1);
 
         vm.expectEmit(true, true, true, true);
@@ -86,7 +89,7 @@ contract SBTTest is Test {
     }
 
     function test_revoke_whenNotOwner_shouldRevert() public {
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issue(address(0xA), 1);
 
         vm.expectRevert("Ownable: caller is not the owner");
@@ -96,7 +99,7 @@ contract SBTTest is Test {
     }
 
     function test_revokeBatch() public {
-        vm.startPrank(MULTISIG);
+        vm.startPrank(addresses.multisig);
 
         address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
@@ -122,7 +125,7 @@ contract SBTTest is Test {
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issueBatch(issuees, 1);
 
         vm.expectRevert("Ownable: caller is not the owner");
@@ -136,7 +139,7 @@ contract SBTTest is Test {
     //////////////////////////////////////////////////////////////*/
 
     function test_hasToken() public {
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issue(address(0xA), 1);
 
         assertTrue(sbt.hasToken(address(0xA), 1));
@@ -148,7 +151,7 @@ contract SBTTest is Test {
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issueBatch(issuees, 1);
 
         bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1);
@@ -165,16 +168,16 @@ contract SBTTest is Test {
 
     function test_issue_AdheresToERC1155Spec() public {
         vm.expectEmit(true, true, true, true);
-        emit Events.TransferSingle(MULTISIG, address(0), address(0xA), 1, 1);
+        emit Events.TransferSingle(addresses.multisig, address(0), address(0xA), 1, 1);
 
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issue(address(0xA), 1);
     }
 
     // TODO issueBatch, revoke, revokeBatch
 
     function test_hasToken_AdheresToERC1155Spec() public {
-        vm.prank(MULTISIG);
+        vm.prank(addresses.multisig);
         sbt.issue(address(0xA), 1);
 
         assertEq(sbt.balanceOf(address(0xA), 1), 1);

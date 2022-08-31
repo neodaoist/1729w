@@ -10,17 +10,23 @@ pragma solidity ^0.8.13;
 // winning writers
 
 struct TestAddresses {
-    address userAddress;
-    address secondUserAddress;
-    address thirdUserAddress;
+    address multisig;
+    address writer1;
+    address writer2;
+    address writer3;
+    address writer4;
+    address writer5;
 }
 
 /// @dev Get a list of addresses
 function getAddresses() pure returns (TestAddresses memory) {
     TestAddresses memory addresses = TestAddresses({
-        userAddress: address(0x1),
-        secondUserAddress: address(0x2),
-        thirdUserAddress: address(0x3)
+        multisig: address(0x1729),
+        writer1: address(0x1),
+        writer2: address(0x2),
+        writer3: address(0x3),
+        writer4: address(0x4),
+        writer5: address(0x5)
     });
 
     return addresses;
