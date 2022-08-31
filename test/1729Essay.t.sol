@@ -665,53 +665,6 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(addresses.writer3, recipient);
         assertEq(amount, 133_700); // 10%
     }
-
-    function testUpdateRoyaltyPercentage(uint256 input) public {
-        uint96 newPercentageInBips = uint96(bound(input, 0, 1_500));
-
-        vm.expectEmit(true, true, true, true);
-        emit RoyaltyPercentageUpdated(newPercentageInBips);
-
-        vm.startPrank(addresses.multisig);
-        essay.updateRoyaltyPercentage(newPercentageInBips);
-        
-        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
-
-        (, uint256 amount) = essay.royaltyInfo(1, 100_000);
-        assertEq(amount, 100_000 * newPercentageInBips / 10_000);
-    }
-
-    // FIXME failing bc we only set token royalty on mint, and therefore 
-    // existing entries in ERC2981#_tokenRoyaltyInfo are never updated
-    function testUpdateRoyaltyPercentageAfterMint() public {
-        vm.startPrank(addresses.multisig);        
-        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
-
-        (, uint256 amount) = essay.royaltyInfo(1, 100_000);
-        assertEq(amount, 10_000); // 10%
-
-        essay.updateRoyaltyPercentage(900);
-
-        (, amount) = essay.royaltyInfo(1, 100_000);
-        assertEq(amount, 9_000); // 9%
-    }
-
-    function testUpdateRoyaltyPercentageWhenGreaterThanMaximumShouldFail() public {
-        vm.expectRevert("New royalty percentage cannot be greater than 15%");
-
-        vm.startPrank(addresses.multisig);
-        essay.updateRoyaltyPercentage(1600); // 16%
-
-        // all good, no revert
-        essay.updateRoyaltyPercentage(1500); // 15%
-    }
-
-    function testUpdateRoyaltyPercentageWhenNotOwnerShouldFail() public {
-        vm.expectRevert("Ownable: caller is not the owner");
-
-        vm.prank(address(0xABCD)); // random EOA
-        essay.updateRoyaltyPercentage(900);
-    }
 }
 
 contract ERC721Recipient is IERC721Receiver {
