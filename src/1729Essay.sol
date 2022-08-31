@@ -91,10 +91,10 @@ contract OneSevenTwoNineEssay is Ownable, ERC721 {
 
     /// @notice returns the author's address and a fixed 10% royalty
     function royaltyInfo(uint256 tokenId, uint256 salePrice)
-        external
-        view
-        returns (address receiver, uint256 royaltyAmount) {
-        return(essays[tokenId].author, salePrice / 10);   // Not using SafeMath here as the denominator is fixed and can never be zero
+    external
+    view
+    returns (address receiver, uint256 royaltyAmount) {
+        return (essays[tokenId].author, salePrice / 10);   // Not using SafeMath here as the denominator is fixed and can never be zero
     }
 
 }
