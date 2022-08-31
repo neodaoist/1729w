@@ -98,6 +98,6 @@ contract OneSevenTwoNineEssay is Ownable, ERC721 {
     external
     view
     returns (address receiver, uint256 royaltyAmount) {
-        return (essays[tokenId].author, salePrice / 10);   // 
+        return (essays[tokenId].author, salePrice / 10);
     }
 }
