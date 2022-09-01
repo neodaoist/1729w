@@ -88,6 +88,8 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
     function _issue(address _recipient, uint256 _tokenId) internal {
+        require(contributions[_tokenId].created, "SBT: No matching contribution found");
+
         emit Issue(address(this), _recipient, _tokenId);
         _mint(_recipient, _tokenId, 1, "");
     }

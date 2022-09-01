@@ -39,7 +39,8 @@ contract SBTTest is Test {
         vm.expectEmit(true, true, true, true);
         emit Events.Issue(address(sbt), address(0xA), 1);
 
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
         assertTrue(sbt.hasToken(address(0xA), 1));
     }
@@ -49,6 +50,13 @@ contract SBTTest is Test {
 
         vm.prank(address(0xABCD)); // from random EOA
         sbt.issue(address(0xA), 1);
+    }
+
+    function test_issue_whenContributionHasNotBeenCreated_shouldRevert() public {
+        vm.expectRevert("SBT: No matching contribution found");
+
+        vm.startPrank(addresses.multisig);
+        sbt.issue(addresses.writer1, 1);
     }
 
     function test_issueBatch() public {
@@ -62,7 +70,8 @@ contract SBTTest is Test {
             emit Events.Issue(address(sbt), issuees[i], 1);
         }
 
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issueBatch(issuees, 1);
 
         for (uint256 j = 0; j < issuees.length; j++) {
@@ -88,6 +97,7 @@ contract SBTTest is Test {
 
     function test_revoke() public {
         vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
 
         vm.expectEmit(true, true, true, true);
@@ -99,8 +109,10 @@ contract SBTTest is Test {
     }
 
     function test_revoke_whenNotOwner_shouldRevert() public {
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
+        vm.stopPrank();
 
         vm.expectRevert("Ownable: caller is not the owner");
 
@@ -110,6 +122,7 @@ contract SBTTest is Test {
 
     function test_revokeBatch() public {
         vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
 
         address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
@@ -135,8 +148,10 @@ contract SBTTest is Test {
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issueBatch(issuees, 1);
+        vm.stopPrank();
 
         vm.expectRevert("Ownable: caller is not the owner");
 
@@ -149,7 +164,8 @@ contract SBTTest is Test {
     //////////////////////////////////////////////////////////////*/
 
     function test_hasToken() public {
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
 
         assertTrue(sbt.hasToken(address(0xA), 1));
@@ -161,7 +177,8 @@ contract SBTTest is Test {
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issueBatch(issuees, 1);
 
         bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1);
@@ -227,14 +244,16 @@ contract SBTTest is Test {
         vm.expectEmit(true, true, true, true);
         emit Events.TransferSingle(addresses.multisig, address(0), address(0xA), 1, 1);
 
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
     }
 
     // TODO issueBatch, revoke, revokeBatch
 
     function test_hasToken_AdheresToERC1155Spec() public {
-        vm.prank(addresses.multisig);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
         sbt.issue(address(0xA), 1);
 
         assertEq(sbt.balanceOf(address(0xA), 1), 1);
