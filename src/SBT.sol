@@ -10,9 +10,23 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //
 
+    struct ContributionItem {
+        string name;
+        string uri;
+    }
+
+    mapping(uint256 => ContributionItem) public contributions;
+
     /*//////////////////////////////////////////////////////////////
                         Views
     //////////////////////////////////////////////////////////////*/
+
+    /// @notice Get the Proof of Contribution token metadata URI
+    /// @param _tokenId The Token ID for a specific Proof of Contribution token
+    /// @return Fully-qualified URI of a Proof of Contribution token
+    function uri(uint256 _tokenId) public view override returns (string memory) {
+        return contributions[_tokenId].uri;
+    }
 
     /// @inheritdoc	ISoulbound
     function hasToken(address _owner, uint256 _tokenId)
@@ -45,6 +59,19 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         }
 
         return hasTokens;
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Transactions – Creating
+    //////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc	ISoulbound
+    function createContribution(
+        uint256 _tokenId,
+        string calldata _contributionName,
+        string calldata _contributionUri
+    ) external {
+        contributions[_tokenId] = ContributionItem(_contributionName, _contributionUri);
     }
 
     /*//////////////////////////////////////////////////////////////

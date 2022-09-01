@@ -22,12 +22,5 @@ contract SevenTeenTwentyNineProofOfContribution is SBT {
     
     constructor(address _owner) ERC1155("") {
         transferOwnership(_owner);
-    }
-
-    /// @notice Get the Proof of Contribution token metadata URI
-    /// @param id The Token ID for a specific Proof of Contribution token
-    /// @return Fully-qualified URI of a Proof of Contribution token, e.g., TODO XYZ
-    function uri(uint256 id) public view override returns (string memory) {
-        return "";
-    }
+    }    
 }

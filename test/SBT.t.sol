@@ -11,6 +11,16 @@ contract SBTTest is Test {
     SevenTeenTwentyNineProofOfContribution sbt;
 
     TestAddresses addresses;
+    string URI1 = "ipfs://ABC/1";
+    string URI2 = "ipfs://DEF/2";
+    string URI3 = "ipfs://GHI/3";
+    string URI4 = "ipfs://JKL/4";
+    string URI5 = "ipfs://MNO/5";
+    string CONTRIB1 = "Cohort 2 - fully participating writer";
+    string CONTRIB2 = "Cohort 2 - partially participating writer";
+    string CONTRIB3 = "Cohort 2 - reader/voter";
+    string CONTRIB4 = "Cohort 2 - auction bidder";
+    string CONTRIB5 = "Cohort 2 - winning writer";
 
     function setUp() public {
         addresses = getAddresses();
@@ -160,6 +170,25 @@ contract SBTTest is Test {
         for (uint256 i = 0; i < issuees.length; i++) {
             assertTrue(hasTokens[i]);
         }
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        URI Storage
+    //////////////////////////////////////////////////////////////*/
+
+    function test_uri() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
+        sbt.createContribution(2, CONTRIB2, URI2);
+        sbt.createContribution(3, CONTRIB3, URI3);
+        sbt.createContribution(4, CONTRIB4, URI4);
+        sbt.createContribution(5, CONTRIB5, URI5);
+
+        assertEq(sbt.uri(1), URI1);
+        assertEq(sbt.uri(2), URI2);
+        assertEq(sbt.uri(3), URI3);
+        assertEq(sbt.uri(4), URI4);
+        assertEq(sbt.uri(5), URI5);
     }
 
     /*//////////////////////////////////////////////////////////////

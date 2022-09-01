@@ -57,6 +57,17 @@ interface ISoulbound {
     ) external view returns (bool[] memory);
 
     /*//////////////////////////////////////////////////////////////
+                        Transactions – Creating
+    //////////////////////////////////////////////////////////////*/
+
+    // TODO add doc
+    function createContribution(
+        uint256 _tokenId,
+        string calldata _contributionName,
+        string calldata _contributionUri
+    ) external;
+
+    /*//////////////////////////////////////////////////////////////
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 

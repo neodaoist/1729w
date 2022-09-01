@@ -5,8 +5,8 @@ pragma solidity ^0.8.13;
 // total writers (not an explicit level of contribution)
 // fully participating writers
 // partially participating writers
-// participating readers/voters
-// participating bidders
+// readers/voters
+// auction bidders
 // winning writers
 
 struct TestAddresses {
