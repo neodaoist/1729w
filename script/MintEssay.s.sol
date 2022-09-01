@@ -7,12 +7,14 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 
 contract MintEssayScript is Script {
     //
-    address tokenAddress = address(0xCAFE);
-    address multisig = address(0x1729a);
+    address tokenAddress = address(0x5FbDB2315678afecb367f032d93F642f64180aa3);
+    address multisig = address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266);
+    address authorAddress = address(0x70997970C51812dc3A010C7d01b50e0d17dc79C8);
+    string essayUrl = "https://testurl";
 
 
 
-    function run(address authorAddress, string calldata essayUrl) public {
+    function run() public {
         // generate hash for Essay markdown
 
         // upload Essay image to IPFS
