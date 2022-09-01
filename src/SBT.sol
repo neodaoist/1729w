@@ -13,6 +13,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     struct ContributionItem {
         string name;
         string uri;
+        bool created; // TODO investigate other possible patterns
     }
 
     mapping(uint256 => ContributionItem) public contributions;
@@ -70,8 +71,10 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         uint256 _tokenId,
         string calldata _contributionName,
         string calldata _contributionUri
-    ) external {
-        contributions[_tokenId] = ContributionItem(_contributionName, _contributionUri);
+    ) external onlyOwner {
+        require(!contributions[_tokenId].created, "SBT: Contribution already created");
+
+        contributions[_tokenId] = ContributionItem(_contributionName, _contributionUri, true);
     }
 
     /*//////////////////////////////////////////////////////////////

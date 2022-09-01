@@ -50,6 +50,7 @@ contract OneSevenTwoNineEssayTest is Test {
                         URI Storage
     //////////////////////////////////////////////////////////////*/
 
+    // TODO think about this test - currently it's misleading as to actual contract behavior
     function testURIStorage() public {
         vm.startPrank(addresses.multisig);
         essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1

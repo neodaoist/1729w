@@ -173,10 +173,10 @@ contract SBTTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                        URI Storage
+                        Create Contribution / URI Storage
     //////////////////////////////////////////////////////////////*/
 
-    function test_uri() public {
+    function test_createContribution() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(1, CONTRIB1, URI1);
         sbt.createContribution(2, CONTRIB2, URI2);
@@ -184,11 +184,39 @@ contract SBTTest is Test {
         sbt.createContribution(4, CONTRIB4, URI4);
         sbt.createContribution(5, CONTRIB5, URI5);
 
+        (string memory contributionName1, , ) = sbt.contributions(1);
+        (string memory contributionName2, , ) = sbt.contributions(2);
+        (string memory contributionName3, , ) = sbt.contributions(3);
+        (string memory contributionName4, , ) = sbt.contributions(4);
+        (string memory contributionName5, , ) = sbt.contributions(5);
+
+        assertEq(contributionName1, CONTRIB1);
+        assertEq(contributionName2, CONTRIB2);
+        assertEq(contributionName3, CONTRIB3);
+        assertEq(contributionName4, CONTRIB4);
+        assertEq(contributionName5, CONTRIB5);
+
         assertEq(sbt.uri(1), URI1);
         assertEq(sbt.uri(2), URI2);
         assertEq(sbt.uri(3), URI3);
         assertEq(sbt.uri(4), URI4);
         assertEq(sbt.uri(5), URI5);
+    }
+
+    function test_createContribution_whenNotOwner_shouldRevert() public {
+        vm.expectRevert("Ownable: caller is not the owner");
+
+        vm.prank(address(0xABCD)); // random EOA
+        sbt.createContribution(1, CONTRIB1, URI1);
+    }
+
+    function test_createContribution_whenAlreadyExists_shouldRevert() public {    
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(1, CONTRIB1, URI1);
+
+        vm.expectRevert("SBT: Contribution already created");
+
+        sbt.createContribution(1, CONTRIB2, URI2);
     }
 
     /*//////////////////////////////////////////////////////////////
