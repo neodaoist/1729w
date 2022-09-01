@@ -10,6 +10,14 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //
 
+    // TODO add doc
+    // TODO decide if we like contributionExists check and apply to issueBatch and revokeBatch
+    modifier contributionExists(uint256 _tokenId) {
+        require(contributions[_tokenId].created, "SBT: No matching contribution found");        
+        _;
+    }
+
+    // TODO add doc
     struct ContributionItem {
         string name;
         string uri;
@@ -87,9 +95,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     }
 
     /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
-    function _issue(address _recipient, uint256 _tokenId) internal {
-        require(contributions[_tokenId].created, "SBT: No matching contribution found");
-
+    function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
         emit Issue(address(this), _recipient, _tokenId);
         _mint(_recipient, _tokenId, 1, "");
     }
@@ -111,7 +117,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     }
 
     /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
-    function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal {
+    function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal contributionExists(_tokenId) {
         emit Revoke(address(this), _owner, _tokenId, _reason);
         _burn(_owner, _tokenId, 1);
     }

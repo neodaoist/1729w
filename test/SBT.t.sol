@@ -55,7 +55,7 @@ contract SBTTest is Test {
     function test_issue_whenContributionHasNotBeenCreated_shouldRevert() public {
         vm.expectRevert("SBT: No matching contribution found");
 
-        vm.startPrank(addresses.multisig);
+        vm.prank(addresses.multisig);
         sbt.issue(addresses.writer1, 1);
     }
 
@@ -120,6 +120,13 @@ contract SBTTest is Test {
         sbt.revoke(address(0xA), 1, "did something naughty");
     }
 
+    function test_revoke_whenContributionHasNotBeenCreated_shouldRevert() public {
+        vm.expectRevert("SBT: No matching contribution found");
+
+        vm.prank(addresses.multisig);
+        sbt.revoke(addresses.writer1, 1, "did something naughty");
+    }
+
     function test_revokeBatch() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(1, CONTRIB1, URI1);
@@ -140,7 +147,7 @@ contract SBTTest is Test {
         for (uint256 j = 0; j < issuees.length; j++) {
             assertFalse(sbt.hasToken(issuees[j], 1));
         }
-    }
+    }    
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
         address[] memory issuees = new address[](3);
