@@ -8,7 +8,7 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 contract ListBidEssayScript is Script {
     //
     address TOKEN_ADDRESS = address(0x5FbDB2315678afecb367f032d93F642f64180aa3);  // FIXME: Local
-    address MULTISIG_ADDRESS = address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266);  // FIXME: Local
+    address MULTISIG_ADDRESS = address(0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce);  // Rinkeby
     address AUCTION_HOUSE_ADDRESS = address(0x3feAf4c06211680e5969A86aDB1423Fc8AD9e994);  // Rinkeby
     address MODULE_MANAGER_ADDRESS = address(0xa248736d3b73A231D95A5F99965857ebbBD42D85);  // Rinkeby
     address TRANSFER_HELPER_ADDRESS = address(0x029AA5a949C9C90916729D50537062cb73b5Ac92);  // Rinkeby
@@ -18,6 +18,7 @@ contract ListBidEssayScript is Script {
     address AUTHOR_ADDRESS = address(0x70997970C51812dc3A010C7d01b50e0d17dc79C8);  // Local
     uint256 AUCTION_DURATION = 3 days;
     uint256 AUCTION_RESERVE_PRICE = 0.1 ether;
+    uint256 BID_AMOUNT = 0.1 ether;
 
 
     function run() public {
@@ -42,10 +43,38 @@ contract ListBidEssayScript is Script {
             AUTHOR_ADDRESS,
             block.timestamp
         );
-        auctionHouse.auctionForNFT(address(nft), 1);
+
+        // verify listing
+        (
+            address seller,
+            uint256 reservePrice,
+            address fundsRecipient,
+            ,
+            ,
+            uint256 duration,
+            ,
+        ) = auctionHouse.auctionForNFT(address(nft), 1);
+        assert(seller == MULTISIG_ADDRESS);
+        assert(reservePrice == AUCTION_RESERVE_PRICE);
+        assert(fundsRecipient == AUTHOR_ADDRESS);
+        assert(duration == AUCTION_DURATION);
 
         // place bid on essay
         auctionHouse.createBid{value: 0.1 ether}(TOKEN_ADDRESS, TOKEN_ID);
+
+        // verify bid
+        (
+            ,
+            ,
+            ,
+            uint96 highestBid,
+            address highestBidder,
+            ,
+            ,
+        ) = auctionHouse.auctionForNFT(address(nft), 1);
+
+        assert(highestBid == BID_AMOUNT);
+        assert(highestBidder == MULTISIG_ADDRESS);
 
     }
 }
