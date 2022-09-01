@@ -7,7 +7,7 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 
 contract ListBidEssayScript is Script {
     //
-    address TOKEN_ADDRESS = address(0x5FbDB2315678afecb367f032d93F642f64180aa3);  // FIXME: Local
+    address TOKEN_ADDRESS = address(0x193d1e3500E1937dF922C91030bf86cb443aaDDe);  // Rinkeby
     address MULTISIG_ADDRESS = address(0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce);  // Rinkeby
     address AUCTION_HOUSE_ADDRESS = address(0x3feAf4c06211680e5969A86aDB1423Fc8AD9e994);  // Rinkeby
     address MODULE_MANAGER_ADDRESS = address(0xa248736d3b73A231D95A5F99965857ebbBD42D85);  // Rinkeby
@@ -15,10 +15,10 @@ contract ListBidEssayScript is Script {
 
     // Parameters
     uint256 TOKEN_ID = 1;
-    address AUTHOR_ADDRESS = address(0x70997970C51812dc3A010C7d01b50e0d17dc79C8);  // Local
+    address AUTHOR_ADDRESS = address(0xc7737DD9059651a5058b9e0c1E34029B7B677a44);  // Rinkeby
     uint256 AUCTION_DURATION = 3 days;
     uint256 AUCTION_RESERVE_PRICE = 0.1 ether;
-    uint256 BID_AMOUNT = 0.1 ether;
+    uint256 BID_AMOUNT = 0.05 ether;
 
 
     function run() public {
@@ -28,12 +28,16 @@ contract ListBidEssayScript is Script {
         // get already deployed Essay NFT contract
         OneSevenTwoNineEssay nft = OneSevenTwoNineEssay(TOKEN_ADDRESS);
 
+        vm.startBroadcast();
         // authorize zora contracts
         nft.setApprovalForAll(TRANSFER_HELPER_ADDRESS, true);
         ModuleManager(MODULE_MANAGER_ADDRESS).setApprovalForModule(
             AUCTION_HOUSE_ADDRESS, true
         );
 
+        vm.stopBroadcast();
+
+        vm.startBroadcast();
         // list essay
         auctionHouse.createAuction(
             TOKEN_ADDRESS,
@@ -54,11 +58,13 @@ contract ListBidEssayScript is Script {
             uint256 duration,
             ,
         ) = auctionHouse.auctionForNFT(address(nft), 1);
-        assert(seller == MULTISIG_ADDRESS);
-        assert(reservePrice == AUCTION_RESERVE_PRICE);
-        assert(fundsRecipient == AUTHOR_ADDRESS);
-        assert(duration == AUCTION_DURATION);
+        require(seller == MULTISIG_ADDRESS);
+        require(reservePrice == AUCTION_RESERVE_PRICE);
+        require(fundsRecipient == AUTHOR_ADDRESS);
+        require(duration == AUCTION_DURATION);
+        vm.stopBroadcast();
 
+        vm.startBroadcast();
         // place bid on essay
         auctionHouse.createBid{value: 0.1 ether}(TOKEN_ADDRESS, TOKEN_ID);
 
@@ -73,9 +79,9 @@ contract ListBidEssayScript is Script {
             ,
         ) = auctionHouse.auctionForNFT(address(nft), 1);
 
-        assert(highestBid == BID_AMOUNT);
-        assert(highestBidder == MULTISIG_ADDRESS);
-
+        require(highestBid == BID_AMOUNT, "Highest bid not found");
+        require(highestBidder == MULTISIG_ADDRESS, "Multisig is not the highest bidder");
+        vm.stopBroadcast();
     }
 }
 

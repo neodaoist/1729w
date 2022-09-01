@@ -7,10 +7,10 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 
 contract MintEssayScript is Script {
     //
-    address tokenAddress = address(0x5FbDB2315678afecb367f032d93F642f64180aa3);
-    address multisig = address(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266);
-    address authorAddress = address(0x70997970C51812dc3A010C7d01b50e0d17dc79C8);
-    string essayUrl = "https://testurl";
+    address tokenAddress = 0x193d1e3500E1937dF922C91030bf86cb443aaDDe;  // Rinkeby
+    address multisig = 0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce;  //  Rinkeby
+    address authorAddress = 0xc7737DD9059651a5058b9e0c1E34029B7B677a44;  // Rinkeby
+    string essayUrl = "ipfs://bafkreihqq5g7ygkqst4j2in57ghi56ry2tdr35nqqf5bqp3z5lzw7qa5na";
 
 
 
