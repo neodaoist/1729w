@@ -62,7 +62,6 @@ interface ISoulbound {
 
     // TODO add doc
     function createContribution(
-        uint256 _tokenId,
         string calldata _contributionName,
         string calldata _contributionUri
     ) external;

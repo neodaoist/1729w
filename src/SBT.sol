@@ -5,15 +5,17 @@ import "./ISoulbound.sol";
 
 import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 
 /// @dev See {ISoulbound}.
 abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //
 
+    using Counters for Counters.Counter;
+
     // TODO add doc
-    // TODO decide if we like contributionExists check and apply to issueBatch and revokeBatch
     modifier contributionExists(uint256 _tokenId) {
-        require(contributions[_tokenId].created, "SBT: No matching contribution found");        
+        require(contributions[_tokenId].created, "SBT: no matching contribution found");        
         _;
     }
 
@@ -25,6 +27,16 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     }
 
     mapping(uint256 => ContributionItem) public contributions;
+
+    Counters.Counter internal nextTokenId;
+
+    /*//////////////////////////////////////////////////////////////
+                        Constructor
+    //////////////////////////////////////////////////////////////*/
+
+    constructor() {
+        nextTokenId.increment();  // start tokenId counter at 1
+    }
 
     /*//////////////////////////////////////////////////////////////
                         Views
@@ -76,13 +88,13 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @inheritdoc	ISoulbound
     function createContribution(
-        uint256 _tokenId,
         string calldata _contributionName,
         string calldata _contributionUri
     ) external onlyOwner {
-        require(!contributions[_tokenId].created, "SBT: Contribution already created");
+        uint256 tokenId = nextTokenId.current();
+        nextTokenId.increment();
 
-        contributions[_tokenId] = ContributionItem(_contributionName, _contributionUri, true);
+        contributions[tokenId] = ContributionItem(_contributionName, _contributionUri, true);
     }
 
     /*//////////////////////////////////////////////////////////////
