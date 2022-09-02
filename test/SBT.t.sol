@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
-import {SevenTeenTwentyNineProofOfContribution} from "../src/SevenTeenTwentyNineProofOfContribution.sol";
+import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribution.sol";
 
 import "forge-std/Test.sol";
 import "./Fixtures.sol";

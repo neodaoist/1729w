@@ -34,7 +34,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
                         Constructor
     //////////////////////////////////////////////////////////////*/
 
-    constructor() {
+    constructor() ERC1155("") {
         nextTokenId.increment();  // start tokenId counter at 1
     }
 
