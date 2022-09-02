@@ -1,8 +1,8 @@
 {
     "name": "Social Token Design",
-    "image": "https://nftstorage.link/ipfs/bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
-    "description": "Essay: Social Token Design\n\nWriter: Jeremy J. Wade\n\nPublication date: 2022-07-26\n\nPublication URL: https://www.jwade.xyz/post/social-token-design\n\nArchival URL: https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq\n\n_This is winning essay #1 from 1729Writers Cohort #2. 1729Writers (https://paper.li/1729writers) is an experiment in coordinating independent writing with decentralized funding, focused on truth, health, wealth, and other ideas related to Balaji Srinivasan’s new book The Network State (https://thenetworkstate.com)_",
-    "external_url": "https://www.jwade.xyz/post/social-token-design",
+    "image": "ipfs://bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
+    "description": "Essay: Social Token Design\n\nWriter: Jeremy J. Wade\n\nPublication date: 2022-07-26\n\nPublication URL: https://www.jwade.xyz/post/social-token-design\n\nArchival URL: ipfs://bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq\n\n_This is winning essay #1 from 1729Writers Cohort #2. 1729Writers (https://paper.li/1729writers) is an experiment in coordinating independent writing with decentralized funding, focused on truth, health, wealth, and other ideas related to Balaji Srinivasan’s new book The Network State (https://thenetworkstate.com)_",
+    "external_url": "ipfs://bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq",
     "attributes": [
         {
             "trait_type": "Cohort",
@@ -27,12 +27,12 @@
         "week": "1",
         "status": "Weekly Winner",
         "name": "Social Token Design",
-        "image": "https://nftstorage.link/ipfs/bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
+        "image": "ipfs://bafybeicywwwtxirhtdgstqoqmax66wckhahu5mfeeuuxkakkmabniujln4",
         "description": "Essay: Social Token Design\n\nWriter: Jeremy J. Wade\n\nPublication date: 2022-07-26\n\nPublication URL: https://www.jwade.xyz/post/social-token-design\n\nArchival URL: https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq\n\n_This is winning essay #1 from 1729Writers Cohort #2. 1729Writers (https://paper.li/1729writers) is an experiment in coordinating independent writing with decentralized funding, focused on truth, health, wealth, and other ideas related to Balaji Srinivasan’s new book The Network State (https://thenetworkstate.com)_",
         "content_hash": "6b7daa8738677ffd8ae563c0f75ed042a1431756c406d650e0f358fefc863f3f",
         "writer_name": "Jeremy J. Wade",
         "writer_address": "0x000000000000000000000000000000000000000A",
         "publication_url": "https://www.jwade.xyz/post/social-token-design",
-        "archival_url": "https://nftstorage.link/ipfs/bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq"        
+        "archival_url": "ipfs://bafkreihhrwblscbw6f46od6ovlc23ay3vewxltggmjc6netxnodupkn5cq"        
     }
 }
