@@ -97,7 +97,7 @@ contract SBTTest is Test {
         sbt.issue(addresses.writer1, 1);
     }
 
-    function test_issue_whenPersonAlreadyHoldsSBTOfSameContributionType_shouldRevert() public {
+    function test_issue_whenPersonAlreadyHoldsSBTOfSameContribution_shouldRevert() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
@@ -105,6 +105,18 @@ contract SBTTest is Test {
         vm.expectRevert("SBT: a person can only receive one SBT per contribution");
         
         sbt.issue(addresses.writer1, 1);
+    }
+
+    function test_issue_whenMultipleContributionsToSamePerson() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.createContribution(CONTRIB2, URI2);
+        sbt.createContribution(CONTRIB3, URI3);
+
+        // no revert bc different contributions
+        sbt.issue(addresses.writer1, 1);
+        sbt.issue(addresses.writer1, 2);
+        sbt.issue(addresses.writer1, 3);
     }
 
     function test_issueBatch() public {

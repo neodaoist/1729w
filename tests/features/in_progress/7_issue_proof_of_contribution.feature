@@ -1,5 +1,5 @@
 Feature: Issue Proof of Contribution SBT
-    As the 1729 Writers administrator
+    As the 1729 Writers admin
     So that the 1729 Writers community can grow and the contributors can be recognized for their work
     I want to issue Proof of Contribution Soulbound Token (SBT)s to contributors
 
