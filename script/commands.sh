@@ -11,10 +11,7 @@ cast send --rpc-url="https://rinkeby.infura.io/v3/16782efe80f345afbd6eb65a60ab41
 
 # ERC1155 ProofOfContribution SBT
 
-
-
-
-# scratch
-forge create OneSevenTwoNineEssay --constructor-args "0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce" --rpc-url="https://rinkeby.infura.io/v3/16782efe80f345afbd6eb65a60ab4146" --private-key=$PRIVATE_KEY
-# update values in Mint and ListBid scripts
-forge script script/MintEssay.s.sol:MintEssayScript --rpc-url="https://rinkeby.infura.io/v3/16782efe80f345afbd6eb65a60ab4146" --private-key=$PRIVATE_KEY --broadcast
+# mint Essay NFT (requires .env)
+forge script script/MintEssay.s.sol:MintEssayScript --rpc-url=$RPC_URL --private-key=$PRIVATE_KEY --broadcast --ffi
+# list/bid Essay NFT (requires .env)
+forge script script/ListBidEssay.s.sol:ListBidEssayScript --rpc-url=$RPC_URL --private-key=$PRIVATE_KEY --broadcast --slow --ffi
