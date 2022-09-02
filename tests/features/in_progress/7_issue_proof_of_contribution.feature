@@ -22,7 +22,10 @@ Feature: Issue Proof of Contribution SBT
         #            | Contribution Date | 2022 August                              |
         And the SBT should not be transferrable
 
-# TODO add quantity=1 check
+    Scenario: Person can only receive 1 SBT per contribution
+        Given Address 0xCAFE has 1 Fully Participating Writer SBT
+        When I issue a Fully Participating Writer SBT to address 0xCAFE
+        Then I should receive an "SBT: a person can only receive one SBT per contribution" error
 
 # Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
 #     Given There are 5 writers who submitted a valid essay in at least 1 week

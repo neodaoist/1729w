@@ -97,6 +97,16 @@ contract SBTTest is Test {
         sbt.issue(addresses.writer1, 1);
     }
 
+    function test_issue_whenPersonAlreadyHoldsSBTOfSameContributionType_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        
+        vm.expectRevert("SBT: a person can only receive one SBT per contribution");
+        
+        sbt.issue(addresses.writer1, 1);
+    }
+
     function test_issueBatch() public {
         address[] memory issuees = new address[](3);
         issuees[0] = address(0xA);
