@@ -7,16 +7,14 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
 contract MintEssayScript is Script {
-    //
-    address tokenAddress = 0x193d1e3500E1937dF922C91030bf86cb443aaDDe;  // Rinkeby
-    address multisig = 0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce;  //  Rinkeby
-    address authorAddress = 0xc7737DD9059651a5058b9e0c1E34029B7B677a44;  // Rinkeby
-    string essayUrl = "ipfs://bafkreihqq5g7ygkqst4j2in57ghi56ry2tdr35nqqf5bqp3z5lzw7qa5na";
-
-
 
     function run() public {
-
+        // Load config from .env
+        Solenv.config();
+        address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
+        address multisig = vm.envAddress("MULTISIG_ADDRESS");
+        address authorAddress = vm.envAddress("AUTHOR_ADDRESS");
+        string memory essayUrl = vm.envString("ESSAY_URL");
         // generate hash for Essay markdown
 
         // upload Essay image to IPFS

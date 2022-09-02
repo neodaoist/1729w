@@ -4,24 +4,27 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 
 import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
+import {Solenv} from "solenv/Solenv.sol";
 
 contract ListBidEssayScript is Script {
-    //
-    address TOKEN_ADDRESS = address(0x193d1e3500E1937dF922C91030bf86cb443aaDDe);  // Rinkeby
-    address MULTISIG_ADDRESS = address(0x3653Cd49a47Ca29d4df701449F281B29CbA9e1ce);  // Rinkeby
-    address AUCTION_HOUSE_ADDRESS = address(0x3feAf4c06211680e5969A86aDB1423Fc8AD9e994);  // Rinkeby
-    address MODULE_MANAGER_ADDRESS = address(0xa248736d3b73A231D95A5F99965857ebbBD42D85);  // Rinkeby
-    address TRANSFER_HELPER_ADDRESS = address(0x029AA5a949C9C90916729D50537062cb73b5Ac92);  // Rinkeby
-
-    // Parameters
-    uint256 TOKEN_ID = 1;
-    address AUTHOR_ADDRESS = address(0xc7737DD9059651a5058b9e0c1E34029B7B677a44);  // Rinkeby
-    uint256 AUCTION_DURATION = 3 days;
-    uint256 AUCTION_RESERVE_PRICE = 0.1 ether;
-    uint256 BID_AMOUNT = 0.05 ether;
-
 
     function run() public {
+
+        // Load config from .env
+        Solenv.config();
+        address TOKEN_ADDRESS = vm.envAddress("TOKEN_ADDRESS");
+        address MULTISIG_ADDRESS = vm.envAddress("MULTISIG_ADDRESS");
+        address AUCTION_HOUSE_ADDRESS = vm.envAddress("AUCTION_HOUSE_ADDRESS");
+        address MODULE_MANAGER_ADDRESS = vm.envAddress("MODULE_MANAGER_ADDRESS");
+        address TRANSFER_HELPER_ADDRESS = vm.envAddress("TRANSFER_HELPER_ADDRESS");
+
+        // Parameters
+        uint256 TOKEN_ID = vm.envUint("TOKEN_ID");
+        address AUTHOR_ADDRESS = vm.envAddress("AUTHOR_ADDRESS");
+        uint256 AUCTION_DURATION = vm.envUint("AUCTION_DURATION");
+        uint256 AUCTION_RESERVE_PRICE = vm.envUint("AUCTION_RESERVE_PRICE");
+        uint256 BID_AMOUNT = vm.envUint("BID_AMOUNT");
+
         // set up auctionhouse
         ReserveAuctionCoreETH auctionHouse = ReserveAuctionCoreETH(AUCTION_HOUSE_ADDRESS);
 
@@ -67,7 +70,7 @@ contract ListBidEssayScript is Script {
 
         vm.startBroadcast();
         // place bid on essay
-        auctionHouse.createBid{value: 0.1 ether}(TOKEN_ADDRESS, TOKEN_ID);
+        auctionHouse.createBid{value: BID_AMOUNT}(vm.envAddress("TOKEN_ADDRESS"), TOKEN_ID);
 
         vm.stopBroadcast();
     }
