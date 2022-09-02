@@ -14,20 +14,27 @@ import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribu
 contract IssueSBTScript is Script {
     //
 
-    address sbtAddress = 0x420668ef51a9FaF4333f4243203AE6d2F573a660;
-    address writer1 = 0xCC1ed849AF02c295Edf56DF1bd00f8664A4F55f1;
+    address sbtAddress = 0xb824007bF78162F5299a079ebFCA7C2C342Ad2f4;     
 
     string sbtName = "Cohort 2 - Fully Participating Writer";
     string sbtURI = "ipfs://bafkreig43xs7tesmeb2cvawkvacxxf6fc3l5xha3pycpoulvacog7klzxm";
-    
-    // function setUp() public {}
 
+    address[] issuees;
+
+    function setUp() public {
+        issuees = new address[](3);
+
+        issuees[0] = 0xCC1ed849AF02c295Edf56DF1bd00f8664A4F55f1;
+        issuees[1] = address(0xA);
+        issuees[2] = address(0xB);
+    }
+    
     function run() public {
         SevenTeenTwentyNineProofOfContribution sbt = SevenTeenTwentyNineProofOfContribution(sbtAddress);
 
         vm.startBroadcast();
         sbt.createContribution(sbtName, sbtURI);
-        sbt.issue(writer1, 1);
+        sbt.issueBatch(issuees, 1);
         vm.stopBroadcast();
     }
 }
