@@ -39,6 +39,7 @@ contract ListBidEssayScript is Script {
 
         vm.startBroadcast();
         // list essay
+
         auctionHouse.createAuction(
             TOKEN_ADDRESS,
             TOKEN_ID,
@@ -68,19 +69,6 @@ contract ListBidEssayScript is Script {
         // place bid on essay
         auctionHouse.createBid{value: 0.1 ether}(TOKEN_ADDRESS, TOKEN_ID);
 
-        // verify bid
-        (
-            ,
-            ,
-            ,
-            uint96 highestBid,
-            address highestBidder,
-            ,
-            ,
-        ) = auctionHouse.auctionForNFT(address(nft), 1);
-
-        require(highestBid == BID_AMOUNT, "Highest bid not found");
-        require(highestBidder == MULTISIG_ADDRESS, "Multisig is not the highest bidder");
         vm.stopBroadcast();
     }
 }
