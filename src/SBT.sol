@@ -58,15 +58,6 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         return _hasToken(_owner, _tokenId);
     }
 
-    /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
-    function _hasToken(address _owner, uint256 _tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        return balanceOf(_owner, _tokenId) >= 1;
-    }
-
     /// @inheritdoc	ISoulbound
     function hasTokenBatch(address[] calldata _owners, uint256 _tokenId)
         external
@@ -106,12 +97,6 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _issue(_recipient, _tokenId);
     }
 
-    /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
-    function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
-        emit Issue(address(this), _recipient, _tokenId);
-        _mint(_recipient, _tokenId, 1, "");
-    }
-
     /// @inheritdoc	ISoulbound
     function issueBatch(address[] calldata _recipients, uint256 _tokenId) external onlyOwner {
         for (uint256 i = 0; i < _recipients.length; i++) {
@@ -128,16 +113,39 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         _revoke(_owner, _tokenId, _reason);
     }
 
-    /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
-    function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal contributionExists(_tokenId) {
-        emit Revoke(address(this), _owner, _tokenId, _reason);
-        _burn(_owner, _tokenId, 1);
-    }
-
     /// @inheritdoc	ISoulbound
     function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external onlyOwner {
         for (uint256 i = 0; i < _owners.length; i++) {
             _revoke(_owners[i], _tokenId, _reason);
         }
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Internal Functions – Views
+    //////////////////////////////////////////////////////////////*/
+
+    /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
+    function _hasToken(address _owner, uint256 _tokenId)
+        internal
+        view
+        returns (bool)
+    {
+        return balanceOf(_owner, _tokenId) >= 1;
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Internal Functions – Transactions
+    //////////////////////////////////////////////////////////////*/
+
+    /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
+    function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
+        emit Issue(address(this), _recipient, _tokenId);
+        _mint(_recipient, _tokenId, 1, "");
+    }
+
+    /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
+    function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal contributionExists(_tokenId) {
+        emit Revoke(address(this), _owner, _tokenId, _reason);
+        _burn(_owner, _tokenId, 1);
     }
 }
