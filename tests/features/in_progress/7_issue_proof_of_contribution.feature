@@ -22,6 +22,8 @@ Feature: Issue Proof of Contribution SBT
         #            | Contribution Date | 2022 August                              |
         And the SBT should not be transferrable
 
+# TODO add quantity=1 check
+
 # Scenario: Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
 #     Given There are 5 writers who submitted a valid essay in at least 1 week
 #     But they did not submit a valid essay all 4 weeks
