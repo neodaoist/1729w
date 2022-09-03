@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.13;
 
 import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribution.sol";
 
@@ -342,7 +342,7 @@ contract SBTTest is Test {
                         ERC1155 Spec Adherance
     //////////////////////////////////////////////////////////////*/
 
-    function test_issue_AdheresToERC1155Spec() public {
+    function test_issue_adheresToERC1155Spec() public {
         vm.expectEmit(true, true, true, true);
         emit Events.TransferSingle(addresses.multisig, address(0), addresses.writer1, 1, 1);
 
@@ -351,18 +351,83 @@ contract SBTTest is Test {
         sbt.issue(addresses.writer1, 1);
     }
 
-    // TODO issueBatch, revoke, revokeBatch, reject
+    function test_issueBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-    function test_hasToken_AdheresToERC1155Spec() public {
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.TransferSingle(addresses.multisig, address(0), issuees[i], 1, 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
+    }
+
+    function test_revoke_adheresToERC1155Spec() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
 
-        assertEq(sbt.balanceOf(addresses.writer1, 1), 1);
-        assertTrue(sbt.hasToken(addresses.writer1, 1));
+        vm.expectEmit(true, true, true, true);
+        emit Events.TransferSingle(addresses.multisig, addresses.writer1, address(0), 1, 1);
+
+        sbt.revoke(addresses.writer1, 1, "did something naughty");
     }
 
-    // TODO hasTokenBatch
+    function test_revokeBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
+
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.TransferSingle(addresses.multisig, issuees[i], address(0), 1, 1);
+        }
+
+        sbt.revokeBatch(issuees, 1, "did something naughty");
+    }
+
+    function test_reject_adheresToERC1155Spec() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
+
+        // note that the operator in the ERC1155 TransferSingle event which gets emitted is
+        // the address which owned the SBT, not the contract owner as in revoke / revokeBatch
+        vm.expectEmit(true, true, true, true);
+        emit Events.TransferSingle(addresses.writer1, addresses.writer1, address(0), 1, 1);
+
+        vm.prank(addresses.writer1);
+        sbt.reject(1);
+    }
+
+    function test_hasToken_adheresToERC1155Spec() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+
+        assertEq(sbt.balanceOf(addresses.writer1, 1), 1); // ERC1155 native function
+        assertTrue(sbt.hasToken(addresses.writer1, 1)); // SBT specific function
+    }
+
+    function test_hasTokenBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
+
+        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
+
+        for (uint256 i = 0; i < issuees.length; i++) {
+            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
+            assertTrue(hasTokens[i]);
+        }
+    }
 }
 
 library Events {
