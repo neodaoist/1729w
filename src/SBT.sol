@@ -81,25 +81,31 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
                         Nontransferability
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev Soulbound tokens are nontransferable
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings unused parameters and function mutability
+    /// @dev while still overriding ERC1155 functions, parameter names are commented out and 
+    /// @dev pure mutability is added.
     function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public override {
+        address /*from*/,
+        address /*to*/,
+        uint256 /*id*/,
+        uint256 /*amount*/,
+        bytes memory /*data*/
+    ) public pure override {
         revert("SBT: soulbound tokens are nontransferable");
     }
 
-    /// @dev Soulbound tokens are nontransferable
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings unused parameters and function mutability
+    /// @dev while still overriding ERC1155 functions, parameter names are commented out and 
+    /// @dev pure mutability is added.
     function safeBatchTransferFrom(
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public override {
+        address /*from*/,
+        address /*to*/,
+        uint256[] memory /*ids*/,
+        uint256[] memory /*amounts*/,
+        bytes memory /*data*/
+    ) public pure override {
         revert("SBT: soulbound tokens are nontransferable");
     }
 

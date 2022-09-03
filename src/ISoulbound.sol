@@ -71,6 +71,7 @@ interface ISoulbound {
     /// @notice Create a contribution so that SBTs can be issued for it
     /// @param _contributionName The name of the contribution
     /// @param _contributionUri The fully qualified URI of the contribution JSON metadata
+    /// @return The token ID of the newly created contribution
     function createContribution(
         string calldata _contributionName,
         string calldata _contributionUri
@@ -81,13 +82,11 @@ interface ISoulbound {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Issue an SBT to a single address
-    /// @dev Currently token ID management is left to the end user
     /// @param _recipient The address to receive the SBT
     /// @param _tokenId The token ID of the SBT
     function issue(address _recipient, uint256 _tokenId) external;
 
     /// @notice Issue an SBT to multiple addresses
-    /// @dev Currently token ID management is left to the end user
     /// @param _recipients The addresses to receive the SBT
     /// @param _tokenId The token ID of the SBT
     function issueBatch(
