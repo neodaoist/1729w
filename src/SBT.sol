@@ -13,17 +13,21 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     using Counters for Counters.Counter;
 
-    // TODO add doc
+    /// @dev Check that a contribution exists
+    /// @param _tokenId The token ID to check
     modifier contributionExists(uint256 _tokenId) {
         require(contributions[_tokenId].created, "SBT: no matching contribution found");        
         _;
     }
 
-    // TODO add doc
+    /// @dev A representation of a specific type of contribution, for which SBTs can then be issued to contributors
+    /// @param name The name of the contribution
+    /// @param uri The fully qualified URI of the contribution JSON metadata
+    /// @param created Flag to check if a given ContributionItem exists in the `contributions` mapping
     struct ContributionItem {
         string name;
         string uri;
-        bool created; // TODO investigate other possible patterns
+        bool created;
     }
 
     mapping(uint256 => ContributionItem) public contributions;
@@ -88,6 +92,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         revert("SBT: soulbound tokens are nontransferable");
     }
 
+    /// @dev Soulbound tokens are nontransferable
     function safeBatchTransferFrom(
         address from,
         address to,

@@ -351,7 +351,7 @@ contract SBTTest is Test {
         sbt.issue(addresses.writer1, 1);
     }
 
-    // TODO issueBatch, revoke, revokeBatch
+    // TODO issueBatch, revoke, revokeBatch, reject
 
     function test_hasToken_AdheresToERC1155Spec() public {
         vm.startPrank(addresses.multisig);
@@ -365,7 +365,6 @@ contract SBTTest is Test {
     // TODO hasTokenBatch
 }
 
-// TODO DRY up via an Event-specific library
 library Events {
     //
 

@@ -68,7 +68,9 @@ interface ISoulbound {
                         Transactions – Creating
     //////////////////////////////////////////////////////////////*/
 
-    // TODO add doc
+    /// @notice Create a contribution so that SBTs can be issued for it
+    /// @param _contributionName The name of the contribution
+    /// @param _contributionUri The fully qualified URI of the contribution JSON metadata
     function createContribution(
         string calldata _contributionName,
         string calldata _contributionUri
