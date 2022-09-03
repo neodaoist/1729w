@@ -82,9 +82,9 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings unused parameters and function mutability
-    /// @dev while still overriding ERC1155 functions, parameter names are commented out and 
-    /// @dev pure mutability is added.
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and 
+    /// @dev function mutability is set to pure.
     function safeTransferFrom(
         address /*from*/,
         address /*to*/,
@@ -96,9 +96,9 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     }
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings unused parameters and function mutability
-    /// @dev while still overriding ERC1155 functions, parameter names are commented out and 
-    /// @dev pure mutability is added.
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and 
+    /// @dev function mutability is set to pure.
     function safeBatchTransferFrom(
         address /*from*/,
         address /*to*/,
