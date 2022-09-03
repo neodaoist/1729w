@@ -11,6 +11,7 @@ contract SBTTest is Test {
     SevenTeenTwentyNineProofOfContribution sbt;
 
     TestAddresses addresses;
+    address[] issuees;
     string URI1 = "ipfs://ABC/1";
     string URI2 = "ipfs://DEF/2";
     string URI3 = "ipfs://GHI/3";
@@ -61,17 +62,13 @@ contract SBTTest is Test {
     function test_createContribution_whenNotOwner_shouldRevert() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(address(0xABCD)); // random EOA
+        vm.prank(addresses.randomEOA);
         sbt.createContribution(CONTRIB1, URI1);
     }
 
     /*//////////////////////////////////////////////////////////////
                         Issuing
     //////////////////////////////////////////////////////////////*/
-
-    // TODO decide if we should enforce 1 credential of each type per user or support multiple / max
-    // if yes — replace amount of 1 in SBT with something other than a magic number
-    // if no — add to functions and events, consider adding an immutable constructor arg for max
 
     function test_issue() public {
         vm.expectEmit(true, true, true, true);
@@ -80,13 +77,14 @@ contract SBTTest is Test {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
+        
         assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
     function test_issue_whenNotOwner_shouldRevert() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(address(0xABCD)); // from random EOA
+        vm.prank(addresses.randomEOA);
         sbt.issue(addresses.writer1, 1);
     }
 
@@ -120,10 +118,7 @@ contract SBTTest is Test {
     }
 
     function test_issueBatch() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         for (uint256 i = 0; i < issuees.length; i++) {
             vm.expectEmit(true, true, true, true);
@@ -140,22 +135,16 @@ contract SBTTest is Test {
     }
 
     function test_issueBatch_whenNotOwner_shouldRevert() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(address(0xABCD)); // from random EOA
+        vm.prank(addresses.randomEOA);
         sbt.issueBatch(issuees, 1);
     }
 
     function test_issueBatch_whenContributionDoesNotExist_shouldRevert() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("SBT: no matching contribution found");
 
@@ -188,7 +177,7 @@ contract SBTTest is Test {
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(address(0xABCD)); // from random EOA
+        vm.prank(addresses.randomEOA);
         sbt.revoke(addresses.writer1, 1, "did something naughty");
     }
 
@@ -200,13 +189,10 @@ contract SBTTest is Test {
     }
 
     function test_revokeBatch() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
         sbt.issueBatch(issuees, 1);
 
         for (uint256 i = 0; i < issuees.length; i++) {
@@ -222,10 +208,7 @@ contract SBTTest is Test {
     }    
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
@@ -234,15 +217,12 @@ contract SBTTest is Test {
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(address(0xABCD)); // from random EOA
+        vm.prank(addresses.randomEOA);
         sbt.revokeBatch(issuees, 1, "did something naughty");
     }
 
     function test_revokeBatch_whenContributionDoesNotExist_shouldRevert() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("SBT: no matching contribution found");
 
@@ -263,10 +243,7 @@ contract SBTTest is Test {
     }
 
     function test_hasTokenBatch() public {
-        address[] memory issuees = new address[](3);
-        issuees[0] = addresses.writer1;
-        issuees[1] = address(0xB);
-        issuees[2] = address(0xC);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);

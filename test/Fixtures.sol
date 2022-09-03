@@ -16,6 +16,7 @@ struct TestAddresses {
     address writer3;
     address writer4;
     address writer5;
+    address randomEOA;
 }
 
 /// @dev Get a list of addresses
@@ -26,7 +27,8 @@ function getAddresses() pure returns (TestAddresses memory) {
         writer2: address(0x2),
         writer3: address(0x3),
         writer4: address(0x4),
-        writer5: address(0x5)
+        writer5: address(0x5),
+        randomEOA: address(0xABCD)
     });
 
     return addresses;
