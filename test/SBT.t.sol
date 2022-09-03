@@ -77,7 +77,7 @@ contract SBTTest is Test {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
-        
+
         assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
@@ -231,6 +231,46 @@ contract SBTTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        Rejecting
+    //////////////////////////////////////////////////////////////*/
+
+    function test_reject() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
+
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+
+        vm.expectEmit(true, true, true, true);
+        emit Events.Reject(addresses.writer1, 1);
+
+        vm.prank(addresses.writer1);
+        sbt.reject(1);
+
+        assertFalse(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_reject_whenContributionDoesNotExist_shouldRevert() public {
+        vm.expectRevert("SBT: no matching contribution found");
+
+        vm.prank(addresses.writer1);
+        sbt.reject(1);    
+    }
+
+    function test_reject_whenNotOwnerOfToken_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
+
+        vm.expectRevert("SBT: no matching soulbound token found");
+
+        vm.prank(addresses.writer2);
+        sbt.reject(1);    
+    }
+
+    /*//////////////////////////////////////////////////////////////
                         Views
     //////////////////////////////////////////////////////////////*/
 
@@ -267,7 +307,7 @@ contract SBTTest is Test {
         sbt.issue(addresses.writer1, 1);
         vm.stopPrank();
 
-        vm.expectRevert("SBT: Soulbound tokens are nontransferable");
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
 
         vm.prank(addresses.writer1);
         sbt.safeTransferFrom(addresses.writer1, addresses.writer2, 1, 1, "");
@@ -292,7 +332,7 @@ contract SBTTest is Test {
         amounts[1] = 2;
         amounts[2] = 3;
 
-        vm.expectRevert("SBT: Soulbound tokens are nontransferable");
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
 
         vm.prank(addresses.writer1);
         sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
@@ -333,9 +373,11 @@ library Events {
                         SBT
     //////////////////////////////////////////////////////////////*/
 
-    event Issue(address indexed _issuer, address indexed _issuee, uint256 _tokenId);
+    event Issue(address indexed _issuer, address indexed _issuee, uint256 indexed _tokenId);
 
-    event Revoke(address indexed _revoker, address indexed _revokee, uint256 _tokenId, string _reason);
+    event Revoke(address indexed _revoker, address indexed _revokee, uint256 indexed _tokenId, string _reason);
+
+    event Reject(address indexed _rejecter, uint256 indexed _tokenId);
 
     /*//////////////////////////////////////////////////////////////
                         ERC1155

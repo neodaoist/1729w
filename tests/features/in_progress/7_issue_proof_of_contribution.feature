@@ -26,6 +26,7 @@ Feature: Issue Proof of Contribution SBT
         When They attempt to transfer it to address 0xABCD
         Then The SBT should be nontransferable
 
+    # QUESTION should we include batch functionality in our behavior tests?
     Scenario: Contributor can not batch transfer SBT
         Given Address 0xCAFE has 1 Fully Participating Writer SBT
         And Address 0xCAFE has 1 Winning Writer SBT
@@ -33,7 +34,12 @@ Feature: Issue Proof of Contribution SBT
         When They attempt to batch transfer all 3 SBTs to address 0xABCD
         Then The SBTs should be nontransferable
 
-    Scenario: Contributor can only receive 1 SBT per contribution
+    Scenario: Contributor can receive only 1 SBT per contribution
         Given Address 0xCAFE has 1 Fully Participating Writer SBT
         When I issue a Fully Participating Writer SBT to address 0xCAFE
         Then I should receive an "SBT: a person can only receive one SBT per contribution" error
+
+    Scenario: Contributor can reject SBT
+        Given Address 0xCAFE has 1 Fully Participating Writer SBT
+        When They reject this Proof of Contribution
+        Then Address 0xCAFE should have 0 Fully Participating Writer SBTs

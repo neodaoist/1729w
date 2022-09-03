@@ -85,7 +85,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         uint256 amount,
         bytes memory data
     ) public override {
-        revert("SBT: Soulbound tokens are nontransferable");
+        revert("SBT: soulbound tokens are nontransferable");
     }
 
     function safeBatchTransferFrom(
@@ -95,7 +95,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         uint256[] memory amounts,
         bytes memory data
     ) public override {
-        revert("SBT: Soulbound tokens are nontransferable");
+        revert("SBT: soulbound tokens are nontransferable");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -143,6 +143,18 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         for (uint256 i = 0; i < _owners.length; i++) {
             _revoke(_owners[i], _tokenId, _reason);
         }
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Transactions – Rejecting
+    //////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc	ISoulbound
+    function reject(uint256 _tokenId) external contributionExists(_tokenId) {
+        require(_hasToken(msg.sender, _tokenId), "SBT: no matching soulbound token found");
+        
+        emit Reject(msg.sender, _tokenId);
+        _burn(msg.sender, _tokenId, 1);
     }
 
     /*//////////////////////////////////////////////////////////////
