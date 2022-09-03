@@ -74,7 +74,7 @@ interface ISoulbound {
     function createContribution(
         string calldata _contributionName,
         string calldata _contributionUri
-    ) external;
+    ) external returns (uint256);
 
     /*//////////////////////////////////////////////////////////////
                         Transactions – Issuing

@@ -111,11 +111,13 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     function createContribution(
         string calldata _contributionName,
         string calldata _contributionUri
-    ) external onlyOwner {
+    ) external onlyOwner returns (uint256) {
         uint256 tokenId = nextTokenId.current();
         nextTokenId.increment();
 
         contributions[tokenId] = ContributionItem(_contributionName, _contributionUri, true);
+
+        return tokenId;
     }
 
     /*//////////////////////////////////////////////////////////////

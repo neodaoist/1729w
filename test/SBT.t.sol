@@ -34,11 +34,17 @@ contract SBTTest is Test {
 
     function test_createContribution() public {
         vm.startPrank(addresses.multisig);
-        sbt.createContribution(CONTRIB1, URI1);
-        sbt.createContribution(CONTRIB2, URI2);
-        sbt.createContribution(CONTRIB3, URI3);
-        sbt.createContribution(CONTRIB4, URI4);
-        sbt.createContribution(CONTRIB5, URI5);
+        uint256 tokenId1 = sbt.createContribution(CONTRIB1, URI1);
+        uint256 tokenId2 = sbt.createContribution(CONTRIB2, URI2);
+        uint256 tokenId3 = sbt.createContribution(CONTRIB3, URI3);
+        uint256 tokenId4 = sbt.createContribution(CONTRIB4, URI4);
+        uint256 tokenId5 = sbt.createContribution(CONTRIB5, URI5);
+
+        assertEq(tokenId1, 1);
+        assertEq(tokenId2, 2);
+        assertEq(tokenId3, 3);
+        assertEq(tokenId4, 4);
+        assertEq(tokenId5, 5);
 
         (string memory contributionName1, , ) = sbt.contributions(1);
         (string memory contributionName2, , ) = sbt.contributions(2);
