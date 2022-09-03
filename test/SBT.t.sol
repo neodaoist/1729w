@@ -75,19 +75,19 @@ contract SBTTest is Test {
 
     function test_issue() public {
         vm.expectEmit(true, true, true, true);
-        emit Events.Issue(address(sbt), address(0xA), 1);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
-        assertTrue(sbt.hasToken(address(0xA), 1));
+        sbt.issue(addresses.writer1, 1);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
     function test_issue_whenNotOwner_shouldRevert() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(address(0xABCD)); // from random EOA
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
     }
 
     function test_issue_whenContributionDoesNotExist_shouldRevert() public {
@@ -121,7 +121,7 @@ contract SBTTest is Test {
 
     function test_issueBatch() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -141,7 +141,7 @@ contract SBTTest is Test {
 
     function test_issueBatch_whenNotOwner_shouldRevert() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -153,7 +153,7 @@ contract SBTTest is Test {
 
     function test_issueBatch_whenContributionDoesNotExist_shouldRevert() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -170,26 +170,26 @@ contract SBTTest is Test {
     function test_revoke() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
 
         vm.expectEmit(true, true, true, true);
-        emit Events.Revoke(address(sbt), address(0xA), 1, "did something naughty");
+        emit Events.Revoke(address(sbt), addresses.writer1, 1, "did something naughty");
 
-        sbt.revoke(address(0xA), 1, "did something naughty");
+        sbt.revoke(addresses.writer1, 1, "did something naughty");
 
-        assertFalse(sbt.hasToken(address(0xA), 1));
+        assertFalse(sbt.hasToken(addresses.writer1, 1));
     }
 
     function test_revoke_whenNotOwner_shouldRevert() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
         vm.stopPrank();
 
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(address(0xABCD)); // from random EOA
-        sbt.revoke(address(0xA), 1, "did something naughty");
+        sbt.revoke(addresses.writer1, 1, "did something naughty");
     }
 
     function test_revoke_whenContributionDoesNotExist_shouldRevert() public {
@@ -204,7 +204,7 @@ contract SBTTest is Test {
         sbt.createContribution(CONTRIB1, URI1);
 
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
         sbt.issueBatch(issuees, 1);
@@ -223,7 +223,7 @@ contract SBTTest is Test {
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -240,7 +240,7 @@ contract SBTTest is Test {
 
     function test_revokeBatch_whenContributionDoesNotExist_shouldRevert() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -257,14 +257,14 @@ contract SBTTest is Test {
     function test_hasToken() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
 
-        assertTrue(sbt.hasToken(address(0xA), 1));
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
     function test_hasTokenBatch() public {
         address[] memory issuees = new address[](3);
-        issuees[0] = address(0xA);
+        issuees[0] = addresses.writer1;
         issuees[1] = address(0xB);
         issuees[2] = address(0xC);
 
@@ -281,16 +281,57 @@ contract SBTTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        Nontransferability
+    //////////////////////////////////////////////////////////////*/
+
+    function test_safeTransferFrom_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
+
+        vm.expectRevert("SBT: Soulbound tokens are nontransferable");
+
+        vm.prank(addresses.writer1);
+        sbt.safeTransferFrom(addresses.writer1, addresses.writer2, 1, 1, "");
+    }
+
+    function test_safeBatchTransferFrom_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.createContribution(CONTRIB2, URI2);
+        sbt.createContribution(CONTRIB3, URI3);
+        sbt.issue(addresses.writer1, 1);
+        sbt.issue(addresses.writer1, 2);
+        sbt.issue(addresses.writer1, 3);
+        vm.stopPrank();
+
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+        uint256[] memory amounts = new uint256[](3);
+        amounts[0] = 1;
+        amounts[1] = 2;
+        amounts[2] = 3;
+
+        vm.expectRevert("SBT: Soulbound tokens are nontransferable");
+
+        vm.prank(addresses.writer1);
+        sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
+    }
+
+    /*//////////////////////////////////////////////////////////////
                         ERC1155 Spec Adherance
     //////////////////////////////////////////////////////////////*/
 
     function test_issue_AdheresToERC1155Spec() public {
         vm.expectEmit(true, true, true, true);
-        emit Events.TransferSingle(addresses.multisig, address(0), address(0xA), 1, 1);
+        emit Events.TransferSingle(addresses.multisig, address(0), addresses.writer1, 1, 1);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
     }
 
     // TODO issueBatch, revoke, revokeBatch
@@ -298,10 +339,10 @@ contract SBTTest is Test {
     function test_hasToken_AdheresToERC1155Spec() public {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(address(0xA), 1);
+        sbt.issue(addresses.writer1, 1);
 
-        assertEq(sbt.balanceOf(address(0xA), 1), 1);
-        assertTrue(sbt.hasToken(address(0xA), 1));
+        assertEq(sbt.balanceOf(addresses.writer1, 1), 1);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
     // TODO hasTokenBatch
