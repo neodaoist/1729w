@@ -420,20 +420,20 @@ contract SBTTest is Test {
         assertTrue(sbt.hasToken(addresses.writer1, 1)); // SBT specific function
     }
 
-    // function test_hasTokenBatch_adheresToERC1155Spec() public {
-    //     issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+    function test_hasTokenBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.issueBatch(issuees, 1);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
 
-    //     bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
+        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
 
-    //     for (uint256 i = 0; i < issuees.length; i++) {
-    //         assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
-    //         assertTrue(hasTokens[i]);
-    //     }
-    // }
+        for (uint256 i = 0; i < issuees.length; i++) {
+            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
+            assertTrue(hasTokens[i]);
+        }
+    }
 }
 
 library Events {
