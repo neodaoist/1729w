@@ -307,42 +307,42 @@ contract SBTTest is Test {
                         Nontransferability
     //////////////////////////////////////////////////////////////*/
 
-    // function test_safeTransferFrom_shouldRevert() public {
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.issue(addresses.writer1, 1);
-    //     vm.stopPrank();
+    function test_safeTransferFrom_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
 
-    //     vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
 
-    //     vm.prank(addresses.writer1);
-    //     sbt.safeTransferFrom(addresses.writer1, addresses.writer2, 1, 1, "");
-    // }
+        vm.prank(addresses.writer1);
+        sbt.safeTransferFrom(addresses.writer1, addresses.writer2, 1, 1, "");
+    }
 
-    // function test_safeBatchTransferFrom_shouldRevert() public {
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.createContribution(CONTRIB2, URI2);
-    //     sbt.createContribution(CONTRIB3, URI3);
-    //     sbt.issue(addresses.writer1, 1);
-    //     sbt.issue(addresses.writer1, 2);
-    //     sbt.issue(addresses.writer1, 3);
-    //     vm.stopPrank();
+    function test_safeBatchTransferFrom_shouldRevert() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.createContribution(CONTRIB2, URI2);
+        sbt.createContribution(CONTRIB3, URI3);
+        sbt.issue(addresses.writer1, 1);
+        sbt.issue(addresses.writer1, 2);
+        sbt.issue(addresses.writer1, 3);
+        vm.stopPrank();
 
-    //     uint256[] memory ids = new uint256[](3);
-    //     ids[0] = 1;
-    //     ids[1] = 2;
-    //     ids[2] = 3;
-    //     uint256[] memory amounts = new uint256[](3);
-    //     amounts[0] = 1;
-    //     amounts[1] = 2;
-    //     amounts[2] = 3;
+        uint256[] memory ids = new uint256[](3);
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+        uint256[] memory amounts = new uint256[](3);
+        amounts[0] = 1;
+        amounts[1] = 2;
+        amounts[2] = 3;
 
-    //     vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
 
-    //     vm.prank(addresses.writer1);
-    //     sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
-    // }
+        vm.prank(addresses.writer1);
+        sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
+    }
 
     /*//////////////////////////////////////////////////////////////
                         ERC1155 Spec Adherance
