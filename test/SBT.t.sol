@@ -370,16 +370,16 @@ contract SBTTest is Test {
     //     sbt.issueBatch(issuees, 1);
     // }
 
-    // function test_revoke_adheresToERC1155Spec() public {
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.issue(addresses.writer1, 1);
+    function test_revoke_adheresToERC1155Spec() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
 
-    //     vm.expectEmit(true, true, true, true);
-    //     emit Events.TransferSingle(addresses.multisig, addresses.writer1, address(0), 1, 1);
+        vm.expectEmit(true, true, true, true);
+        emit Events.TransferSingle(addresses.multisig, addresses.writer1, address(0), 1, 1);
 
-    //     sbt.revoke(addresses.writer1, 1, "did something naughty");
-    // }
+        sbt.revoke(addresses.writer1, 1, "did something naughty");
+    }
 
     // function test_revokeBatch_adheresToERC1155Spec() public {
     //     issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
