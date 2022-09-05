@@ -396,20 +396,20 @@ contract SBTTest is Test {
     //     sbt.revokeBatch(issuees, 1, "did something naughty");
     // }
 
-    // function test_reject_adheresToERC1155Spec() public {
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.issue(addresses.writer1, 1);
-    //     vm.stopPrank();
+    function test_reject_adheresToERC1155Spec() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+        vm.stopPrank();
 
-    //     // note that the operator in the ERC1155 TransferSingle event which gets emitted is
-    //     // the address which owned the SBT, not the contract owner as in revoke / revokeBatch
-    //     vm.expectEmit(true, true, true, true);
-    //     emit Events.TransferSingle(addresses.writer1, addresses.writer1, address(0), 1, 1);
+        // note that the operator in the ERC1155 TransferSingle event which gets emitted is
+        // the address which owned the SBT, not the contract owner as in revoke / revokeBatch
+        vm.expectEmit(true, true, true, true);
+        emit Events.TransferSingle(addresses.writer1, addresses.writer1, address(0), 1, 1);
 
-    //     vm.prank(addresses.writer1);
-    //     sbt.reject(1);
-    // }
+        vm.prank(addresses.writer1);
+        sbt.reject(1);
+    }
 
     function test_hasToken_adheresToERC1155Spec() public {
         vm.startPrank(addresses.multisig);
