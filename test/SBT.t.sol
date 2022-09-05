@@ -381,20 +381,20 @@ contract SBTTest is Test {
         sbt.revoke(addresses.writer1, 1, "did something naughty");
     }
 
-    // function test_revokeBatch_adheresToERC1155Spec() public {
-    //     issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+    function test_revokeBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-    //     vm.startPrank(addresses.multisig);
-    //     sbt.createContribution(CONTRIB1, URI1);
-    //     sbt.issueBatch(issuees, 1);
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
 
-    //     for (uint256 i = 0; i < issuees.length; i++) {
-    //         vm.expectEmit(true, true, true, true);
-    //         emit Events.TransferSingle(addresses.multisig, issuees[i], address(0), 1, 1);
-    //     }
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.TransferSingle(addresses.multisig, issuees[i], address(0), 1, 1);
+        }
 
-    //     sbt.revokeBatch(issuees, 1, "did something naughty");
-    // }
+        sbt.revokeBatch(issuees, 1, "did something naughty");
+    }
 
     function test_reject_adheresToERC1155Spec() public {
         vm.startPrank(addresses.multisig);
