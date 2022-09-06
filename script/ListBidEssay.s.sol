@@ -17,8 +17,6 @@ contract ListBidEssayScript is Script {
         address AUCTION_HOUSE_ADDRESS = vm.envAddress("AUCTION_HOUSE_ADDRESS");
         address MODULE_MANAGER_ADDRESS = vm.envAddress("MODULE_MANAGER_ADDRESS");
         address TRANSFER_HELPER_ADDRESS = vm.envAddress("TRANSFER_HELPER_ADDRESS");
-
-        // Parameters
         uint256 TOKEN_ID = vm.envUint("TOKEN_ID");
         address AUTHOR_ADDRESS = vm.envAddress("AUTHOR_ADDRESS");
         uint256 AUCTION_DURATION = vm.envUint("AUCTION_DURATION");
@@ -31,18 +29,16 @@ contract ListBidEssayScript is Script {
         // get already deployed Essay NFT contract
         OneSevenTwoNineEssay nft = OneSevenTwoNineEssay(TOKEN_ADDRESS);
 
-        vm.startBroadcast();
         // authorize zora contracts
+        vm.startBroadcast();
         nft.setApprovalForAll(TRANSFER_HELPER_ADDRESS, true);
         ModuleManager(MODULE_MANAGER_ADDRESS).setApprovalForModule(
             AUCTION_HOUSE_ADDRESS, true
         );
-
         vm.stopBroadcast();
 
-        vm.startBroadcast();
         // list essay
-
+        vm.startBroadcast();
         auctionHouse.createAuction(
             TOKEN_ADDRESS,
             TOKEN_ID,
@@ -51,7 +47,6 @@ contract ListBidEssayScript is Script {
             AUTHOR_ADDRESS,
             block.timestamp
         );
-
         // verify listing
         (
             address seller,
@@ -68,10 +63,9 @@ contract ListBidEssayScript is Script {
         require(duration == AUCTION_DURATION);
         vm.stopBroadcast();
 
-        vm.startBroadcast();
         // place bid on essay
+        vm.startBroadcast();
         auctionHouse.createBid{value: BID_AMOUNT}(vm.envAddress("TOKEN_ADDRESS"), TOKEN_ID);
-
         vm.stopBroadcast();
     }
 }
