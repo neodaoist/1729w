@@ -7,9 +7,8 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
 contract ListBidEssayScript is Script {
-
+    //
     function run() public {
-
         // Load config from .env
         Solenv.config();
         address TOKEN_ADDRESS = vm.envAddress("TOKEN_ADDRESS");
@@ -32,31 +31,17 @@ contract ListBidEssayScript is Script {
         // authorize zora contracts
         vm.startBroadcast();
         nft.setApprovalForAll(TRANSFER_HELPER_ADDRESS, true);
-        ModuleManager(MODULE_MANAGER_ADDRESS).setApprovalForModule(
-            AUCTION_HOUSE_ADDRESS, true
-        );
+        ModuleManager(MODULE_MANAGER_ADDRESS).setApprovalForModule(AUCTION_HOUSE_ADDRESS, true);
         vm.stopBroadcast();
 
         // list essay
         vm.startBroadcast();
         auctionHouse.createAuction(
-            TOKEN_ADDRESS,
-            TOKEN_ID,
-            AUCTION_DURATION,
-            AUCTION_RESERVE_PRICE,
-            AUTHOR_ADDRESS,
-            block.timestamp
+            TOKEN_ADDRESS, TOKEN_ID, AUCTION_DURATION, AUCTION_RESERVE_PRICE, AUTHOR_ADDRESS, block.timestamp
         );
         // verify listing
-        (
-            address seller,
-            uint256 reservePrice,
-            address fundsRecipient,
-            ,
-            ,
-            uint256 duration,
-            ,
-        ) = auctionHouse.auctionForNFT(address(nft), 1);
+        (address seller, uint256 reservePrice, address fundsRecipient,,, uint256 duration,,) =
+            auctionHouse.auctionForNFT(address(nft), 1);
         require(seller == MULTISIG_ADDRESS);
         require(reservePrice == AUCTION_RESERVE_PRICE);
         require(fundsRecipient == AUTHOR_ADDRESS);
@@ -83,35 +68,20 @@ abstract contract ReserveAuctionCoreETH {
         public
         virtual;
 
-    function setAuctionReservePrice(
-        address _tokenContract,
-        uint256 _tokenId,
-        uint256 _reservePrice
-    )
-        public
-        virtual;
+    function setAuctionReservePrice(address _tokenContract, uint256 _tokenId, uint256 _reservePrice) public virtual;
 
-    function cancelAuction(address _tokenContract, uint256 _tokenId)
-        public
-        virtual;
+    function cancelAuction(address _tokenContract, uint256 _tokenId) public virtual;
 
-    function createBid(address _tokenContract, uint256 _tokenId)
-        public
-        payable
-        virtual;
+    function createBid(address _tokenContract, uint256 _tokenId) public payable virtual;
 
-    function settleAuction(address _tokenContract, uint256 _tokenId)
-        public
-        virtual;
+    function settleAuction(address _tokenContract, uint256 _tokenId) public virtual;
 
     /// @dev ERC-721 token contract => ERC-721 token id => Auction
     mapping(address => mapping(uint256 => Auction)) public auctionForNFT;
 }
 
 abstract contract ModuleManager {
-    function setApprovalForModule(address _moduleAddress, bool _approved)
-        public
-        virtual;
+    function setApprovalForModule(address _moduleAddress, bool _approved) public virtual;
 }
 
 struct Auction {

@@ -7,7 +7,7 @@ import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
 contract MintEssayScript is Script {
-
+    //
     function run() public {
         // Load config from .env
         Solenv.config();
@@ -33,6 +33,5 @@ contract MintEssayScript is Script {
         token.mint(authorAddress, essayUrl);
 
         // verify thangs look good (in what ways?)
-
     }
 }

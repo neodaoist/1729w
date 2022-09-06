@@ -18,8 +18,7 @@ import {SBT} from "./SBT.sol";
 /// @notice The 1729 Writers community issues proof of contribution "soulbound tokens" (SBTs) with this contract
 contract SevenTeenTwentyNineProofOfContribution is SBT {
     //
-    
     constructor(address _owner) {
         transferOwnership(_owner);
-    }    
+    }
 }

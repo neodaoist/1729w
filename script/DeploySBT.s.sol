@@ -7,7 +7,6 @@ import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribu
 
 contract DeploySBTScript is Script {
     //
-
     address multisig = 0xf068e6F80fA1d55A27be3408cbdad3fCDa704514;
 
     function run() public {

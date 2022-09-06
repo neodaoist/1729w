@@ -13,8 +13,7 @@ import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribu
 
 contract IssueSBTScript is Script {
     //
-
-    address sbtAddress = 0xb824007bF78162F5299a079ebFCA7C2C342Ad2f4;     
+    address sbtAddress = 0xb824007bF78162F5299a079ebFCA7C2C342Ad2f4;
 
     string sbtName = "Cohort 2 - Fully Participating Writer";
     string sbtURI = "ipfs://bafkreig43xs7tesmeb2cvawkvacxxf6fc3l5xha3pycpoulvacog7klzxm";
@@ -28,7 +27,7 @@ contract IssueSBTScript is Script {
         issuees[1] = address(0xA);
         issuees[2] = address(0xB);
     }
-    
+
     function run() public {
         SevenTeenTwentyNineProofOfContribution sbt = SevenTeenTwentyNineProofOfContribution(sbtAddress);
 
