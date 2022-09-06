@@ -46,11 +46,11 @@ contract SBTTest is Test {
         assertEq(tokenId4, 4);
         assertEq(tokenId5, 5);
 
-        (string memory contributionName1, , ) = sbt.contributions(1);
-        (string memory contributionName2, , ) = sbt.contributions(2);
-        (string memory contributionName3, , ) = sbt.contributions(3);
-        (string memory contributionName4, , ) = sbt.contributions(4);
-        (string memory contributionName5, , ) = sbt.contributions(5);
+        (string memory contributionName1,,) = sbt.contributions(1);
+        (string memory contributionName2,,) = sbt.contributions(2);
+        (string memory contributionName3,,) = sbt.contributions(3);
+        (string memory contributionName4,,) = sbt.contributions(4);
+        (string memory contributionName5,,) = sbt.contributions(5);
 
         assertEq(contributionName1, CONTRIB1);
         assertEq(contributionName2, CONTRIB2);
@@ -105,9 +105,9 @@ contract SBTTest is Test {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
-        
+
         vm.expectRevert("SBT: a person can only receive one SBT per contribution");
-        
+
         sbt.issue(addresses.writer1, 1);
     }
 
@@ -211,7 +211,7 @@ contract SBTTest is Test {
         for (uint256 j = 0; j < issuees.length; j++) {
             assertFalse(sbt.hasToken(issuees[j], 1));
         }
-    }    
+    }
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
         issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
@@ -261,7 +261,7 @@ contract SBTTest is Test {
         vm.expectRevert("SBT: no matching contribution found");
 
         vm.prank(addresses.writer1);
-        sbt.reject(1);    
+        sbt.reject(1);
     }
 
     function test_reject_whenNotOwnerOfToken_shouldRevert() public {
@@ -273,7 +273,7 @@ contract SBTTest is Test {
         vm.expectRevert("SBT: no matching soulbound token found");
 
         vm.prank(addresses.writer2);
-        sbt.reject(1);    
+        sbt.reject(1);
     }
 
     /*//////////////////////////////////////////////////////////////

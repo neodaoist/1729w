@@ -10,13 +10,12 @@ import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 /// @dev See {ISoulbound}.
 abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //
-
     using Counters for Counters.Counter;
 
     /// @dev Check that a contribution exists
     /// @param _tokenId The token ID to check
     modifier contributionExists(uint256 _tokenId) {
-        require(contributions[_tokenId].created, "SBT: no matching contribution found");        
+        require(contributions[_tokenId].created, "SBT: no matching contribution found");
         _;
     }
 
@@ -39,7 +38,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     constructor() ERC1155("") {
-        nextTokenId.increment();  // start tokenId counter at 1
+        nextTokenId.increment(); // start tokenId counter at 1
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -54,20 +53,12 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     }
 
     /// @inheritdoc	ISoulbound
-    function hasToken(address _owner, uint256 _tokenId)
-        external
-        view
-        returns (bool)
-    {
+    function hasToken(address _owner, uint256 _tokenId) external view returns (bool) {
         return _hasToken(_owner, _tokenId);
     }
 
     /// @inheritdoc	ISoulbound
-    function hasTokenBatch(address[] calldata _owners, uint256 _tokenId)
-        external
-        view
-        returns (bool[] memory)
-    {
+    function hasTokenBatch(address[] calldata _owners, uint256 _tokenId) external view returns (bool[] memory) {
         bool[] memory hasTokens = new bool[](_owners.length);
 
         for (uint256 i = 0; i < _owners.length; i++) {
@@ -83,7 +74,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @notice Soulbound tokens are nontransferable
     /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and 
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
     /// @dev function mutability is set to pure.
     function safeTransferFrom(
         address /*from*/,
@@ -91,13 +82,17 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         uint256 /*id*/,
         uint256 /*amount*/,
         bytes memory /*data*/
-    ) public pure override {
+    )
+        public
+        pure
+        override
+    {
         revert("SBT: soulbound tokens are nontransferable");
     }
 
     /// @notice Soulbound tokens are nontransferable
     /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and 
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
     /// @dev function mutability is set to pure.
     function safeBatchTransferFrom(
         address /*from*/,
@@ -105,7 +100,11 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         uint256[] memory /*ids*/,
         uint256[] memory /*amounts*/,
         bytes memory /*data*/
-    ) public pure override {
+    )
+        public
+        pure
+        override
+    {
         revert("SBT: soulbound tokens are nontransferable");
     }
 
@@ -114,10 +113,11 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc	ISoulbound
-    function createContribution(
-        string calldata _contributionName,
-        string calldata _contributionUri
-    ) external onlyOwner returns (uint256) {
+    function createContribution(string calldata _contributionName, string calldata _contributionUri)
+        external
+        onlyOwner
+        returns (uint256)
+    {
         uint256 tokenId = nextTokenId.current();
         nextTokenId.increment();
 
@@ -165,7 +165,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     /// @inheritdoc	ISoulbound
     function reject(uint256 _tokenId) external contributionExists(_tokenId) {
         require(_hasToken(msg.sender, _tokenId), "SBT: no matching soulbound token found");
-        
+
         emit Reject(msg.sender, _tokenId);
         _burn(msg.sender, _tokenId, 1);
     }
@@ -175,11 +175,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
-    function _hasToken(address _owner, uint256 _tokenId)
-        internal
-        view
-        returns (bool)
-    {
+    function _hasToken(address _owner, uint256 _tokenId) internal view returns (bool) {
         return balanceOf(_owner, _tokenId) >= 1;
     }
 

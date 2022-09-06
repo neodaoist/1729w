@@ -21,22 +21,14 @@ library Fleece {
     // uint8 internal constant RETURN_ERROR_PART = 2;
     // uint8 internal constant RETURN_ERROR_NO_MEM = 3;
 
-    function parseJson(string memory _json)
-        internal
-        pure
-        returns (Essay memory)
-    {
+    function parseJson(string memory _json) internal pure returns (Essay memory) {
         uint256 returnValue;
         JsmnSolLib.Token[] memory tokens;
         uint256 actualNumberOfTokens;
 
-        (returnValue, tokens, actualNumberOfTokens) =
-            JsmnSolLib.parse(_json, MAX_NUMBER_OF_ESSAY_ELEMENTS);
+        (returnValue, tokens, actualNumberOfTokens) = JsmnSolLib.parse(_json, MAX_NUMBER_OF_ESSAY_ELEMENTS);
 
-        require(
-            returnValue == RETURN_SUCCESS,
-            "JSON parsing error, you have been slayed by the hydra"
-        );
+        require(returnValue == RETURN_SUCCESS, "JSON parsing error, you have been slayed by the hydra");
 
         // TODO investigate type casting messiness here
         return Essay(
@@ -54,25 +46,15 @@ library Fleece {
         );
     }
 
-    function readJsonElement(
-        string memory _json,
-        JsmnSolLib.Token[] memory _elements,
-        uint256 _index
-    )
+    function readJsonElement(string memory _json, JsmnSolLib.Token[] memory _elements, uint256 _index)
         private
         pure
         returns (string memory)
     {
-        return JsmnSolLib.getBytes(
-            _json, _elements[_index].start, _elements[_index].end
-        );
+        return JsmnSolLib.getBytes(_json, _elements[_index].start, _elements[_index].end);
     }
 
-    function writeJson(Essay memory _essay)
-        internal
-        pure
-        returns (string memory)
-    {
+    function writeJson(Essay memory _essay) internal pure returns (string memory) {
         JsonWriter.Json memory writer;
 
         writer = writer.writeStartObject();
@@ -84,10 +66,8 @@ library Fleece {
         writer = writer.writeStringProperty("Description", _essay.description);
         writer = writer.writeStringProperty("Content Hash", _essay.contentHash);
         writer = writer.writeStringProperty("Writer Name", _essay.writerName);
-        writer =
-            writer.writeStringProperty("Writer Address", _essay.writerAddress);
-        writer =
-            writer.writeStringProperty("Publication URL", _essay.publicationURL);
+        writer = writer.writeStringProperty("Writer Address", _essay.writerAddress);
+        writer = writer.writeStringProperty("Publication URL", _essay.publicationURL);
         writer = writer.writeStringProperty("Archival URL", _essay.archivalURL);
         writer = writer.writeEndObject();
 

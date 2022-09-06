@@ -12,24 +12,16 @@ import "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
 contract OneSevenTwoNineEssayTest is Test {
     //
-
     OneSevenTwoNineEssay essay;
 
     TestAddresses addresses;
 
-    string EXPECTED_BASE_URI = "https://nftstorage.link/ipfs/bafybeiblfxmzzzhllcappbk5t2ujmmton5wfkmaujueqrvluh237bpzale/";
+    string EXPECTED_BASE_URI =
+        "https://nftstorage.link/ipfs/bafybeiblfxmzzzhllcappbk5t2ujmmton5wfkmaujueqrvluh237bpzale/";
 
     event Transfer(address indexed from, address indexed to, uint256 indexed id);
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 indexed id
-    );
-    event ApprovalForAll(
-        address indexed owner,
-        address indexed operator,
-        bool approved
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 indexed id);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
     event RoyaltyPercentageUpdated(uint96 newPercentageInBips);
 
     /*//////////////////////////////////////////////////////////////
@@ -38,7 +30,7 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function setUp() public {
         addresses = getAddresses();
-        essay= new OneSevenTwoNineEssay(addresses.multisig);
+        essay = new OneSevenTwoNineEssay(addresses.multisig);
     }
 
     function testInvariantMetadata() public {
@@ -53,7 +45,7 @@ contract OneSevenTwoNineEssayTest is Test {
     // TODO think about this test - currently it's misleading as to actual contract behavior
     function testURIStorage() public {
         vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
         essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "2")));
         essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "3")));
         essay.mint(addresses.writer1, string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
@@ -72,24 +64,16 @@ contract OneSevenTwoNineEssayTest is Test {
         // mock 4 tokens for unit testing JSON metadata returned from tokenURI() view
         // TODO load example JSON
         vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 1),
-            abi.encode("hello world 1")
+            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 1), abi.encode("hello world 1")
         );
         vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 2),
-            abi.encode("hello world 2")
+            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 2), abi.encode("hello world 2")
         );
         vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 3),
-            abi.encode("hello world 3")
+            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 3), abi.encode("hello world 3")
         );
         vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 4),
-            abi.encode("hello world 4")
+            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 4), abi.encode("hello world 4")
         );
 
         assertEq(essay.tokenURI(1), "hello world 1");
@@ -99,7 +83,8 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testParseJsonMetadata() public {
-        string memory json = '{"Cohort": 2,"Week": 3,"Status": "Weekly Winner","Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
+        string memory json =
+            '{"Cohort": 2,"Week": 3,"Status": "Weekly Winner","Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
         Essay memory winningEssay = Fleece.parseJson(json);
         assertEq(winningEssay.cohort, 2);
         assertEq(winningEssay.week, 3);
@@ -151,7 +136,7 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testImplementsInterface() public {
-        assertTrue(essay.supportsInterface(0x80ac58cd));  // ERC721
+        assertTrue(essay.supportsInterface(0x80ac58cd)); // ERC721
         assertTrue(essay.supportsInterface(0x5b5e139f)); // ERC721Metadata
         assertTrue(essay.supportsInterface(0x2a55205a)); // ERC2981
         assertFalse(essay.supportsInterface(0x00));
@@ -169,7 +154,7 @@ contract OneSevenTwoNineEssayTest is Test {
         assertEq(essay.ownerOf(1), addresses.multisig);
     }
 
-/* FIXME: Can't test due to private _mint function
+    /* FIXME: Can't test due to private _mint function
     function testDoubleMintShouldFail() public {
         vm.startPrank(addresses.multisig);
         essay._mint(1337, addresses.writer1, EXPECTED_BASE_URI);
@@ -236,7 +221,7 @@ contract OneSevenTwoNineEssayTest is Test {
         essay.burn(1);
     }
 
-/* Disabled due to private _mint function
+    /* Disabled due to private _mint function
     function testBurnFuzzy(uint256 id) public {
         vm.prank(addresses.multisig);
         essay._mint(id, addresses.writer1, EXPECTED_BASE_URI);
@@ -312,9 +297,7 @@ contract OneSevenTwoNineEssayTest is Test {
         vm.prank(addresses.multisig);
         essay.mint(addresses.writer1, EXPECTED_BASE_URI);
 
-        vm.expectRevert(
-            "ERC721: approve caller is not token owner or approved for all"
-        );
+        vm.expectRevert("ERC721: approve caller is not token owner or approved for all");
 
         essay.approve(address(0xBABE), 1);
     }
@@ -332,8 +315,8 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testBalanceOfWithTwoMints() public {
         vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 1
-        essay.mint(addresses.writer1, EXPECTED_BASE_URI);  // 2
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
 
         assertEq(essay.balanceOf(addresses.multisig), 2);
     }
@@ -540,9 +523,7 @@ contract OneSevenTwoNineEssayTest is Test {
         vm.prank(addresses.multisig);
         essay.setApprovalForAll(address(this), true);
 
-        essay.safeTransferFrom(
-            addresses.multisig, address(recipient), 1, "testing 456"
-        );
+        essay.safeTransferFrom(addresses.multisig, address(recipient), 1, "testing 456");
 
         assertEq(essay.getApproved(1), address(0));
         assertEq(essay.ownerOf(1), address(recipient));
@@ -613,7 +594,7 @@ contract OneSevenTwoNineEssayTest is Test {
     function testReceiveFundsDisabled() public {
         vm.prank(addresses.multisig);
         vm.expectRevert("Contract should not accept payment directly");
-        (bool result, ) = address(essay).call{value:1000000000}("");
+        (bool result,) = address(essay).call{value: 1000000000}("");
 
         assertFalse(result, "Contract should not accept payment");
     }
@@ -637,7 +618,7 @@ contract OneSevenTwoNineEssayTest is Test {
         uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
         assertEq(three, 3);
         assertEq(essay.totalSupply(), 3);
-        essay.burn(2);  // burning does not reduce total supply
+        essay.burn(2); // burning does not reduce total supply
         assertEq(essay.totalSupply(), 3);
         uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
         assertEq(four, 4);
@@ -650,9 +631,9 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function testRoyalty() public {
         vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1,"https://testpublish.com/savetheworld");
-        essay.mint(addresses.writer2,"https://testpublish2.com/abc");
-        essay.mint(addresses.writer3,"https://testpublish3.com/xyz");
+        essay.mint(addresses.writer1, "https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer2, "https://testpublish2.com/abc");
+        essay.mint(addresses.writer3, "https://testpublish3.com/xyz");
 
         (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
         assertEq(addresses.writer1, recipient);
@@ -674,12 +655,7 @@ contract ERC721Recipient is IERC721Receiver {
     uint256 public id;
     bytes public data;
 
-    function onERC721Received(
-        address _operator,
-        address _from,
-        uint256 _id,
-        bytes calldata _data
-    )
+    function onERC721Received(address _operator, address _from, uint256 _id, bytes calldata _data)
         public
         virtual
         override
@@ -699,25 +675,13 @@ contract NonERC721Recipient {}
 contract RevertingERC721Recipient is IERC721Receiver {
     event log(string info);
 
-    function onERC721Received(address, address, uint256, bytes calldata)
-        public
-        virtual
-        override
-        returns (bytes4)
-    {
-        revert(
-            string(abi.encodePacked(IERC721Receiver.onERC721Received.selector))
-        );
+    function onERC721Received(address, address, uint256, bytes calldata) public virtual override returns (bytes4) {
+        revert(string(abi.encodePacked(IERC721Receiver.onERC721Received.selector)));
     }
 }
 
 contract WrongReturnDataERC721Recipient is IERC721Receiver {
-    function onERC721Received(address, address, uint256, bytes calldata)
-        public
-        virtual
-        override
-        returns (bytes4)
-    {
+    function onERC721Received(address, address, uint256, bytes calldata) public virtual override returns (bytes4) {
         return 0xDEADCAFE;
     }
 }
