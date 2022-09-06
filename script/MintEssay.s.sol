@@ -4,15 +4,17 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 
 import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
+import {Solenv} from "solenv/Solenv.sol";
 
 contract MintEssayScript is Script {
-    //
-    address tokenAddress = address(0xCAFE);
-    address multisig = address(0x1729a);
 
-
-
-    function run(address authorAddress, string calldata essayUrl) public {
+    function run() public {
+        // Load config from .env
+        Solenv.config();
+        address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
+        address multisig = vm.envAddress("MULTISIG_ADDRESS");
+        address authorAddress = vm.envAddress("AUTHOR_ADDRESS");
+        string memory essayUrl = vm.envString("ESSAY_URL");
         // generate hash for Essay markdown
 
         // upload Essay image to IPFS

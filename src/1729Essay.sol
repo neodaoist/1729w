@@ -31,7 +31,7 @@ contract OneSevenTwoNineEssay is Ownable, ERC721 {
     mapping(uint256 => EssayItem) public essays;
     Counters.Counter internal nextTokenId;
 
-    constructor(address _multisig) ERC721("1729 Essay", "1729ESSAY") {
+    constructor(address _multisig) ERC721("1729 Writers Essay NFT", "1729ESSAY") {
         nextTokenId.increment();  // start tokenId counter at 1
         transferOwnership(_multisig);
     }

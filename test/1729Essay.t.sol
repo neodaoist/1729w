@@ -42,7 +42,7 @@ contract OneSevenTwoNineEssayTest is Test {
     }
 
     function testInvariantMetadata() public {
-        assertEq(essay.name(), "1729 Essay");
+        assertEq(essay.name(), "1729 Writers Essay NFT");
         assertEq(essay.symbol(), "1729ESSAY");
     }
 
