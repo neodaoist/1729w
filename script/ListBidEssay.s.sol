@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 
-import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
 contract ListBidEssayScript is Script {
@@ -26,7 +26,7 @@ contract ListBidEssayScript is Script {
         ReserveAuctionCoreETH auctionHouse = ReserveAuctionCoreETH(AUCTION_HOUSE_ADDRESS);
 
         // get already deployed Essay NFT contract
-        OneSevenTwoNineEssay nft = OneSevenTwoNineEssay(TOKEN_ADDRESS);
+        SevenTeenTwentyNineEssay nft = SevenTeenTwentyNineEssay(TOKEN_ADDRESS);
 
         // authorize zora contracts
         vm.startBroadcast();

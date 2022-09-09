@@ -77,10 +77,10 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
     /// @dev function mutability is set to pure.
     function safeTransferFrom(
-        address /*from*/,
-        address /*to*/,
-        uint256 /*id*/,
-        uint256 /*amount*/,
+        address, /*from*/
+        address, /*to*/
+        uint256, /*id*/
+        uint256, /*amount*/
         bytes memory /*data*/
     )
         public
@@ -95,10 +95,10 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
     /// @dev function mutability is set to pure.
     function safeBatchTransferFrom(
-        address /*from*/,
-        address /*to*/,
-        uint256[] memory /*ids*/,
-        uint256[] memory /*amounts*/,
+        address, /*from*/
+        address, /*to*/
+        uint256[] memory, /*ids*/
+        uint256[] memory, /*amounts*/
         bytes memory /*data*/
     )
         public

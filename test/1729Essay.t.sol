@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
 import {Fleece} from "../src/Fleece.sol";
 import {Essay} from "../src/models/Essay.sol";
 
@@ -10,9 +10,9 @@ import "./Fixtures.sol";
 
 import "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
-contract OneSevenTwoNineEssayTest is Test {
+contract SevenTeenTwentyNineEssayTest is Test {
     //
-    OneSevenTwoNineEssay essay;
+    SevenTeenTwentyNineEssay essay;
 
     TestAddresses addresses;
 
@@ -30,7 +30,7 @@ contract OneSevenTwoNineEssayTest is Test {
 
     function setUp() public {
         addresses = getAddresses();
-        essay = new OneSevenTwoNineEssay(addresses.multisig);
+        essay = new SevenTeenTwentyNineEssay(addresses.multisig);
     }
 
     function testInvariantMetadata() public {
@@ -64,16 +64,24 @@ contract OneSevenTwoNineEssayTest is Test {
         // mock 4 tokens for unit testing JSON metadata returned from tokenURI() view
         // TODO load example JSON
         vm.mockCall(
-            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 1), abi.encode("hello world 1")
+            address(essay),
+            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 1),
+            abi.encode("hello world 1")
         );
         vm.mockCall(
-            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 2), abi.encode("hello world 2")
+            address(essay),
+            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 2),
+            abi.encode("hello world 2")
         );
         vm.mockCall(
-            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 3), abi.encode("hello world 3")
+            address(essay),
+            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 3),
+            abi.encode("hello world 3")
         );
         vm.mockCall(
-            address(essay), abi.encodeWithSelector(OneSevenTwoNineEssay.tokenURI.selector, 4), abi.encode("hello world 4")
+            address(essay),
+            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 4),
+            abi.encode("hello world 4")
         );
 
         assertEq(essay.tokenURI(1), "hello world 1");
