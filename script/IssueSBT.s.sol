@@ -7,9 +7,15 @@ import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribu
 
 // Issue 1729 Writers Proof of Contribution SBTs to writers for full participation
 // Issue 1729 Writers Proof of Contribution SBTs to writers for partial participation
-// Issue 1729 Writers Proof of Contribution SBTs to the winning writers
+// Issue 1729 Writers Proof of Contribution SBTs to writers for the winning essays
 // Issue 1729 Writers Proof of Contribution SBTs to members for reading/voting
 // Issue 1729 Writers Proof of Contribution SBTs to members for bidding in any of the Essay NFT auctions
+
+// Full Participation
+// Partial Participation
+// Winning Essay
+// Reader / Voter
+// Auction Bidder
 
 contract IssueSBTScript is Script {
     //
