@@ -15,7 +15,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     /// @dev Check that a contribution exists
     /// @param _tokenId The token ID to check
     modifier contributionExists(uint256 _tokenId) {
-        require(contributions[_tokenId].created, "SBT: no matching contribution found");
+        require(bytes(contributions[_tokenId].name).length > 0, "SBT: no matching contribution found");
         _;
     }
 
@@ -26,7 +26,6 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     struct ContributionItem {
         string name;
         string uri;
-        bool created;
     }
 
     mapping(uint256 => ContributionItem) public contributions;
@@ -113,15 +112,19 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc	ISoulbound
+    /// @dev _contributionName cannot be empty, in order to more efficiently check if a contribution exists
+    /// in the contributionExists modifier
     function createContribution(string calldata _contributionName, string calldata _contributionUri)
         external
         onlyOwner
         returns (uint256)
     {
+        require(bytes(_contributionName).length > 0, "SBT: contribution name cannot be empty");
+
         uint256 tokenId = nextTokenId.current();
         nextTokenId.increment();
 
-        contributions[tokenId] = ContributionItem(_contributionName, _contributionUri, true);
+        contributions[tokenId] = ContributionItem(_contributionName, _contributionUri);
 
         return tokenId;
     }
