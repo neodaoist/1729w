@@ -96,12 +96,8 @@ contract SevenTeenTwentyNineEssay is Ownable, ERC721 {
         return tokenId;
     }
 
-    function burn(uint256 tokenId) public virtual onlyOwner {
-        _burn(tokenId);
-    }
-
     /// @notice Removes the specified tokenId's details
-    function _burn(uint256 tokenId) internal override (ERC721) {
+    function burn(uint256 tokenId) public virtual onlyOwner {
         delete essays[tokenId];
         super._burn(tokenId);
     }
