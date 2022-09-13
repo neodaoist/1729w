@@ -14,7 +14,8 @@ import {SBT} from "./SBT.sol";
 ////////////////////////////////////////////////////////////////////////////
 
 /// @title 1729 Writers Proof of Contribution SBT
-/// @author neodaoist, plaird
+/// @author neodaoist
+/// @author plaird
 /// @notice The 1729 Writers community issues proof of contribution "soulbound tokens" (SBTs) with this contract
 contract SevenTeenTwentyNineProofOfContribution is SBT {
     //
