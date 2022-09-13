@@ -46,11 +46,11 @@ contract SBTTest is Test {
         assertEq(tokenId4, 4);
         assertEq(tokenId5, 5);
 
-        (string memory contributionName1,,) = sbt.contributions(1);
-        (string memory contributionName2,,) = sbt.contributions(2);
-        (string memory contributionName3,,) = sbt.contributions(3);
-        (string memory contributionName4,,) = sbt.contributions(4);
-        (string memory contributionName5,,) = sbt.contributions(5);
+        (string memory contributionName1,) = sbt.contributions(1);
+        (string memory contributionName2,) = sbt.contributions(2);
+        (string memory contributionName3,) = sbt.contributions(3);
+        (string memory contributionName4,) = sbt.contributions(4);
+        (string memory contributionName5,) = sbt.contributions(5);
 
         assertEq(contributionName1, CONTRIB1);
         assertEq(contributionName2, CONTRIB2);
@@ -70,6 +70,13 @@ contract SBTTest is Test {
 
         vm.prank(addresses.randomEOA);
         sbt.createContribution(CONTRIB1, URI1);
+    }
+
+    function test_createContribution_whenEmptyName_shouldRevert() public {
+        vm.expectRevert("SBT: contribution name cannot be empty");
+
+        vm.prank(addresses.multisig);
+        sbt.createContribution("", URI1);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -124,7 +131,7 @@ contract SBTTest is Test {
     }
 
     function test_issueBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
 
         for (uint256 i = 0; i < issuees.length; i++) {
             vm.expectEmit(true, true, true, true);
