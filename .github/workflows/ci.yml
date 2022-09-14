@@ -32,7 +32,13 @@ jobs:
           toolchain: stable
           override: true
 
-#      - run: cargo update +nightly -Z minimal-versions
+      - name: Run Forge Coverage
+        run: |
+          forge coverage --report lcov
+        id: coverage
+      - uses: codecov/codecov-action@v2
+
+  #      - run: cargo update +nightly -Z minimal-versions
   cucumber:
     name: Cucumber Tests
     runs-on: ubuntu-latest
