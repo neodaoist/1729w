@@ -6,7 +6,7 @@ import {SevenTeenTwentyNineProofOfContribution} from "../../src/1729ProofOfContr
 import "forge-std/Test.sol";
 import "./Fixtures.sol";
 
-contract SBTTest is Test {
+contract SevenTeenTwentyNineProofOfContributionTest is Test {
     //
     SevenTeenTwentyNineProofOfContribution sbt;
 
