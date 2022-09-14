@@ -107,6 +107,16 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         revert("SBT: soulbound tokens are nontransferable");
     }
 
+    // SBT: soulbound tokens are nontransferable
+
+    function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override {
+        revert("SBT: soulbound tokens are nontransferable");
+    }
+
+    function isApprovedForAll(address, /*account*/ address /*operator*/ ) public pure override returns (bool) {
+        revert("SBT: soulbound tokens are nontransferable");
+    }
+
     /*//////////////////////////////////////////////////////////////
                         Transactions – Creating
     //////////////////////////////////////////////////////////////*/

@@ -351,8 +351,23 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
     }
 
+    // TODO add test for balanceOfBatch
+    // function balanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external view returns (uint256[] memory);
+
+    function test_setApprovalForAll_shouldRevert() public {
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+
+        sbt.setApprovalForAll(addresses.randomEOA, true);
+    }
+
+    function test_isApprovedForAll_shouldRevert() public {
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+
+        sbt.isApprovedForAll(addresses.writer1, addresses.randomEOA);
+    }
+
     /*//////////////////////////////////////////////////////////////
-                        ERC1155 Spec Adherance
+                        ERC1155 Spec Tests (minus transferability)
     //////////////////////////////////////////////////////////////*/
 
     function test_issue_adheresToERC1155Spec() public {
