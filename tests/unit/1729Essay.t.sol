@@ -43,6 +43,15 @@ contract SevenTeenTwentyNineEssayTest is Test {
         assertFalse(essay.supportsInterface(0x00));
     }
 
+    // Contract should NOT support receiving funds directly
+    function testReceiveFundsDisabled() public {
+        vm.prank(addresses.multisig);
+        vm.expectRevert("Contract should not accept payment directly");
+        (bool result,) = address(essay).call{value: 1000000000}("");
+
+        assertFalse(result, "Contract should not accept payment");
+    }
+
     /*//////////////////////////////////////////////////////////////
                         URI Storage
     //////////////////////////////////////////////////////////////*/
@@ -61,9 +70,9 @@ contract SevenTeenTwentyNineEssayTest is Test {
         assertEq(essay.tokenURI(4), string(abi.encodePacked(EXPECTED_BASE_URI, "4")));
     }
 
-    ////////////////////////////////////////////////
-    ////////////////    Mint    ////////////////////
-    ////////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////
+                        Minting
+    //////////////////////////////////////////////////////////////*/
 
     function testMint() public {
         vm.prank(addresses.multisig);
@@ -97,9 +106,9 @@ contract SevenTeenTwentyNineEssayTest is Test {
         essay.mint(addresses.writer1, EXPECTED_BASE_URI);
     }
 
-    ////////////////////////////////////////////////
-    ////////////////    Burn    ////////////////////
-    ////////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////
+                        Burning
+    //////////////////////////////////////////////////////////////*/
 
     function testBurn() public {
         vm.prank(addresses.multisig);
@@ -140,19 +149,58 @@ contract SevenTeenTwentyNineEssayTest is Test {
         essay.burn(1);
     }
 
-    /* Disabled due to private _mint function
-    function testBurnFuzzy(uint256 id) public {
-        vm.prank(addresses.multisig);
-        essay._mint(id, addresses.writer1, EXPECTED_BASE_URI);
-        vm.prank(addresses.multisig);
-        essay.burn(id);
+    /*//////////////////////////////////////////////////////////////
+                        Token ID Incrementing
+    //////////////////////////////////////////////////////////////*/
 
-        assertEq(essay.balanceOf(addresses.multisig), 0);
-
-        vm.expectRevert("ERC721: invalid token ID");
-        essay.ownerOf(id);
+    function testFirstMintIsOne() public {
+        vm.startPrank(addresses.multisig);
+        uint256 newId = essay.mint(addresses.writer1, EXPECTED_BASE_URI);
+        assertEq(newId, 1);
     }
-*/
+
+    function testTotalSupply() public {
+        vm.startPrank(addresses.multisig);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
+        uint256 two = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
+        assertEq(two, 2);
+        assertEq(essay.totalSupply(), 2);
+        uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(three, 3);
+        assertEq(essay.totalSupply(), 3);
+        essay.burn(2); // burning does not reduce total supply
+        assertEq(essay.totalSupply(), 3);
+        uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(four, 4);
+        assertEq(essay.totalSupply(), 4);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Royalty
+    //////////////////////////////////////////////////////////////*/
+
+    function testRoyalty() public {
+        vm.startPrank(addresses.multisig);
+        essay.mint(addresses.writer1, "https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer2, "https://testpublish2.com/abc");
+        essay.mint(addresses.writer3, "https://testpublish3.com/xyz");
+
+        (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
+        assertEq(addresses.writer1, recipient);
+        assertEq(amount, 10_000); // 10%
+
+        (recipient, amount) = essay.royaltyInfo(2, 7_777);
+        assertEq(addresses.writer2, recipient);
+        assertEq(amount, 777); // 10%
+
+        (recipient, amount) = essay.royaltyInfo(3, 1_337_001);
+        assertEq(addresses.writer3, recipient);
+        assertEq(amount, 133_700); // 10%
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        ERC 721 Spec Tests
+    //////////////////////////////////////////////////////////////*/
 
     ////////////////////////////////////////////////
     ////////////////    Approve    /////////////////
@@ -507,64 +555,6 @@ contract SevenTeenTwentyNineEssayTest is Test {
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         essay.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
-    }
-
-    // Contract should NOT support receiving funds directly
-    function testReceiveFundsDisabled() public {
-        vm.prank(addresses.multisig);
-        vm.expectRevert("Contract should not accept payment directly");
-        (bool result,) = address(essay).call{value: 1000000000}("");
-
-        assertFalse(result, "Contract should not accept payment");
-    }
-
-    ////////////////////////////////////////////////
-    ////////////    Token ID Incrementing   ////////
-    ////////////////////////////////////////////////
-
-    function testFirstMintIsOne() public {
-        vm.startPrank(addresses.multisig);
-        uint256 newId = essay.mint(addresses.writer1, EXPECTED_BASE_URI);
-        assertEq(newId, 1);
-    }
-
-    function testTotalSupply() public {
-        vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
-        uint256 two = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
-        assertEq(two, 2);
-        assertEq(essay.totalSupply(), 2);
-        uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
-        assertEq(three, 3);
-        assertEq(essay.totalSupply(), 3);
-        essay.burn(2); // burning does not reduce total supply
-        assertEq(essay.totalSupply(), 3);
-        uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
-        assertEq(four, 4);
-        assertEq(essay.totalSupply(), 4);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        Royalty
-    //////////////////////////////////////////////////////////////*/
-
-    function testRoyalty() public {
-        vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, "https://testpublish.com/savetheworld");
-        essay.mint(addresses.writer2, "https://testpublish2.com/abc");
-        essay.mint(addresses.writer3, "https://testpublish3.com/xyz");
-
-        (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
-        assertEq(addresses.writer1, recipient);
-        assertEq(amount, 10_000); // 10%
-
-        (recipient, amount) = essay.royaltyInfo(2, 7_777);
-        assertEq(addresses.writer2, recipient);
-        assertEq(amount, 777); // 10%
-
-        (recipient, amount) = essay.royaltyInfo(3, 1_337_001);
-        assertEq(addresses.writer3, recipient);
-        assertEq(amount, 133_700); // 10%
     }
 }
 
