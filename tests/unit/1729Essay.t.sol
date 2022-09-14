@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.13;
 
-import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../../src/1729Essay.sol";
 
 import "forge-std/Test.sol";
 import "./Fixtures.sol";
