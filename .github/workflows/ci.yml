@@ -37,10 +37,12 @@ jobs:
         id: coverage
       - uses: codecov/codecov-action@v2
 
-      - name: Run Slither Analysis
-        run: slither src/. --config-file slither.config.json
-        id: slither
-        fail-on: medium
+  slither:
+    name: Slither analysis
+    runs-on: ubuntu-latest
+    fail-on: medium
+    steps:
+      - uses: actions/checkout@v3
       - uses: crytic/slither-action@v0.1.1
 
   #      - run: cargo update +nightly -Z minimal-versions
