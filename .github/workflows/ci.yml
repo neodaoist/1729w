@@ -40,7 +40,6 @@ jobs:
   slither:
     name: Slither analysis
     runs-on: ubuntu-latest
-    fail-on: medium
     steps:
       - uses: actions/checkout@v3
       - uses: crytic/slither-action@v0.1.1
