@@ -37,11 +37,11 @@ jobs:
         id: coverage
       - uses: codecov/codecov-action@v2
 
-    - name: Upload Coverage Report to Codecov
-      run: |
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x codecov
-        ./codecov -t ${CODECOV_TOKEN}      
+      - name: Upload Coverage Report to Codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${CODECOV_TOKEN}
 
   #      - run: cargo update +nightly -Z minimal-versions
   cucumber:
