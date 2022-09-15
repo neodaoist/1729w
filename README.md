@@ -1,4 +1,4 @@
-![1729w workflow](https://github.com/neodaoist/1729w/actions/workflows/ci.yml)
+![1729w workflow](https://github.com/neodaoist/1729w/actions/workflows/ci.yml/badge.svg)
 
 # 1729w
 
