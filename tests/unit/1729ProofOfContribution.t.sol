@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribution.sol";
+import {SevenTeenTwentyNineProofOfContribution} from "../../src/1729ProofOfContribution.sol";
 
 import "forge-std/Test.sol";
 import "./Fixtures.sol";
 
-contract SBTTest is Test {
+contract SevenTeenTwentyNineProofOfContributionTest is Test {
     //
     SevenTeenTwentyNineProofOfContribution sbt;
 
@@ -351,8 +351,23 @@ contract SBTTest is Test {
         sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
     }
 
+    // TODO add test for balanceOfBatch
+    // function balanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external view returns (uint256[] memory);
+
+    function test_setApprovalForAll_shouldRevert() public {
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+
+        sbt.setApprovalForAll(addresses.randomEOA, true);
+    }
+
+    function test_isApprovedForAll_shouldRevert() public {
+        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+
+        sbt.isApprovedForAll(addresses.writer1, addresses.randomEOA);
+    }
+
     /*//////////////////////////////////////////////////////////////
-                        ERC1155 Spec Adherance
+                        ERC1155 Spec Tests (minus transferability)
     //////////////////////////////////////////////////////////////*/
 
     function test_issue_adheresToERC1155Spec() public {

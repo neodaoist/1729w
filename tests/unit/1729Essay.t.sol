@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.13;
+pragma solidity ^0.8.13;
 
-import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
-import {Fleece} from "../src/Fleece.sol";
-import {Essay} from "../src/models/Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../../src/1729Essay.sol";
 
 import "forge-std/Test.sol";
 import "./Fixtures.sol";
@@ -38,6 +36,22 @@ contract SevenTeenTwentyNineEssayTest is Test {
         assertEq(essay.symbol(), "1729ESSAY");
     }
 
+    function testImplementsInterface() public {
+        assertTrue(essay.supportsInterface(0x80ac58cd)); // ERC721
+        assertTrue(essay.supportsInterface(0x5b5e139f)); // ERC721Metadata
+        assertTrue(essay.supportsInterface(0x2a55205a)); // ERC2981
+        assertFalse(essay.supportsInterface(0x00));
+    }
+
+    // Contract should NOT support receiving funds directly
+    function testReceiveFundsDisabled() public {
+        vm.prank(addresses.multisig);
+        vm.expectRevert("Contract should not accept payment directly");
+        (bool result,) = address(essay).call{value: 1000000000}("");
+
+        assertFalse(result, "Contract should not accept payment");
+    }
+
     /*//////////////////////////////////////////////////////////////
                         URI Storage
     //////////////////////////////////////////////////////////////*/
@@ -57,102 +71,8 @@ contract SevenTeenTwentyNineEssayTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                        JSON tests
+                        Minting
     //////////////////////////////////////////////////////////////*/
-
-    function testReadJsonMetadata() public {
-        // mock 4 tokens for unit testing JSON metadata returned from tokenURI() view
-        // TODO load example JSON
-        vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 1),
-            abi.encode("hello world 1")
-        );
-        vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 2),
-            abi.encode("hello world 2")
-        );
-        vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 3),
-            abi.encode("hello world 3")
-        );
-        vm.mockCall(
-            address(essay),
-            abi.encodeWithSelector(SevenTeenTwentyNineEssay.tokenURI.selector, 4),
-            abi.encode("hello world 4")
-        );
-
-        assertEq(essay.tokenURI(1), "hello world 1");
-        assertEq(essay.tokenURI(2), "hello world 2");
-        assertEq(essay.tokenURI(3), "hello world 3");
-        assertEq(essay.tokenURI(4), "hello world 4");
-    }
-
-    function testParseJsonMetadata() public {
-        string memory json =
-            '{"Cohort": 2,"Week": 3,"Status": "Weekly Winner","Name": "Save the World","Image": "XYZ","Description": "ABC","Content Hash": "DEF","Writer Name": "Susmitha87539319","Writer Address": "0xCAFE","Publication URL": "https://testpublish.com/savetheworld","Archival URL": "ipfs://xyzxyzxyz"}';
-        Essay memory winningEssay = Fleece.parseJson(json);
-        assertEq(winningEssay.cohort, 2);
-        assertEq(winningEssay.week, 3);
-        assertEq(winningEssay.status, "Weekly Winner");
-        assertEq(winningEssay.name, "Save the World");
-        assertEq(winningEssay.image, "XYZ");
-        assertEq(winningEssay.description, "ABC");
-        assertEq(winningEssay.contentHash, "DEF");
-        assertEq(winningEssay.writerName, "Susmitha87539319");
-        assertEq(winningEssay.writerAddress, "0xCAFE");
-        assertEq(winningEssay.publicationURL, "https://testpublish.com/savetheworld");
-        assertEq(winningEssay.archivalURL, "ipfs://xyzxyzxyz");
-    }
-
-    function testWriteJsonMetadata() public {
-        Essay memory winningEssay = Essay(
-            2,
-            3,
-            "Weekly Winner",
-            "Save the World",
-            "XYZ",
-            "ABC",
-            "DEF",
-            "Susmitha87539319",
-            "0xCAFE",
-            "https://testpublish.com/savetheworld",
-            "ipfs://xyzxyzxyz"
-        );
-
-        string memory json = Fleece.writeJson(winningEssay);
-        Essay memory parsedEssay = Fleece.parseJson(json);
-
-        assertEq(winningEssay.cohort, parsedEssay.cohort);
-        assertEq(winningEssay.week, parsedEssay.week);
-        assertEq(winningEssay.status, parsedEssay.status);
-        assertEq(winningEssay.name, parsedEssay.name);
-        assertEq(winningEssay.image, parsedEssay.image);
-        assertEq(winningEssay.description, parsedEssay.description);
-        assertEq(winningEssay.contentHash, parsedEssay.contentHash);
-        assertEq(winningEssay.writerName, parsedEssay.writerName);
-        assertEq(winningEssay.writerAddress, parsedEssay.writerAddress);
-
-        // TODO address JSON character escaping issue for 2 URL members
-        // assertEq(winningEssay.publicationURL, parsedEssay.publicationURL);
-        // e.g.,
-        // ├─ emit log_named_string(key: "  Expected", val: "https:\\/\\/testpublish.com\\/savetheworld")
-        // ├─ emit log_named_string(key: "    Actual", val: "https://testpublish.com/savetheworld")
-        // assertEq(winningEssay.archivalURL, parsedEssay.archivalURL);
-    }
-
-    function testImplementsInterface() public {
-        assertTrue(essay.supportsInterface(0x80ac58cd)); // ERC721
-        assertTrue(essay.supportsInterface(0x5b5e139f)); // ERC721Metadata
-        assertTrue(essay.supportsInterface(0x2a55205a)); // ERC2981
-        assertFalse(essay.supportsInterface(0x00));
-    }
-
-    ////////////////////////////////////////////////
-    ////////////////    Mint    ////////////////////
-    ////////////////////////////////////////////////
 
     function testMint() public {
         vm.prank(addresses.multisig);
@@ -186,9 +106,9 @@ contract SevenTeenTwentyNineEssayTest is Test {
         essay.mint(addresses.writer1, EXPECTED_BASE_URI);
     }
 
-    ////////////////////////////////////////////////
-    ////////////////    Burn    ////////////////////
-    ////////////////////////////////////////////////
+    /*//////////////////////////////////////////////////////////////
+                        Burning
+    //////////////////////////////////////////////////////////////*/
 
     function testBurn() public {
         vm.prank(addresses.multisig);
@@ -229,19 +149,58 @@ contract SevenTeenTwentyNineEssayTest is Test {
         essay.burn(1);
     }
 
-    /* Disabled due to private _mint function
-    function testBurnFuzzy(uint256 id) public {
-        vm.prank(addresses.multisig);
-        essay._mint(id, addresses.writer1, EXPECTED_BASE_URI);
-        vm.prank(addresses.multisig);
-        essay.burn(id);
+    /*//////////////////////////////////////////////////////////////
+                        Token ID Incrementing
+    //////////////////////////////////////////////////////////////*/
 
-        assertEq(essay.balanceOf(addresses.multisig), 0);
-
-        vm.expectRevert("ERC721: invalid token ID");
-        essay.ownerOf(id);
+    function testFirstMintIsOne() public {
+        vm.startPrank(addresses.multisig);
+        uint256 newId = essay.mint(addresses.writer1, EXPECTED_BASE_URI);
+        assertEq(newId, 1);
     }
-*/
+
+    function testTotalSupply() public {
+        vm.startPrank(addresses.multisig);
+        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
+        uint256 two = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
+        assertEq(two, 2);
+        assertEq(essay.totalSupply(), 2);
+        uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(three, 3);
+        assertEq(essay.totalSupply(), 3);
+        essay.burn(2); // burning does not reduce total supply
+        assertEq(essay.totalSupply(), 3);
+        uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
+        assertEq(four, 4);
+        assertEq(essay.totalSupply(), 4);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Royalty
+    //////////////////////////////////////////////////////////////*/
+
+    function testRoyalty() public {
+        vm.startPrank(addresses.multisig);
+        essay.mint(addresses.writer1, "https://testpublish.com/savetheworld");
+        essay.mint(addresses.writer2, "https://testpublish2.com/abc");
+        essay.mint(addresses.writer3, "https://testpublish3.com/xyz");
+
+        (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
+        assertEq(addresses.writer1, recipient);
+        assertEq(amount, 10_000); // 10%
+
+        (recipient, amount) = essay.royaltyInfo(2, 7_777);
+        assertEq(addresses.writer2, recipient);
+        assertEq(amount, 777); // 10%
+
+        (recipient, amount) = essay.royaltyInfo(3, 1_337_001);
+        assertEq(addresses.writer3, recipient);
+        assertEq(amount, 133_700); // 10%
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        ERC 721 Spec Tests
+    //////////////////////////////////////////////////////////////*/
 
     ////////////////////////////////////////////////
     ////////////////    Approve    /////////////////
@@ -596,64 +555,6 @@ contract SevenTeenTwentyNineEssayTest is Test {
         vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
 
         essay.safeTransferFrom(addresses.multisig, to, 1, "testing 456");
-    }
-
-    // Contract should NOT support receiving funds directly
-    function testReceiveFundsDisabled() public {
-        vm.prank(addresses.multisig);
-        vm.expectRevert("Contract should not accept payment directly");
-        (bool result,) = address(essay).call{value: 1000000000}("");
-
-        assertFalse(result, "Contract should not accept payment");
-    }
-
-    ////////////////////////////////////////////////
-    ////////////    Token ID Incrementing   ////////
-    ////////////////////////////////////////////////
-
-    function testFirstMintIsOne() public {
-        vm.startPrank(addresses.multisig);
-        uint256 newId = essay.mint(addresses.writer1, EXPECTED_BASE_URI);
-        assertEq(newId, 1);
-    }
-
-    function testTotalSupply() public {
-        vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 1
-        uint256 two = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 2
-        assertEq(two, 2);
-        assertEq(essay.totalSupply(), 2);
-        uint256 three = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
-        assertEq(three, 3);
-        assertEq(essay.totalSupply(), 3);
-        essay.burn(2); // burning does not reduce total supply
-        assertEq(essay.totalSupply(), 3);
-        uint256 four = essay.mint(addresses.writer1, EXPECTED_BASE_URI); // 3
-        assertEq(four, 4);
-        assertEq(essay.totalSupply(), 4);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        Royalty
-    //////////////////////////////////////////////////////////////*/
-
-    function testRoyalty() public {
-        vm.startPrank(addresses.multisig);
-        essay.mint(addresses.writer1, "https://testpublish.com/savetheworld");
-        essay.mint(addresses.writer2, "https://testpublish2.com/abc");
-        essay.mint(addresses.writer3, "https://testpublish3.com/xyz");
-
-        (address recipient, uint256 amount) = essay.royaltyInfo(1, 100_000);
-        assertEq(addresses.writer1, recipient);
-        assertEq(amount, 10_000); // 10%
-
-        (recipient, amount) = essay.royaltyInfo(2, 7_777);
-        assertEq(addresses.writer2, recipient);
-        assertEq(amount, 777); // 10%
-
-        (recipient, amount) = essay.royaltyInfo(3, 1_337_001);
-        assertEq(addresses.writer3, recipient);
-        assertEq(amount, 133_700); // 10%
     }
 }
 

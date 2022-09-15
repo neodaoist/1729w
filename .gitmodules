@@ -1,12 +1,6 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "lib/solidity-json-writer"]
-	path = lib/solidity-json-writer
-	url = https://github.com/bmeredith/solidity-json-writer
-[submodule "lib/jsmnSol"]
-	path = lib/jsmnSol
-	url = https://github.com/BlockInfinity/jsmnSol
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
