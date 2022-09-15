@@ -33,10 +33,15 @@ jobs:
           override: true
 
       - name: Run Forge Coverage
-        run: |
-          forge coverage --report lcov
+        run: forge coverage --report lcov
         id: coverage
       - uses: codecov/codecov-action@v2
+
+      - name: Run Slither Analysis
+        run: slither src/. --config-file slither.config.json
+        id: slither
+        fail-on: medium
+      - uses: crytic/slither-action@v0.1.1
 
   #      - run: cargo update +nightly -Z minimal-versions
   cucumber:
