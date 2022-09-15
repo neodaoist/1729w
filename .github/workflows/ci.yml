@@ -41,9 +41,23 @@ jobs:
     name: Slither analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: crytic/slither-action@v0.1.1
+      - name: Checkout
+        uses: actions/checkout@v3
+        id: checkout
         with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        id: install
+        with:
+          version: nightly
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.1.1
+        id: slither
+        with:
+          sarif: results.sarif
           fail-on: medium
 
   #      - run: cargo update +nightly -Z minimal-versions
