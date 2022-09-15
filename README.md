@@ -1,3 +1,5 @@
+![1729w workflow](https://github.com/neodaoist/1729w/actions/workflows/ci.yml)
+
 # 1729w
 
 [1729 Writers](https://paper.li/1729writers) is an experiment in coordinating independent writing with decentralized funding, focused on truth, health, wealth, and other ideas related to Balaji Srinivasan’s new book [The Network State](https://thenetworkstate.com).
