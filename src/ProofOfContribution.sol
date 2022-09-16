@@ -107,12 +107,18 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
-    // ProofOfContribution: soulbound tokens are nontransferable
-
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
     function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override {
         revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
     function isApprovedForAll(address, /*account*/ address /*operator*/ ) public pure override returns (bool) {
         revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
@@ -123,7 +129,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
     /// @inheritdoc	ISoulbound
     /// @dev _contributionName cannot be empty, in order to more efficiently check if a contribution exists
-    /// in the contributionExists modifier
+    /// @dev in the contributionExists modifier
     function createContribution(string calldata _contributionName, string calldata _contributionUri)
         external
         onlyOwner
