@@ -351,9 +351,6 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
     }
 
-    // TODO add test for balanceOfBatch
-    // function balanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external view returns (uint256[] memory);
-
     function test_setApprovalForAll_shouldRevert() public {
         vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
@@ -390,6 +387,82 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issueBatch(issuees, 1);
+    }
+
+    function test_issue_adheresToERC1155Spec_viaBalanceOfBatch() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.createContribution(CONTRIB2, URI2);
+        sbt.createContribution(CONTRIB3, URI3);
+        sbt.issue(addresses.writer1, 1);
+        sbt.issue(addresses.writer1, 2);
+        sbt.issue(addresses.writer1, 3);
+        sbt.issue(addresses.writer2, 1);
+        // don't issue SBT 2 to writer 2
+        sbt.issue(addresses.writer2, 3);
+        // don't issue SBT 1 to writer 3
+        sbt.issue(addresses.writer3, 2);
+        sbt.issue(addresses.writer3, 3);
+        vm.stopPrank();
+
+        address[] memory accounts = new address[](9);
+        accounts[0] = addresses.writer1;
+        accounts[1] = addresses.writer1;
+        accounts[2] = addresses.writer1;
+        accounts[3] = addresses.writer2;
+        accounts[4] = addresses.writer2;
+        accounts[5] = addresses.writer2;
+        accounts[6] = addresses.writer3;
+        accounts[7] = addresses.writer3;
+        accounts[8] = addresses.writer3;
+
+        uint256[] memory ids = new uint256[](9);
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+        ids[3] = 1;
+        ids[4] = 2;
+        ids[5] = 3;
+        ids[6] = 1;
+        ids[7] = 2;
+        ids[8] = 3;
+
+        uint256[] memory expected = new uint256[](9);
+        expected[0] = 1;
+        expected[1] = 1;
+        expected[2] = 1;
+        expected[3] = 1;
+        expected[4] = 0; // writer 2 does not own SBT 2
+        expected[5] = 1;
+        expected[6] = 0; // writer 3 does not own SBT 1
+        expected[7] = 1;
+        expected[8] = 1;
+
+        assertEq(sbt.balanceOfBatch(accounts, ids), expected);
+    }
+
+    function test_hasToken_adheresToERC1155Spec() public {
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue(addresses.writer1, 1);
+
+        assertEq(sbt.balanceOf(addresses.writer1, 1), 1); // ERC1155 native function
+        assertTrue(sbt.hasToken(addresses.writer1, 1)); // SBT specific function
+    }
+
+    function test_hasTokenBatch_adheresToERC1155Spec() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(issuees, 1);
+
+        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
+
+        for (uint256 i = 0; i < issuees.length; i++) {
+            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
+            assertTrue(hasTokens[i]);
+        }
     }
 
     function test_revoke_adheresToERC1155Spec() public {
@@ -431,30 +504,6 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
 
         vm.prank(addresses.writer1);
         sbt.reject(1);
-    }
-
-    function test_hasToken_adheresToERC1155Spec() public {
-        vm.startPrank(addresses.multisig);
-        sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue(addresses.writer1, 1);
-
-        assertEq(sbt.balanceOf(addresses.writer1, 1), 1); // ERC1155 native function
-        assertTrue(sbt.hasToken(addresses.writer1, 1)); // SBT specific function
-    }
-
-    function test_hasTokenBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
-
-        vm.startPrank(addresses.multisig);
-        sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
-
-        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
-
-        for (uint256 i = 0; i < issuees.length; i++) {
-            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
-            assertTrue(hasTokens[i]);
-        }
     }
 }
 
