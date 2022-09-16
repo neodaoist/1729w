@@ -113,7 +113,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
 
-        vm.expectRevert("ProofOfContribution: a person can only receive one SBT per contribution");
+        vm.expectRevert("ProofOfContribution: a person can only receive one soulbound token per contribution");
 
         sbt.issue(addresses.writer1, 1);
     }

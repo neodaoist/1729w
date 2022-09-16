@@ -204,7 +204,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
     /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
     function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
-        require(!_hasToken(_recipient, _tokenId), "ProofOfContribution: a person can only receive one SBT per contribution");
+        require(!_hasToken(_recipient, _tokenId), "ProofOfContribution: a person can only receive one soulbound token per contribution");
 
         emit Issue(address(this), _recipient, _tokenId);
         _mint(_recipient, _tokenId, 1, "");
