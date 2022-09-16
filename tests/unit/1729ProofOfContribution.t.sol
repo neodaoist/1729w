@@ -73,7 +73,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_createContribution_whenEmptyName_shouldRevert() public {
-        vm.expectRevert("SBT: contribution name cannot be empty");
+        vm.expectRevert("ProofOfContribution: contribution name cannot be empty");
 
         vm.prank(addresses.multisig);
         sbt.createContribution("", URI1);
@@ -102,7 +102,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_issue_whenContributionDoesNotExist_shouldRevert() public {
-        vm.expectRevert("SBT: no matching contribution found");
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
         sbt.issue(addresses.writer1, 1);
@@ -113,7 +113,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue(addresses.writer1, 1);
 
-        vm.expectRevert("SBT: a person can only receive one SBT per contribution");
+        vm.expectRevert("ProofOfContribution: a person can only receive one SBT per contribution");
 
         sbt.issue(addresses.writer1, 1);
     }
@@ -159,7 +159,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_issueBatch_whenContributionDoesNotExist_shouldRevert() public {
         issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-        vm.expectRevert("SBT: no matching contribution found");
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
         sbt.issueBatch(issuees, 1);
@@ -195,7 +195,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_revoke_whenContributionDoesNotExist_shouldRevert() public {
-        vm.expectRevert("SBT: no matching contribution found");
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
         sbt.revoke(addresses.writer1, 1, "did something naughty");
@@ -237,7 +237,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_revokeBatch_whenContributionDoesNotExist_shouldRevert() public {
         issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-        vm.expectRevert("SBT: no matching contribution found");
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
         sbt.revokeBatch(issuees, 1, "did something naughty");
@@ -265,7 +265,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_reject_whenContributionDoesNotExist_shouldRevert() public {
-        vm.expectRevert("SBT: no matching contribution found");
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.writer1);
         sbt.reject(1);
@@ -277,7 +277,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.issue(addresses.writer1, 1);
         vm.stopPrank();
 
-        vm.expectRevert("SBT: no matching soulbound token found");
+        vm.expectRevert("ProofOfContribution: no matching soulbound token found");
 
         vm.prank(addresses.writer2);
         sbt.reject(1);
@@ -320,7 +320,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.issue(addresses.writer1, 1);
         vm.stopPrank();
 
-        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
         vm.prank(addresses.writer1);
         sbt.safeTransferFrom(addresses.writer1, addresses.writer2, 1, 1, "");
@@ -345,7 +345,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         amounts[1] = 2;
         amounts[2] = 3;
 
-        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
         vm.prank(addresses.writer1);
         sbt.safeBatchTransferFrom(addresses.writer1, addresses.writer2, ids, amounts, "");
@@ -355,13 +355,13 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     // function balanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external view returns (uint256[] memory);
 
     function test_setApprovalForAll_shouldRevert() public {
-        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
         sbt.setApprovalForAll(addresses.randomEOA, true);
     }
 
     function test_isApprovedForAll_shouldRevert() public {
-        vm.expectRevert("SBT: soulbound tokens are nontransferable");
+        vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
         sbt.isApprovedForAll(addresses.writer1, addresses.randomEOA);
     }
