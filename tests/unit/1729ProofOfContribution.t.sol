@@ -295,6 +295,12 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
+    function test_hasToken_whenContributionDoesNotExist_shouldRevert() public {
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
+
+        sbt.hasToken(addresses.writer1, 1);
+    }
+
     function test_hasTokenBatch() public {
         issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
 
@@ -308,6 +314,14 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         for (uint256 i = 0; i < issuees.length; i++) {
             assertTrue(hasTokens[i]);
         }
+    }
+
+    function test_hasTokenBatch_whenContributionDoesNotExist_shouldRevert() public {
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        
+        vm.expectRevert("ProofOfContribution: no matching contribution found");
+
+        sbt.hasTokenBatch(issuees, 1);
     }
 
     /*//////////////////////////////////////////////////////////////

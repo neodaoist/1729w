@@ -194,7 +194,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
-    function _hasToken(address _owner, uint256 _tokenId) internal view returns (bool) {
+    function _hasToken(address _owner, uint256 _tokenId) internal view contributionExists(_tokenId) returns (bool) {
         return balanceOf(_owner, _tokenId) >= 1;
     }
 
