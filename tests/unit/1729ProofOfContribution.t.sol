@@ -85,7 +85,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_createContribution_whenNotOwner_shouldRevert() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(addresses.randomEOA);
+        vm.prank(addresses.random);
         sbt.createContribution(CONTRIB1, URI1);
     }
 
@@ -114,7 +114,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_issue_whenNotOwner_shouldRevert() public {
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(addresses.randomEOA);
+        vm.prank(addresses.random);
         sbt.issue(addresses.writer1, 1);
     }
 
@@ -169,7 +169,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(addresses.randomEOA);
+        vm.prank(addresses.random);
         sbt.issueBatch(issuees, 1);
     }
 
@@ -207,7 +207,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(addresses.randomEOA);
+        vm.prank(addresses.random);
         sbt.revoke(addresses.writer1, 1, "did something naughty");
     }
 
@@ -247,7 +247,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
 
         vm.expectRevert("Ownable: caller is not the owner");
 
-        vm.prank(addresses.randomEOA);
+        vm.prank(addresses.random);
         sbt.revokeBatch(issuees, 1, "did something naughty");
     }
 
@@ -385,13 +385,13 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_setApprovalForAll_shouldRevert() public {
         vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
-        sbt.setApprovalForAll(addresses.randomEOA, true);
+        sbt.setApprovalForAll(addresses.random, true);
     }
 
     function test_isApprovedForAll_shouldRevert() public {
         vm.expectRevert("ProofOfContribution: soulbound tokens are nontransferable");
 
-        sbt.isApprovedForAll(addresses.writer1, addresses.randomEOA);
+        sbt.isApprovedForAll(addresses.writer1, addresses.random);
     }
 
     /*//////////////////////////////////////////////////////////////
