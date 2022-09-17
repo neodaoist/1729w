@@ -142,6 +142,8 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
         contributions[tokenId] = ContributionItem(_contributionName, _contributionUri);
 
+        emit NewContribution(tokenId, _contributionName, _contributionUri);
+
         return tokenId;
     }
 
@@ -185,8 +187,9 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     function reject(uint256 _tokenId) external contributionExists(_tokenId) {
         require(_hasToken(msg.sender, _tokenId), "ProofOfContribution: no matching soulbound token found");
 
-        emit Reject(msg.sender, _tokenId);
         _burn(msg.sender, _tokenId, 1);
+
+        emit Reject(msg.sender, _tokenId);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -206,13 +209,15 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
         require(!_hasToken(_recipient, _tokenId), "ProofOfContribution: a person can only receive one soulbound token per contribution");
 
-        emit Issue(address(this), _recipient, _tokenId);
         _mint(_recipient, _tokenId, 1, "");
+
+        emit Issue(address(this), _recipient, _tokenId);
     }
 
     /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
     function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal contributionExists(_tokenId) {
-        emit Revoke(address(this), _owner, _tokenId, _reason);
         _burn(_owner, _tokenId, 1);
+
+        emit Revoke(address(this), _owner, _tokenId, _reason);
     }
 }

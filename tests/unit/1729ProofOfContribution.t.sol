@@ -33,6 +33,18 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     //////////////////////////////////////////////////////////////*/
 
     function test_createContribution() public {
+        // assert events are emitted correctly
+        vm.expectEmit(true, true, true, true);
+        emit Events.NewContribution(1, CONTRIB1, URI1);
+        vm.expectEmit(true, true, true, true);
+        emit Events.NewContribution(2, CONTRIB2, URI2);
+        vm.expectEmit(true, true, true, true);
+        emit Events.NewContribution(3, CONTRIB3, URI3);
+        vm.expectEmit(true, true, true, true);
+        emit Events.NewContribution(4, CONTRIB4, URI4);
+        vm.expectEmit(true, true, true, true);
+        emit Events.NewContribution(5, CONTRIB5, URI5);
+
         vm.startPrank(addresses.multisig);
         uint256 tokenId1 = sbt.createContribution(CONTRIB1, URI1);
         uint256 tokenId2 = sbt.createContribution(CONTRIB2, URI2);
@@ -40,6 +52,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         uint256 tokenId4 = sbt.createContribution(CONTRIB4, URI4);
         uint256 tokenId5 = sbt.createContribution(CONTRIB5, URI5);
 
+        // assert token ID increments correctly
         assertEq(tokenId1, 1);
         assertEq(tokenId2, 2);
         assertEq(tokenId3, 3);
@@ -52,12 +65,16 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         (string memory contributionName4,) = sbt.contributions(4);
         (string memory contributionName5,) = sbt.contributions(5);
 
+        // assert contribution name is stored correctly
         assertEq(contributionName1, CONTRIB1);
         assertEq(contributionName2, CONTRIB2);
         assertEq(contributionName3, CONTRIB3);
         assertEq(contributionName4, CONTRIB4);
         assertEq(contributionName5, CONTRIB5);
 
+        // assert contribution URI is stored correctly
+        // note that we don't test the URI storage in the struct directly, because
+        // this is exercised via the uri(uint256) override which is checked here
         assertEq(sbt.uri(1), URI1);
         assertEq(sbt.uri(2), URI2);
         assertEq(sbt.uri(3), URI3);
@@ -528,11 +545,13 @@ library Events {
                         SBT
     //////////////////////////////////////////////////////////////*/
 
-    event Issue(address indexed _issuer, address indexed _issuee, uint256 indexed _tokenId);
+    event NewContribution(uint256 indexed tokenId, string contributionName, string contributionUri);
 
-    event Revoke(address indexed _revoker, address indexed _revokee, uint256 indexed _tokenId, string _reason);
+    event Issue(address indexed issuer, address indexed issuee, uint256 indexed tokenId);
 
-    event Reject(address indexed _rejecter, uint256 indexed _tokenId);
+    event Revoke(address indexed revoker, address indexed revokee, uint256 indexed tokenId, string reason);
+
+    event Reject(address indexed rejecter, uint256 indexed tokenId);
 
     /*//////////////////////////////////////////////////////////////
                         ERC1155
