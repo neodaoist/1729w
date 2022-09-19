@@ -7,32 +7,49 @@ Feature: Issue Proof of Contribution SBT
         Given There are 150 participating members that hold a 1729 Writers ERC20 participation token
         And There are 15 total writers in 1729 Writers Cohort 2
 
-    Scenario: Admin can issue 1729 Writers Proof of Contribution SBTs to writers for full participation
-        Given There are 10 writers who submitted a valid essay all 4 weeks
-        When I issue SBTs for Full Completion
-        Then The 10 writers should own 1 Full Completion SBT
+    Scenario: Admin can issue single SBT with value
+        Given Address 0xCAFE has a balance of 1 ETH
+        When I issue a Full Completion SBT to address 0xCAFE with 0.1 ETH
+        Then Address 0xCAFE should own 1 Full Completion SBT
         And the SBT should have the following properties:
             | property name | property value |
             | Token ID      | 1              |
-    # TODO figure out how to best assert off-chain JSON metadata properties
-    # | Name          | Cohort 2 - Writer Full Participation |
-    # | Image         | XYZ                                  |
-    # | Description   | ABC                                  |
-    # | Cohort        | 2                                    |
-    # | Contribution  | Writer Full Participation            |
+        And address 0xCAFE should have 1.1 ETH
 
-    Scenario: Admin can issue single SBT with value
-        Given Address 0xCAFE has 1 ETH
-        When I issue a Full Completion SBT to address 0xCAFE with 0.1 ETH
-        Then Address 0xCAFE should own 1 Full Completion SBT
-        And should have 1.1 ETH
+    Scenario: Admin can issue multiple SBTs with value
+        Given There are 10 writers who submitted a valid essay all weeks, with balances:
+            | account address | account balance |
+            | 0xCAFE          | 1 ETH           |
+            | 0xA             | 0 ETH           |
+            | 0xB             | 1.2 ETH         |
+        When I batch issue SBTs for Full Completion with 0.3 ETH
+        Then The 10 Full Completion writers should own 1 Full Completion SBT
+        And the SBT should have the following properties:
+            | property name | property value |
+            | Token ID      | 1              |
+        And the Full Completion writers ether balance should be:
+            | account address | account balance |
+            | 0xCAFE          | 1.1 ETH         |
+            | 0xA             | 0.1 ETH         |
+            | 0xB             | 1.3 ETH         |
+
+    Scenario: Admin can issue single SBT without value
+        When I issue a Participation SBT to address 0xCAFE
+        Then Address 0xCAFE should own 1 Participation SBT
+
+    Scenario: Admin can issue multiple SBTs without value
+        Given There are 5 writers who submitted a valid essay in at least 1, but not all, weeks
+        When I batch issue SBTs for Participation
+        Then The 5 Participation writers should own 1 Participation SBT
+        And the SBT should have the following properties:
+            | property name | property value |
+            | Token ID      | 1              |
 
     Scenario: Contributor can not transfer SBT
         Given Address 0xCAFE has 1 Full Completion SBT
         When They attempt to transfer it to address 0xABCD
         Then The SBT should be nontransferable
 
-    # QUESTION should we include batch functionality in our behavior tests?
     Scenario: Contributor can not batch transfer SBT
         Given Address 0xCAFE has 1 Full Completion SBT
         And Address 0xCAFE has 1 Winning Writer SBT
