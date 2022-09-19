@@ -152,8 +152,14 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc	ISoulbound
-    function issue(address _recipient, uint256 _tokenId) external onlyOwner {
+    function issue(address _recipient, uint256 _tokenId) external payable onlyOwner {
         _issue(_recipient, _tokenId);
+
+        // forward any ether to recipient
+        if (msg.value > 0) {
+            (bool success, ) = payable(_recipient).call{value: msg.value}("");
+            require(success, "ProofOfContribution: failed to send ether to recipient");
+        }
     }
 
     /// @inheritdoc	ISoulbound

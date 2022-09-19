@@ -71,7 +71,7 @@ interface ISoulbound {
     /// @notice Issue an SBT to a single address
     /// @param _recipient The address to receive the SBT
     /// @param _tokenId The token ID of the SBT
-    function issue(address _recipient, uint256 _tokenId) external;
+    function issue(address _recipient, uint256 _tokenId) external payable;
 
     /// @notice Issue an SBT to multiple addresses
     /// @param _recipients The addresses to receive the SBT

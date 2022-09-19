@@ -183,6 +183,53 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
+                        Issuing with value
+    //////////////////////////////////////////////////////////////*/
+
+    function test_issueWithValue() public {
+        vm.deal(addresses.multisig, 1 ether);
+
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
+
+        assertEq(addresses.writer1.balance, 0.1 ether);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_issueWithValue(uint256 _value) public {
+        vm.deal(addresses.multisig, _value);
+
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: _value}(addresses.writer1, 1);
+
+        assertEq(addresses.writer1.balance, _value);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_issueWithValue_whenRecipientAlreadyHasEther() public {
+        vm.deal(addresses.multisig, 1 ether);
+        vm.deal(addresses.writer1, 1 ether);
+
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
+
+        assertEq(addresses.writer1.balance, 1.1 ether);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    /*//////////////////////////////////////////////////////////////
                         Revoking
     //////////////////////////////////////////////////////////////*/
 
