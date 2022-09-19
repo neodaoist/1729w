@@ -11,23 +11,29 @@ interface ISoulbound {
                         Events
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Emitted when a new Contribution is created
+    /// @param tokenId The token ID of the newly created contribution
+    /// @param contributionName The name of the contribution
+    /// @param contributionUri The fully qualified URI of the contribution JSON metadata
+    event NewContribution(uint256 indexed tokenId, string contributionName, string contributionUri);
+
     /// @notice Emitted when an SBT is issued to an address
-    /// @param _issuer The issuing body (the concrete implementation of the SBT contract)
-    /// @param _issuee The address receiving the SBT
-    /// @param _tokenId The token ID of the SBT being issued
-    event Issue(address indexed _issuer, address indexed _issuee, uint256 indexed _tokenId);
+    /// @param issuer The issuing body (the concrete implementation of the SBT contract)
+    /// @param issuee The address receiving the SBT
+    /// @param tokenId The token ID of the SBT being issued
+    event Issue(address indexed issuer, address indexed issuee, uint256 indexed tokenId);
 
     /// @notice Emitted when an SBT is revoked from an address by the issuing body
-    /// @param _revoker The issuing body (the concrete implementation of the SBT contract)
-    /// @param _revokee The address that previously held, but no longer holds, the SBT
-    /// @param _tokenId The token ID of the SBT being revoked
-    /// @param _reason A brief message describing the reason for revoking the SBT
-    event Revoke(address indexed _revoker, address indexed _revokee, uint256 indexed _tokenId, string _reason);
+    /// @param revoker The issuing body (the concrete implementation of the SBT contract)
+    /// @param revokee The address that previously held, but no longer holds, the SBT
+    /// @param tokenId The token ID of the SBT being revoked
+    /// @param reason A brief message describing the reason for revoking the SBT
+    event Revoke(address indexed revoker, address indexed revokee, uint256 indexed tokenId, string reason);
 
     /// @notice Emitted when an SBT is rejected by the owner of that token
-    /// @param _rejecter The address that previously held, but no longer holds, the SBT
-    /// @param _tokenId The token ID of the SBT being rejected
-    event Reject(address indexed _rejecter, uint256 indexed _tokenId);
+    /// @param rejecter The address that previously held, but no longer holds, the SBT
+    /// @param tokenId The token ID of the SBT being rejected
+    event Reject(address indexed rejecter, uint256 indexed tokenId);
 
     /*//////////////////////////////////////////////////////////////
                         Views

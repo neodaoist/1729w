@@ -8,14 +8,14 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 
 /// @dev See {ISoulbound}.
-abstract contract SBT is ISoulbound, ERC1155, Ownable {
+abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //
     using Counters for Counters.Counter;
 
     /// @dev Check that a contribution exists
     /// @param _tokenId The token ID to check
     modifier contributionExists(uint256 _tokenId) {
-        require(bytes(contributions[_tokenId].name).length > 0, "SBT: no matching contribution found");
+        require(bytes(contributions[_tokenId].name).length > 0, "ProofOfContribution: no matching contribution found");
         _;
     }
 
@@ -86,7 +86,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         pure
         override
     {
-        revert("SBT: soulbound tokens are nontransferable");
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
     /// @notice Soulbound tokens are nontransferable
@@ -104,17 +104,23 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
         pure
         override
     {
-        revert("SBT: soulbound tokens are nontransferable");
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
-    // SBT: soulbound tokens are nontransferable
-
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
     function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override {
-        revert("SBT: soulbound tokens are nontransferable");
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
     function isApprovedForAll(address, /*account*/ address /*operator*/ ) public pure override returns (bool) {
-        revert("SBT: soulbound tokens are nontransferable");
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -123,18 +129,20 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @inheritdoc	ISoulbound
     /// @dev _contributionName cannot be empty, in order to more efficiently check if a contribution exists
-    /// in the contributionExists modifier
+    /// @dev in the contributionExists modifier
     function createContribution(string calldata _contributionName, string calldata _contributionUri)
         external
         onlyOwner
         returns (uint256)
     {
-        require(bytes(_contributionName).length > 0, "SBT: contribution name cannot be empty");
+        require(bytes(_contributionName).length > 0, "ProofOfContribution: contribution name cannot be empty");
 
         uint256 tokenId = nextTokenId.current();
         nextTokenId.increment();
 
         contributions[tokenId] = ContributionItem(_contributionName, _contributionUri);
+
+        emit NewContribution(tokenId, _contributionName, _contributionUri);
 
         return tokenId;
     }
@@ -177,10 +185,11 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @inheritdoc	ISoulbound
     function reject(uint256 _tokenId) external contributionExists(_tokenId) {
-        require(_hasToken(msg.sender, _tokenId), "SBT: no matching soulbound token found");
+        require(_hasToken(msg.sender, _tokenId), "ProofOfContribution: no matching soulbound token found");
+
+        _burn(msg.sender, _tokenId, 1);
 
         emit Reject(msg.sender, _tokenId);
-        _burn(msg.sender, _tokenId, 1);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -188,7 +197,7 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Internal function to determine if an EOA holds a given SBT, used by hasToken() and hasTokenBatch()
-    function _hasToken(address _owner, uint256 _tokenId) internal view returns (bool) {
+    function _hasToken(address _owner, uint256 _tokenId) internal view contributionExists(_tokenId) returns (bool) {
         return balanceOf(_owner, _tokenId) >= 1;
     }
 
@@ -198,15 +207,17 @@ abstract contract SBT is ISoulbound, ERC1155, Ownable {
 
     /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
     function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
-        require(!_hasToken(_recipient, _tokenId), "SBT: a person can only receive one SBT per contribution");
+        require(!_hasToken(_recipient, _tokenId), "ProofOfContribution: a person can only receive one soulbound token per contribution");
+
+        _mint(_recipient, _tokenId, 1, "");
 
         emit Issue(address(this), _recipient, _tokenId);
-        _mint(_recipient, _tokenId, 1, "");
     }
 
     /// @dev Internal function for Revoke business logic, used by revoke() and revokeBatch()
     function _revoke(address _owner, uint256 _tokenId, string calldata _reason) internal contributionExists(_tokenId) {
-        emit Revoke(address(this), _owner, _tokenId, _reason);
         _burn(_owner, _tokenId, 1);
+
+        emit Revoke(address(this), _owner, _tokenId, _reason);
     }
 }

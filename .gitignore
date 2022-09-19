@@ -3,7 +3,6 @@ out/
 target/
 node_modules/
 Cargo.lock
-.vscode/
 .env
 broadcast/
 lcov.info

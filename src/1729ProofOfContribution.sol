@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {SBT} from "./SBT.sol";
+import {ProofOfContribution} from "./ProofOfContribution.sol";
 
 ////////////////////////////////////////////////////////////////////////////
 //                                                                        //
@@ -17,7 +17,7 @@ import {SBT} from "./SBT.sol";
 /// @author neodaoist
 /// @author plaird
 /// @notice The 1729 Writers community issues proof of contribution "soulbound tokens" (SBTs) with this contract
-contract SevenTeenTwentyNineProofOfContribution is SBT {
+contract SevenTeenTwentyNineProofOfContribution is ProofOfContribution {
     //
     constructor(address _owner) {
         transferOwnership(_owner);
