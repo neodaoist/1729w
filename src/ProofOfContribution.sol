@@ -170,22 +170,21 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
         require(_recipients.length <= 100, "SBT: can not issue more than 100 SBTs in a single transaction");
 
-        if (msg.value > 0) {      
+        if (msg.value > 0) {
             uint256 valueToSend = msg.value / _recipients.length;
-            bool success;
 
             // issue SBTs and forward any ether to recipients, divided equally  
             for (uint256 i = 0; i < _recipients.length; i++) {
                 _issue(_recipients[i], _tokenId);
 
-                (success, ) = _recipients[i].call{value: valueToSend}("");
+                (bool success, ) = _recipients[i].call{value: valueToSend}("");
                 require(success, "ProofOfContribution: failed to send ether");
             }
 
             // cleanup any dust leftover
             uint256 balance = address(this).balance;
             if (balance > 0) {
-                (success, ) = msg.sender.call{value: balance}("");
+                (bool success, ) = msg.sender.call{value: balance}("");
                 require(success, "ProofOfContribution: failed to send ether");
             }
         } else {
