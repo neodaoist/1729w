@@ -189,6 +189,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_issueWithValue() public {
         vm.deal(addresses.multisig, 1 ether);
 
+        // check event is emitted
         vm.expectEmit(true, true, true, true);
         emit Events.Issue(address(sbt), addresses.writer1, 1);
 
@@ -196,21 +197,26 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
 
+        // check ether balance and token ownership
         assertEq(addresses.writer1.balance, 0.1 ether);
         assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
+    // @fuzz
     function test_issueWithValue(uint256 _value) public {
-        vm.deal(addresses.multisig, _value);
+        uint256 amountOfEther = bound(_value, 0, 100) * 1 ether; // test up to 100 ether
+        vm.deal(addresses.multisig, amountOfEther);
 
+        // check event is emitted
         vm.expectEmit(true, true, true, true);
         emit Events.Issue(address(sbt), addresses.writer1, 1);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issue{value: _value}(addresses.writer1, 1);
+        sbt.issue{value: amountOfEther}(addresses.writer1, 1);
 
-        assertEq(addresses.writer1.balance, _value);
+        // check ether balance and token ownership
+        assertEq(addresses.writer1.balance, amountOfEther);
         assertTrue(sbt.hasToken(addresses.writer1, 1));
     }
 
@@ -218,6 +224,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         vm.deal(addresses.multisig, 1 ether);
         vm.deal(addresses.writer1, 1 ether);
 
+        // check event is emitted
         vm.expectEmit(true, true, true, true);
         emit Events.Issue(address(sbt), addresses.writer1, 1);
 
@@ -225,8 +232,80 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.createContribution(CONTRIB1, URI1);
         sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
 
+        // check ether balance and token ownership
         assertEq(addresses.writer1.balance, 1.1 ether);
         assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_issueBatchWithValue() public {
+        // issue 5 ether to 5 contributors
+        vm.deal(addresses.multisig, 5 ether);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+
+        // check events are emitted
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), issuees[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: 5 ether}(issuees, 1);
+
+        // check ether balances and token ownership
+        for (uint256 j = 0; j < issuees.length; j++) {
+            assertEq(issuees[j].balance, 1 ether);
+            assertTrue(sbt.hasToken(issuees[j], 1));
+        }
+    }
+
+    function test_issueBatchWithValue_whenLeftover() public {
+        // issue 10 ether to 3 contributors
+        vm.deal(addresses.multisig, 10 ether);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+
+        // check events are emitted
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), issuees[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: 10 ether}(issuees, 1);
+
+        // check ether balances and token ownership
+        for (uint256 j = 0; j < issuees.length; j++) {
+            assertApproxEqRel(issuees[j].balance, 3.33 ether, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(issuees[j], 1));
+        }
+        assertEq(addresses.multisig.balance, 1); // =)
+    }
+
+    // @fuzz
+    function test_issueBatchWithValue_whenLeftover(uint256 _value) public {
+        uint256 amountOfEther = bound(_value, 0, 100) * 1 ether; // test up to 100 ether
+
+        // issue ether to 5 contributors
+        vm.deal(addresses.multisig, amountOfEther);
+        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+
+        // check events are emitted
+        for (uint256 i = 0; i < issuees.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), issuees[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: amountOfEther}(issuees, 1);
+
+        // check ether balances and token ownership
+        for (uint256 j = 0; j < issuees.length; j++) {
+            assertApproxEqRel(issuees[j].balance, amountOfEther / issuees.length, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(issuees[j], 1));
+        }
+        assertEq(addresses.multisig.balance, amountOfEther % issuees.length); // maybe or maybe not leftover
     }
 
     /*//////////////////////////////////////////////////////////////
