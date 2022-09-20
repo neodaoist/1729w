@@ -45,6 +45,14 @@ Feature: Issue Proof of Contribution SBT
             | property name | property value |
             | Token ID      | 1              |
 
+    Scenario: Admin can issue 100 SBTs
+        When I issue Reader/Voter SBTs to 100 Reader/Voter addresses
+        Then Address 0xCAFE should own 1 Participation SBT
+
+    Scenario: Admin can not issue more than 100 SBTs
+        When I issue Reader/Voter SBTs to 101 Reader/Voter addresses
+        Then I should receive an "SBT: can not issue more than 100 SBTs in a single transaction" error
+
     Scenario: Contributor can not transfer SBT
         Given Address 0xCAFE has 1 Full Completion SBT
         When They attempt to transfer it to address 0xABCD

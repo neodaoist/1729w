@@ -11,7 +11,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     SevenTeenTwentyNineProofOfContribution sbt;
 
     TestAddresses addresses;
-    address[] issuees;
+    address[] contributors;
     string URI1 = "ipfs://ABC/1";
     string URI2 = "ipfs://DEF/2";
     string URI3 = "ipfs://GHI/3";
@@ -148,38 +148,269 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_issueBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Issue(address(sbt), issuees[i], 1);
+            emit Events.Issue(address(sbt), contributors[i], 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertTrue(sbt.hasToken(issuees[j], 1));
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertTrue(sbt.hasToken(contributors[j], 1));
         }
     }
 
     function test_issueBatch_whenNotOwner_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(addresses.random);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
     }
 
     function test_issueBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
+    }
+
+    function test_issueBatch_when100Recipients() public {
+        contributors = [
+            addresses.writer1,
+            addresses.writer2,
+            addresses.writer3,
+            addresses.writer4,
+            addresses.writer5,
+            addresses.writer6,
+            addresses.writer7,
+            addresses.writer8,
+            addresses.writer9,
+            addresses.writer10,
+            addresses.writer11,
+            addresses.writer12,
+            addresses.writer13,
+            addresses.writer14,
+            addresses.writer15,
+            addresses.writer16,
+            addresses.writer17,
+            addresses.writer18,
+            addresses.writer19,
+            addresses.writer20,
+            addresses.writer21,
+            addresses.writer22,
+            addresses.writer23,
+            addresses.writer24,
+            addresses.writer25,
+            addresses.writer26,
+            addresses.writer27,
+            addresses.writer28,
+            addresses.writer29,
+            addresses.writer30,
+            addresses.writer31,
+            addresses.writer32,
+            addresses.writer33,
+            addresses.writer34,
+            addresses.writer35,
+            addresses.writer36,
+            addresses.writer37,
+            addresses.writer38,
+            addresses.writer39,
+            addresses.writer40,
+            addresses.writer41,
+            addresses.writer42,
+            addresses.writer43,
+            addresses.writer44,
+            addresses.writer45,
+            addresses.writer46,
+            addresses.writer47,
+            addresses.writer48,
+            addresses.writer49,
+            addresses.writer50,
+            addresses.writer51,
+            addresses.writer52,
+            addresses.writer53,
+            addresses.writer54,
+            addresses.writer55,
+            addresses.writer56,
+            addresses.writer57,
+            addresses.writer58,
+            addresses.writer59,
+            addresses.writer60,
+            addresses.writer61,
+            addresses.writer62,
+            addresses.writer63,
+            addresses.writer64,
+            addresses.writer65,
+            addresses.writer66,
+            addresses.writer67,
+            addresses.writer68,
+            addresses.writer69,
+            addresses.writer70,
+            addresses.writer71,
+            addresses.writer72,
+            addresses.writer73,
+            addresses.writer74,
+            addresses.writer75,
+            addresses.writer76,
+            addresses.writer77,
+            addresses.writer78,
+            addresses.writer79,
+            addresses.writer80,
+            addresses.writer81,
+            addresses.writer82,
+            addresses.writer83,
+            addresses.writer84,
+            addresses.writer85,
+            addresses.writer86,
+            addresses.writer87,
+            addresses.writer88,
+            addresses.writer89,
+            addresses.writer90,
+            addresses.writer91,
+            addresses.writer92,
+            addresses.writer93,
+            addresses.writer94,
+            addresses.writer95,
+            addresses.writer96,
+            addresses.writer97,
+            addresses.writer98,
+            addresses.writer99,
+            addresses.writer100
+        ];
+
+        for (uint256 i = 0; i < contributors.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), contributors[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(contributors, 1);
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertTrue(sbt.hasToken(contributors[j], 1));
+        }
+    }
+
+    function test_issueBatch_whenGreaterThan100Recipients_shouldRevert() public {
+        contributors = [
+            addresses.writer1,
+            addresses.writer2,
+            addresses.writer3,
+            addresses.writer4,
+            addresses.writer5,
+            addresses.writer6,
+            addresses.writer7,
+            addresses.writer8,
+            addresses.writer9,
+            addresses.writer10,
+            addresses.writer11,
+            addresses.writer12,
+            addresses.writer13,
+            addresses.writer14,
+            addresses.writer15,
+            addresses.writer16,
+            addresses.writer17,
+            addresses.writer18,
+            addresses.writer19,
+            addresses.writer20,
+            addresses.writer21,
+            addresses.writer22,
+            addresses.writer23,
+            addresses.writer24,
+            addresses.writer25,
+            addresses.writer26,
+            addresses.writer27,
+            addresses.writer28,
+            addresses.writer29,
+            addresses.writer30,
+            addresses.writer31,
+            addresses.writer32,
+            addresses.writer33,
+            addresses.writer34,
+            addresses.writer35,
+            addresses.writer36,
+            addresses.writer37,
+            addresses.writer38,
+            addresses.writer39,
+            addresses.writer40,
+            addresses.writer41,
+            addresses.writer42,
+            addresses.writer43,
+            addresses.writer44,
+            addresses.writer45,
+            addresses.writer46,
+            addresses.writer47,
+            addresses.writer48,
+            addresses.writer49,
+            addresses.writer50,
+            addresses.writer51,
+            addresses.writer52,
+            addresses.writer53,
+            addresses.writer54,
+            addresses.writer55,
+            addresses.writer56,
+            addresses.writer57,
+            addresses.writer58,
+            addresses.writer59,
+            addresses.writer60,
+            addresses.writer61,
+            addresses.writer62,
+            addresses.writer63,
+            addresses.writer64,
+            addresses.writer65,
+            addresses.writer66,
+            addresses.writer67,
+            addresses.writer68,
+            addresses.writer69,
+            addresses.writer70,
+            addresses.writer71,
+            addresses.writer72,
+            addresses.writer73,
+            addresses.writer74,
+            addresses.writer75,
+            addresses.writer76,
+            addresses.writer77,
+            addresses.writer78,
+            addresses.writer79,
+            addresses.writer80,
+            addresses.writer81,
+            addresses.writer82,
+            addresses.writer83,
+            addresses.writer84,
+            addresses.writer85,
+            addresses.writer86,
+            addresses.writer87,
+            addresses.writer88,
+            addresses.writer89,
+            addresses.writer90,
+            addresses.writer91,
+            addresses.writer92,
+            addresses.writer93,
+            addresses.writer94,
+            addresses.writer95,
+            addresses.writer96,
+            addresses.writer97,
+            addresses.writer98,
+            addresses.writer99,
+            addresses.writer100,
+            addresses.writer101
+        ];
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+
+        vm.expectRevert("SBT: can not issue more than 100 SBTs in a single transaction");
+
+        sbt.issueBatch(contributors, 1);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -240,72 +471,188 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     function test_issueBatchWithValue() public {
         // issue 5 ether to 5 contributors
         vm.deal(addresses.multisig, 5 ether);
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
 
         // check events are emitted
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Issue(address(sbt), issuees[i], 1);
+            emit Events.Issue(address(sbt), contributors[i], 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch{value: 5 ether}(issuees, 1);
+        sbt.issueBatch{value: 5 ether}(contributors, 1);
 
         // check ether balances and token ownership
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertEq(issuees[j].balance, 1 ether);
-            assertTrue(sbt.hasToken(issuees[j], 1));
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertEq(contributors[j].balance, 1 ether);
+            assertTrue(sbt.hasToken(contributors[j], 1));
         }
     }
 
     function test_issueBatchWithValue_whenLeftover() public {
-        // issue 10 ether to 3 contributors
+        // issue 10 ether to 97 contributors
         vm.deal(addresses.multisig, 10 ether);
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [
+            addresses.writer1,
+            addresses.writer2,
+            addresses.writer3,
+            addresses.writer4,
+            addresses.writer5,
+            addresses.writer6,
+            addresses.writer7,
+            addresses.writer8,
+            addresses.writer9,
+            addresses.writer10,
+            addresses.writer11,
+            addresses.writer12,
+            addresses.writer13,
+            addresses.writer14,
+            addresses.writer15,
+            addresses.writer16,
+            addresses.writer17,
+            addresses.writer18,
+            addresses.writer19,
+            addresses.writer20,
+            addresses.writer21,
+            addresses.writer22,
+            addresses.writer23,
+            addresses.writer24,
+            addresses.writer25,
+            addresses.writer26,
+            addresses.writer27,
+            addresses.writer28,
+            addresses.writer29,
+            addresses.writer30,
+            addresses.writer31,
+            addresses.writer32,
+            addresses.writer33,
+            addresses.writer34,
+            addresses.writer35,
+            addresses.writer36,
+            addresses.writer37,
+            addresses.writer38,
+            addresses.writer39,
+            addresses.writer40,
+            addresses.writer41,
+            addresses.writer42,
+            addresses.writer43,
+            addresses.writer44,
+            addresses.writer45,
+            addresses.writer46,
+            addresses.writer47,
+            addresses.writer48,
+            addresses.writer49,
+            addresses.writer50,
+            addresses.writer51,
+            addresses.writer52,
+            addresses.writer53,
+            addresses.writer54,
+            addresses.writer55,
+            addresses.writer56,
+            addresses.writer57,
+            addresses.writer58,
+            addresses.writer59,
+            addresses.writer60,
+            addresses.writer61,
+            addresses.writer62,
+            addresses.writer63,
+            addresses.writer64,
+            addresses.writer65,
+            addresses.writer66,
+            addresses.writer67,
+            addresses.writer68,
+            addresses.writer69,
+            addresses.writer70,
+            addresses.writer71,
+            addresses.writer72,
+            addresses.writer73,
+            addresses.writer74,
+            addresses.writer75,
+            addresses.writer76,
+            addresses.writer77,
+            addresses.writer78,
+            addresses.writer79,
+            addresses.writer80,
+            addresses.writer81,
+            addresses.writer82,
+            addresses.writer83,
+            addresses.writer84,
+            addresses.writer85,
+            addresses.writer86,
+            addresses.writer87,
+            addresses.writer88,
+            addresses.writer89,
+            addresses.writer90,
+            addresses.writer91,
+            addresses.writer92,
+            addresses.writer93,
+            addresses.writer94,
+            addresses.writer95,
+            addresses.writer96,
+            addresses.writer97
+        ];
 
         // check events are emitted
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Issue(address(sbt), issuees[i], 1);
+            emit Events.Issue(address(sbt), contributors[i], 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch{value: 10 ether}(issuees, 1);
+        sbt.issueBatch{value: 10 ether}(contributors, 1);
 
         // check ether balances and token ownership
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertApproxEqRel(issuees[j].balance, 3.33 ether, 0.01e18); // within 1%
-            assertTrue(sbt.hasToken(issuees[j], 1));
+        uint256 expectedAmountReceived = 10 ether / contributors.length;
+        uint256 expectedAmountLeftover = 10 ether % contributors.length;
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertApproxEqRel(contributors[j].balance, expectedAmountReceived, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(contributors[j], 1));
         }
-        assertEq(addresses.multisig.balance, 1); // =)
+        assertEq(addresses.multisig.balance, expectedAmountLeftover);
     }
 
     // @fuzz
     function test_issueBatchWithValue_whenLeftover(uint256 _value) public {
         uint256 amountOfEther = bound(_value, 0, 100) * 1 ether; // test up to 100 ether
 
-        // issue ether to 5 contributors
+        // issue ether to 11 contributors
         vm.deal(addresses.multisig, amountOfEther);
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+        contributors = [
+            addresses.writer1,
+            addresses.writer2,
+            addresses.writer3,
+            addresses.writer4,
+            addresses.writer5,
+            addresses.writer6,
+            addresses.writer7,
+            addresses.writer8,
+            addresses.writer9,
+            addresses.writer10,
+            addresses.writer11
+        ];
 
         // check events are emitted
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Issue(address(sbt), issuees[i], 1);
+            emit Events.Issue(address(sbt), contributors[i], 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch{value: amountOfEther}(issuees, 1);
+        sbt.issueBatch{value: amountOfEther}(contributors, 1);
 
         // check ether balances and token ownership
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertApproxEqRel(issuees[j].balance, amountOfEther / issuees.length, 0.01e18); // within 1%
-            assertTrue(sbt.hasToken(issuees[j], 1));
+        uint256 expectedAmountReceived = amountOfEther / contributors.length;
+        uint256 expectedAmountLeftover = amountOfEther % contributors.length;
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertApproxEqRel(contributors[j].balance, expectedAmountReceived, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(contributors[j], 1));
         }
-        assertEq(addresses.multisig.balance, amountOfEther % issuees.length); // maybe or maybe not leftover
+        assertEq(addresses.multisig.balance, expectedAmountLeftover);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -345,45 +692,45 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_revokeBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Revoke(address(sbt), issuees[i], 1, "did something naughty");
+            emit Events.Revoke(address(sbt), contributors[i], 1, "did something naughty");
         }
 
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(contributors, 1, "did something naughty");
 
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertFalse(sbt.hasToken(issuees[j], 1));
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertFalse(sbt.hasToken(contributors[j], 1));
         }
     }
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
         vm.stopPrank();
 
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(addresses.random);
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(contributors, 1, "did something naughty");
     }
 
     function test_revokeBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(contributors, 1, "did something naughty");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -445,26 +792,26 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_hasTokenBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1);
+        bool[] memory hasTokens = sbt.hasTokenBatch(contributors, 1);
 
-        assertEq(hasTokens.length, issuees.length);
-        for (uint256 i = 0; i < issuees.length; i++) {
+        assertEq(hasTokens.length, contributors.length);
+        for (uint256 i = 0; i < contributors.length; i++) {
             assertTrue(hasTokens[i]);
         }
     }
 
     function test_hasTokenBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
         
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
-        sbt.hasTokenBatch(issuees, 1);
+        sbt.hasTokenBatch(contributors, 1);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -534,16 +881,16 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_issueBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.TransferSingle(addresses.multisig, address(0), issuees[i], 1, 1);
+            emit Events.TransferSingle(addresses.multisig, address(0), contributors[i], 1, 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
     }
 
     function test_issue_adheresToERC1155Spec_viaBalanceOfBatch() public {
@@ -608,16 +955,16 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_hasTokenBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
+        bool[] memory hasTokens = sbt.hasTokenBatch(contributors, 1); // SBT specific function
 
-        for (uint256 i = 0; i < issuees.length; i++) {
-            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
+        for (uint256 i = 0; i < contributors.length; i++) {
+            assertEq(sbt.balanceOf(contributors[i], 1), 1); // ERC1155 native function
             assertTrue(hasTokens[i]);
         }
     }
@@ -634,18 +981,18 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_revokeBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        contributors = [addresses.writer1, addresses.writer2, addresses.writer3];
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.TransferSingle(addresses.multisig, issuees[i], address(0), 1, 1);
+            emit Events.TransferSingle(addresses.multisig, contributors[i], address(0), 1, 1);
         }
 
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(contributors, 1, "did something naughty");
     }
 
     function test_reject_adheresToERC1155Spec() public {

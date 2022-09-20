@@ -168,6 +168,8 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     function issueBatch(address[] calldata _recipients, uint256 _tokenId) external payable onlyOwner {
         // note WORK IN PROGRESS
 
+        require(_recipients.length <= 100, "SBT: can not issue more than 100 SBTs in a single transaction");
+
         if (msg.value > 0) {      
             uint256 valueToSend = msg.value / _recipients.length;
             bool success;
