@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 
-import {OneSevenTwoNineEssay} from "../src/1729Essay.sol";
+import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
 contract MintEssayScript is Script {
@@ -26,7 +26,7 @@ contract MintEssayScript is Script {
         // upload Essay JSON metadata file to IPFS
 
         // get already deployed Essay NFT contract
-        OneSevenTwoNineEssay token = OneSevenTwoNineEssay(tokenAddress);
+        SevenTeenTwentyNineEssay token = SevenTeenTwentyNineEssay(tokenAddress);
 
         // mint Essay NFT
         vm.broadcast(multisig);
