@@ -496,7 +496,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.hasToken(addresses.writer1, 1);
     }
 
-    function test_hasTokenBatch() public {        
+    function test_hasTokenBatch() public {
         address payable[] memory contributors = getBatchPayableAddresses(5);
         address[] memory nonPayableContributors = getBatchAddresses(5);
 
@@ -512,9 +512,9 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         }
     }
 
-    function test_hasTokenBatch_whenContributionDoesNotExist_shouldRevert() public {      
+    function test_hasTokenBatch_whenContributionDoesNotExist_shouldRevert() public {
         address[] memory nonPayableContributors = getBatchAddresses(5);
-        
+
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         sbt.hasTokenBatch(nonPayableContributors, 1);
@@ -586,7 +586,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         sbt.issue(addresses.writer1, 1);
     }
 
-    function test_issueBatch_adheresToERC1155Spec() public {        
+    function test_issueBatch_adheresToERC1155Spec() public {
         address payable[] memory contributors = getBatchPayableAddresses(5);
 
         for (uint256 i = 0; i < contributors.length; i++) {
@@ -660,7 +660,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         assertTrue(sbt.hasToken(addresses.writer1, 1)); // SBT specific function
     }
 
-    function test_hasTokenBatch_adheresToERC1155Spec() public {        
+    function test_hasTokenBatch_adheresToERC1155Spec() public {
         address payable[] memory contributors = getBatchPayableAddresses(5);
         address[] memory nonPayableContributors = getBatchAddresses(5);
 
