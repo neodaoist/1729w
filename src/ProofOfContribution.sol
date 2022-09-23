@@ -152,11 +152,9 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc	ISoulbound
-    function issue(address _recipient, uint256 _tokenId) external payable onlyOwner {
+    function issue(address payable _recipient, uint256 _tokenId) external payable onlyOwner {
         _issue(_recipient, _tokenId);
         
-        // note WORK IN PROGRESS
-
         if (msg.value > 0) {
             // forward any ether to recipient
             (bool success, ) = _recipient.call{value: msg.value}("");
@@ -165,9 +163,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     }
 
     /// @inheritdoc	ISoulbound
-    function issueBatch(address[] calldata _recipients, uint256 _tokenId) external payable onlyOwner {
-        // note WORK IN PROGRESS
-
+    function issueBatch(address payable[] calldata _recipients, uint256 _tokenId) external payable onlyOwner {
         require(_recipients.length <= 100, "SBT: can not issue more than 100 SBTs in a single transaction");
 
         if (msg.value > 0) {

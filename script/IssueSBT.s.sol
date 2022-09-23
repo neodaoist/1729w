@@ -27,10 +27,10 @@ contract IssueSBTScript is Script {
     string sbtName = "Cohort 2 - Full Completion";
     string sbtURI = "ipfs://bafkreig43xs7tesmeb2cvawkvacxxf6fc3l5xha3pycpoulvacog7klzxm";
 
-    address[] issuees = [
-        0xCC1ed849AF02c295Edf56DF1bd00f8664A4F55f1,
-        address(0xA),
-        address(0xB)
+    address payable[] issuees = [
+        payable(0xCC1ed849AF02c295Edf56DF1bd00f8664A4F55f1),
+        payable(address(0xA)),
+        payable(address(0xB))
     ];
 
     function run() public {
