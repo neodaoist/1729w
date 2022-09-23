@@ -152,14 +152,42 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc	ISoulbound
-    function issue(address _recipient, uint256 _tokenId) external onlyOwner {
+    function issue(address payable _recipient, uint256 _tokenId) external payable onlyOwner {
         _issue(_recipient, _tokenId);
+
+        if (msg.value > 0) {
+            // forward any ether to recipient
+            (bool success,) = _recipient.call{value: msg.value}("");
+            require(success, "ProofOfContribution: failed to send ether");
+        }
     }
 
     /// @inheritdoc	ISoulbound
-    function issueBatch(address[] calldata _recipients, uint256 _tokenId) external onlyOwner {
-        for (uint256 i = 0; i < _recipients.length; i++) {
-            _issue(_recipients[i], _tokenId);
+    function issueBatch(address payable[] calldata _recipients, uint256 _tokenId) external payable onlyOwner {
+        require(_recipients.length <= 100, "SBT: can not issue more than 100 SBTs in a single transaction");
+
+        if (msg.value > 0) {
+            uint256 valueToSend = msg.value / _recipients.length;
+
+            // issue SBTs and forward any ether to recipients, divided equally
+            for (uint256 i = 0; i < _recipients.length; i++) {
+                _issue(_recipients[i], _tokenId);
+
+                (bool success,) = _recipients[i].call{value: valueToSend}("");
+                require(success, "ProofOfContribution: failed to send ether");
+            }
+
+            // cleanup any dust leftover
+            uint256 balance = address(this).balance;
+            if (balance > 0) {
+                (bool success,) = msg.sender.call{value: balance}("");
+                require(success, "ProofOfContribution: failed to send ether");
+            }
+        } else {
+            // no value included, so just do basic issuing SBTs loop
+            for (uint256 i = 0; i < _recipients.length; i++) {
+                _issue(_recipients[i], _tokenId);
+            }
         }
     }
 
@@ -207,7 +235,10 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
     /// @dev Internal function for Issue business logic, used by issue() and issueBatch()
     function _issue(address _recipient, uint256 _tokenId) internal contributionExists(_tokenId) {
-        require(!_hasToken(_recipient, _tokenId), "ProofOfContribution: a person can only receive one soulbound token per contribution");
+        require(
+            !_hasToken(_recipient, _tokenId),
+            "ProofOfContribution: a person can only receive one soulbound token per contribution"
+        );
 
         _mint(_recipient, _tokenId, 1, "");
 

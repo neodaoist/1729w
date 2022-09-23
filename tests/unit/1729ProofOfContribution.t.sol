@@ -11,7 +11,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     SevenTeenTwentyNineProofOfContribution sbt;
 
     TestAddresses addresses;
-    address[] issuees;
+
     string URI1 = "ipfs://ABC/1";
     string URI2 = "ipfs://DEF/2";
     string URI3 = "ipfs://GHI/3";
@@ -148,38 +148,214 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_issueBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3, addresses.writer4, addresses.writer5];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Issue(address(sbt), issuees[i], 1);
+            emit Events.Issue(address(sbt), contributors[i], 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertTrue(sbt.hasToken(issuees[j], 1));
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertTrue(sbt.hasToken(contributors[j], 1));
         }
     }
 
     function test_issueBatch_whenNotOwner_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
 
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(addresses.random);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
     }
 
     function test_issueBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
 
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
+    }
+
+    function test_issueBatch_whenDuplicateContributors_shouldRevert() public {
+        address payable[] memory contributors = new address payable[](3);
+        contributors[0] = addresses.writer1;
+        contributors[1] = addresses.writer2;
+        contributors[2] = addresses.writer1; // duplicate contributor
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+
+        vm.expectRevert("ProofOfContribution: a person can only receive one soulbound token per contribution");
+
+        sbt.issueBatch(contributors, 1);
+    }
+
+    function test_issueBatch_when100Recipients() public {
+        address payable[] memory contributors = getBatchPayableAddresses(100);
+
+        for (uint256 i = 0; i < contributors.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), contributors[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch(contributors, 1);
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertTrue(sbt.hasToken(contributors[j], 1));
+        }
+    }
+
+    function test_issueBatch_whenGreaterThan100Recipients_shouldRevert() public {
+        address payable[] memory contributors = getBatchPayableAddresses(101);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+
+        vm.expectRevert("SBT: can not issue more than 100 SBTs in a single transaction");
+
+        sbt.issueBatch(contributors, 1);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        Issuing with value
+    //////////////////////////////////////////////////////////////*/
+
+    function test_issueWithValue() public {
+        vm.deal(addresses.multisig, 1 ether);
+
+        // check event is emitted
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
+
+        // check ether balance and token ownership
+        assertEq(addresses.writer1.balance, 0.1 ether);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    // @fuzz
+    function test_issueWithValue(uint256 _value) public {
+        uint256 amountOfEther = bound(_value, 0, 100) * 1 ether; // test up to 100 ether
+        vm.deal(addresses.multisig, amountOfEther);
+
+        // check event is emitted
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: amountOfEther}(addresses.writer1, 1);
+
+        // check ether balance and token ownership
+        assertEq(addresses.writer1.balance, amountOfEther);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_issueWithValue_whenRecipientAlreadyHasEther() public {
+        vm.deal(addresses.multisig, 1 ether);
+        vm.deal(addresses.writer1, 1 ether);
+
+        // check event is emitted
+        vm.expectEmit(true, true, true, true);
+        emit Events.Issue(address(sbt), addresses.writer1, 1);
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issue{value: 0.1 ether}(addresses.writer1, 1);
+
+        // check ether balance and token ownership
+        assertEq(addresses.writer1.balance, 1.1 ether);
+        assertTrue(sbt.hasToken(addresses.writer1, 1));
+    }
+
+    function test_issueBatchWithValue() public {
+        // issue 5 ether to 5 contributors
+        vm.deal(addresses.multisig, 5 ether);
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+
+        emit log_uint(contributors.length);
+
+        // check events are emitted
+        for (uint256 i = 0; i < contributors.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), contributors[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: 5 ether}(contributors, 1);
+
+        // check ether balances and token ownership
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertEq(contributors[j].balance, 1 ether);
+            assertTrue(sbt.hasToken(contributors[j], 1));
+        }
+    }
+
+    function test_issueBatchWithValue_whenLeftover() public {
+        // issue 10 ether to 99 contributors
+        vm.deal(addresses.multisig, 10 ether);
+        address payable[] memory contributors = getBatchPayableAddresses(99);
+
+        // check events are emitted
+        for (uint256 i = 0; i < contributors.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), contributors[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: 10 ether}(contributors, 1);
+
+        // check ether balances and token ownership
+        uint256 expectedAmountReceived = 10 ether / contributors.length;
+        uint256 expectedAmountLeftover = 10 ether % contributors.length;
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertApproxEqRel(contributors[j].balance, expectedAmountReceived, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(contributors[j], 1));
+        }
+        assertEq(addresses.multisig.balance, expectedAmountLeftover);
+    }
+
+    // @fuzz
+    function test_issueBatchWithValue_whenLeftover(uint256 _value) public {
+        uint256 amountOfEther = bound(_value, 0, 100) * 1 ether; // test up to 100 ether
+
+        // issue ether to 11 contributors
+        vm.deal(addresses.multisig, amountOfEther);
+        address payable[] memory contributors = getBatchPayableAddresses(11);
+
+        // check events are emitted
+        for (uint256 i = 0; i < contributors.length; i++) {
+            vm.expectEmit(true, true, true, true);
+            emit Events.Issue(address(sbt), contributors[i], 1);
+        }
+
+        vm.startPrank(addresses.multisig);
+        sbt.createContribution(CONTRIB1, URI1);
+        sbt.issueBatch{value: amountOfEther}(contributors, 1);
+
+        // check ether balances and token ownership
+        uint256 expectedAmountReceived = amountOfEther / contributors.length;
+        uint256 expectedAmountLeftover = amountOfEther % contributors.length;
+
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertApproxEqRel(contributors[j].balance, expectedAmountReceived, 0.01e18); // within 1%
+            assertTrue(sbt.hasToken(contributors[j], 1));
+        }
+        assertEq(addresses.multisig.balance, expectedAmountLeftover);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -219,45 +395,47 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_revokeBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.Revoke(address(sbt), issuees[i], 1, "did something naughty");
+            emit Events.Revoke(address(sbt), contributors[i], 1, "did something naughty");
         }
 
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(nonPayableContributors, 1, "did something naughty");
 
-        for (uint256 j = 0; j < issuees.length; j++) {
-            assertFalse(sbt.hasToken(issuees[j], 1));
+        for (uint256 j = 0; j < contributors.length; j++) {
+            assertFalse(sbt.hasToken(contributors[j], 1));
         }
     }
 
     function test_revokeBatch_whenNotOwner_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
         vm.stopPrank();
 
         vm.expectRevert("Ownable: caller is not the owner");
 
         vm.prank(addresses.random);
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(nonPayableContributors, 1, "did something naughty");
     }
 
     function test_revokeBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
         vm.prank(addresses.multisig);
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(nonPayableContributors, 1, "did something naughty");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -319,26 +497,27 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_hasTokenBatch() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1);
+        bool[] memory hasTokens = sbt.hasTokenBatch(nonPayableContributors, 1);
 
-        assertEq(hasTokens.length, issuees.length);
-        for (uint256 i = 0; i < issuees.length; i++) {
+        assertEq(hasTokens.length, contributors.length);
+        for (uint256 i = 0; i < contributors.length; i++) {
             assertTrue(hasTokens[i]);
         }
     }
 
     function test_hasTokenBatch_whenContributionDoesNotExist_shouldRevert() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
-        
+        address[] memory nonPayableContributors = getBatchAddresses(5);
+
         vm.expectRevert("ProofOfContribution: no matching contribution found");
 
-        sbt.hasTokenBatch(issuees, 1);
+        sbt.hasTokenBatch(nonPayableContributors, 1);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -395,7 +574,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                        ERC1155 Spec Tests (minus transferability)
+                        ERC1155 Spec Tests (except for transferability)
     //////////////////////////////////////////////////////////////*/
 
     function test_issue_adheresToERC1155Spec() public {
@@ -408,16 +587,16 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_issueBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.TransferSingle(addresses.multisig, address(0), issuees[i], 1, 1);
+            emit Events.TransferSingle(addresses.multisig, address(0), contributors[i], 1, 1);
         }
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
     }
 
     function test_issue_adheresToERC1155Spec_viaBalanceOfBatch() public {
@@ -482,16 +661,17 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_hasTokenBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        bool[] memory hasTokens = sbt.hasTokenBatch(issuees, 1); // SBT specific function
+        bool[] memory hasTokens = sbt.hasTokenBatch(nonPayableContributors, 1); // SBT specific function
 
-        for (uint256 i = 0; i < issuees.length; i++) {
-            assertEq(sbt.balanceOf(issuees[i], 1), 1); // ERC1155 native function
+        for (uint256 i = 0; i < contributors.length; i++) {
+            assertEq(sbt.balanceOf(contributors[i], 1), 1); // ERC1155 native function
             assertTrue(hasTokens[i]);
         }
     }
@@ -508,18 +688,19 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
     }
 
     function test_revokeBatch_adheresToERC1155Spec() public {
-        issuees = [addresses.writer1, addresses.writer2, addresses.writer3];
+        address payable[] memory contributors = getBatchPayableAddresses(5);
+        address[] memory nonPayableContributors = getBatchAddresses(5);
 
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
-        sbt.issueBatch(issuees, 1);
+        sbt.issueBatch(contributors, 1);
 
-        for (uint256 i = 0; i < issuees.length; i++) {
+        for (uint256 i = 0; i < contributors.length; i++) {
             vm.expectEmit(true, true, true, true);
-            emit Events.TransferSingle(addresses.multisig, issuees[i], address(0), 1, 1);
+            emit Events.TransferSingle(addresses.multisig, contributors[i], address(0), 1, 1);
         }
 
-        sbt.revokeBatch(issuees, 1, "did something naughty");
+        sbt.revokeBatch(nonPayableContributors, 1, "did something naughty");
     }
 
     function test_reject_adheresToERC1155Spec() public {
