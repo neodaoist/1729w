@@ -5,10 +5,20 @@ use cucumber::{gherkin::Step, given, when, then, World, WorldInit, Cucumber};
 use std::collections::HashMap;
 use std::fmt::Formatter;
 use std::panic::AssertUnwindSafe;
+use std::sync::Arc;
+use std::time::Duration;
+use async_std::task;
+use ethers::prelude::LocalWallet;
 use futures::FutureExt;
 use log::{info, warn};
 use tokio::time;
 use ethers::utils::{Anvil, AnvilInstance};
+use ethers_contract::abigen;
+use ethers_middleware::signer::SignerMiddleware;
+use ethers_providers::{Provider, Http, Middleware};
+use ethers::signers::Signer;
+use ethers::prelude::Wallet;
+// use ethers_signers::wallet;
 
 // 
 
@@ -21,6 +31,8 @@ pub struct Essay {
     author_addr: String
 }
  */
+
+abigen!(OneSevenTwoNine, "out/1729Essay.sol/OneSevenTwoNineEssay.json");
 
 // `World` is your shared, likely mutable state.
 //#[derive(Debug, WorldInit)]
@@ -57,9 +69,16 @@ pub struct WriterWorld {
     winning_writer_name: String,
     winning_writer_address: String,
 
-    anvil: Option<AnvilInstance>,
+    anvil: Option<AnvilConnection>,
+    nft_contract: Option<OneSevenTwoNine<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>>,
 }
 
+// #[derive(Debug)]
+pub struct AnvilConnection {
+    anvil: AnvilInstance,
+    //wallet: LocalWallet,
+    client: Arc<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>,
+}
 
 // TODO: Incomplete
 // Necessary because AnvilInstance doesn't implement Debug so can't derive
@@ -110,6 +129,7 @@ impl World for WriterWorld {
             winning_writer_address: String::from(""),
 
             anvil: Option::None, // Anvil is started and stopped in before/after hooks. Better way to do this?
+            nft_contract: Option::None,
         })
     }
 }
@@ -123,9 +143,24 @@ async fn main() -> eyre::Result<()> {
         // Start a fresh anvil before each scenario
         .before(move |_, _, _, world| {
             async move {
-                world.anvil = Option::Some(Anvil::new().spawn());
-                let endpoint = world.anvil.as_ref().unwrap().endpoint();
+                let anvil = Anvil::new().spawn();
+                let endpoint = anvil.endpoint();
                 println!("Anvil running at `{}`", endpoint);
+
+                let provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
+
+                let wallet: LocalWallet = anvil.keys()[0].clone().into();
+                let client = Arc::new(SignerMiddleware::new(provider, wallet.with_chain_id(anvil.chain_id())));
+//                let nft_contract = task::block_on(OneSevenTwoNine::deploy(client, ()).expect("Failed to deploy").send()).expect("Failed to send");
+
+
+                // Populate world
+                let connection = AnvilConnection{
+                    anvil: anvil,
+                    //wallet: wallet,
+                    client: client};
+                world.anvil = Option::Some(connection);
+
             }.boxed()
         })
         .run_and_exit("tests/features");
@@ -327,7 +362,27 @@ fn vote_scenario_2_then_1(world: &mut WriterWorld, voter_account: String, vote_c
 
 #[given(regex = r"^The Essay NFT contract is deployed$")]
 fn publish_given_1(world: &mut WriterWorld) {
-    // TODO: deploy contract
+    let anvil = &world.anvil.as_ref().expect("Anvil should be initialized").anvil;
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    let provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
+
+    let client = Arc::new(SignerMiddleware::new(provider, wallet.with_chain_id(anvil.chain_id())));
+    // let nft_contract = task::block_on(OneSevenTwoNine::deploy(client, ()).expect("Failed to deploy").send()).expect("Failed to send");
+    let factory = ethers::contract::ContractFactory::new(
+        ONESEVENTWONINE_ABI.clone(),
+        ONESEVENTWONINE_BYTECODE.clone().into(),
+        client,
+    );
+    let deployer_result = factory.deploy(());
+    let deployer = match deployer_result {
+        Ok(deployer) => deployer,
+        Err(error) => panic!("Error result from deploy: {:?}", error),
+    };
+
+    let deployer: ethers::contract::ContractDeployer<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>, ethers::contract::Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>> = ethers::contract::ContractDeployer::new(deployer);
+
+    // world.nft_contract = Some(nft_contract);
+
 }
 
 #[given(regex = r"^there are no NFTs minted on the contract$")]
@@ -503,4 +558,3 @@ fn address_scenario_2_then_2(world: &mut WriterWorld, essay_number: String) {
     // TODO: not implemented yet
     panic!("STEPDEF not implemented yet");
 }
-
