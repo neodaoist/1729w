@@ -3,4 +3,6 @@ out/
 target/
 node_modules/
 Cargo.lock
-
+.env
+broadcast/
+lcov.info

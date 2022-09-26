@@ -10,7 +10,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 
-abigen!(OneSevenTwoNine, "out/1729Essay.sol/OneSevenTwoNineEssay.json");
+abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
 
 fn main() {
     let anvil = Anvil::new().spawn();
@@ -25,8 +25,8 @@ fn main() {
 
     // let nft_contract = task::block_on(OneSevenTwoNine::deploy(client, ()).expect("Failed to deploy").send()).expect("Failed to send");
     let factory = ethers::contract::ContractFactory::new(
-        ONESEVENTWONINE_ABI.clone(),
-        ONESEVENTWONINE_BYTECODE.clone().into(),
+        SEVENTEENTWENTYNINEESSAY_ABI.clone(),
+        SEVENTEENTWENTYNINEESSAY_BYTECODE.clone().into(),
         client,
     );
     let deployer_result = factory.deploy(());
