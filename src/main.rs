@@ -1,10 +1,9 @@
 // This is here to make Cargo happy, for now
-use ethers::utils::{Anvil, AnvilInstance};
+use ethers::utils::{Anvil};
 use ethers_contract::abigen;
 use ethers_middleware::signer::SignerMiddleware;
-use ethers_providers::{Provider, Http, Middleware};
+use ethers_providers::{Provider, Http};
 use ethers::signers::Signer;
-use ethers::prelude::Wallet;
 use ethers::prelude::LocalWallet;
 use std::sync::Arc;
 use std::time::Duration;
@@ -36,30 +35,8 @@ async fn main() {
 
     let total_supply = nft_contract.method::<_, Uint>("totalSupply", ()).expect("Error finding method").call().await.expect("Error sending total supply call");
     println!("Total supply: {}", total_supply);
+    
 
-    /*
-    let total_supply_call = nft_contract.total_supply();
-    let pending_receipt = total_supply_call.send().await.expect("Failed to call mint function");
-    let receipt = pending_receipt.confirmations(1).await.expect("Failet to get confirmation");
-    println!("Receipt: {}", receipt.unwrap());
-*/
-
-    /*
-    let factory = ethers::contract::ContractFactory::new(
-        SEVENTEENTWENTYNINEESSAY_ABI.clone(),
-        SEVENTEENTWENTYNINEESSAY_BYTECODE.clone().into(),
-        client,
-    );
-    let deployer_result = factory.deploy(multisig);
-    let deployer = match deployer_result {
-        Ok(deployer) => deployer,
-        Err(error) => panic!("Error result from deploy: {:?}", error),
-    };
-*/
-//    let deployer: ethers::contract::ContractDeployer<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>, ethers::contract::Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>> = ethers::contract::ContractDeployer::new(deployer);
-
-
-    println!("Hello, world!");
-
+    println!("Done.");
 
 }
