@@ -60,9 +60,7 @@ interface ISoulbound {
     /// @param _contributionName The name of the contribution
     /// @param _contributionUri The fully qualified URI of the contribution JSON metadata
     /// @return The token ID of the newly created contribution
-    function createContribution(string calldata _contributionName, string calldata _contributionUri)
-        external
-        returns (uint256);
+    function createContribution(string calldata _contributionName, string calldata _contributionUri) external returns (uint256);
 
     /*//////////////////////////////////////////////////////////////
                         Transactions – Issuing
