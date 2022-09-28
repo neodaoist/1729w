@@ -25,6 +25,7 @@ async fn main() {
     let fork_endpoint = env::var("ETH_NODE_URL").expect("Environment variable ETH_NODE_URL should be defined and be a valid API URL");
     let anvil = Anvil::new()
         .fork(fork_endpoint)
+        .chain_id(31337_u64)
         .spawn();
     let endpoint = anvil.endpoint();
     println!("Anvil running at `{}` with chain_id `{}`", endpoint, anvil.chain_id());
