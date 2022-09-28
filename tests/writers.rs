@@ -143,7 +143,9 @@ async fn main() -> eyre::Result<()> {
         // Start a fresh anvil before each scenario
         .before(move |_, _, _, world| {
             async move {
-                let anvil = Anvil::new().spawn();
+                let anvil = Anvil::new()
+                    .fork("https://mainnet.infura.io/v3/bb3bdc9bf5c54df8998e697487bd03f9")
+                    .spawn();
                 let endpoint = anvil.endpoint();
                 println!("Anvil running at `{}`", endpoint);
 

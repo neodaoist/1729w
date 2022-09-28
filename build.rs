@@ -7,4 +7,15 @@ fn main() {
         .generate().expect("Failed to generate")
         .write_to_file("target/SevenTeenTwentyNineEssay.rs").expect("Failed to write to file");
     // FIXME: Where should the output go?
+
+    println!("cargo:rerun-if-changed=out/ListBidEssay.s.sol/ModuleManager.json");
+    Abigen::new("ModuleManager", "out/ListBidEssay.s.sol/ModuleManager.json").expect("Failed to create new abigen")
+        .generate().expect("Failed to generate")
+        .write_to_file("target/ModuleManager.rs").expect("Failed to write to file");
+
+    println!("cargo:rerun-if-changed=out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json");
+        Abigen::new("ModuleManager", "out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json").expect("Failed to create new abigen")
+        .generate().expect("Failed to generate")
+        .write_to_file("target/ReserveAuctionCoreETH.rs").expect("Failed to write to file");
+
 }

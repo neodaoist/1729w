@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 log = "0.4.17"
 ethers = { git = "https://github.com/gakonst/ethers-rs" }
+ethers-core = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-contract = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-solc = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-middleware = { git = "https://github.com/gakonst/ethers-rs" }
