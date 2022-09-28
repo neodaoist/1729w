@@ -6,6 +6,9 @@
     <mapping directory="$PROJECT_DIR$/lib/forge-std/lib/ds-test" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/jsmnSol" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/openzeppelin-contracts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/solenv" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/solenv/lib/solidity-stringutils" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib/solenv/lib/solidity-stringutils/lib/ds-test" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/solidity-json-writer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/solmate" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lib/solmate/lib/ds-test" vcs="Git" />
