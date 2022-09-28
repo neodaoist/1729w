@@ -27,7 +27,7 @@ async fn main() {
         .fork(fork_endpoint)
         .spawn();
     let endpoint = anvil.endpoint();
-    println!("Anvil running at `{}`", endpoint);
+    println!("Anvil running at `{}` with chain_id `{}`", endpoint, anvil.chain_id());
 
     // Set up anvil
     let provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
