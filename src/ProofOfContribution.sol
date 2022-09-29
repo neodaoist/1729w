@@ -20,6 +20,12 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         _;
     }
 
+    /// TODO refactor NatSpec
+    modifier nontransferable() {
+        _;
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
+    }
+
     /// @dev A representation of a specific type of contribution, for which SBTs can then be issued to contributors
     /// @param name The name of the contribution
     /// @param uri The fully qualified URI of the contribution JSON metadata
@@ -82,13 +88,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         uint256, /*id*/
         uint256, /*amount*/
         bytes memory /*data*/
-    )
-        public
-        pure
-        override
-    {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
+    ) public pure override nontransferable {}
 
     /// @notice Soulbound tokens are nontransferable
     /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
@@ -100,29 +100,25 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         uint256[] memory, /*ids*/
         uint256[] memory, /*amounts*/
         bytes memory /*data*/
-    )
+    ) public pure override nontransferable {}
+
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
+    function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override nontransferable {}
+
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
+    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
+    /// @dev function mutability is set to pure.
+    function isApprovedForAll(address, /*account*/ address /*operator*/ )
         public
         pure
         override
-    {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
-
-    /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
-    function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
-
-    /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
-    function isApprovedForAll(address, /*account*/ address /*operator*/ ) public pure override returns (bool) {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
+        nontransferable
+        returns (bool)
+    {}
 
     /*//////////////////////////////////////////////////////////////
                         Transactions – Creating
