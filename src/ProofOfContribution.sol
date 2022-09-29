@@ -6,6 +6,7 @@ import "./ISoulbound.sol";
 import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
+import {Address} from "openzeppelin-contracts/utils/Address.sol";
 
 /// @dev See {ISoulbound}.
 abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
@@ -157,8 +158,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
         if (msg.value > 0) {
             // forward any ether to recipient
-            (bool success,) = _recipient.call{value: msg.value}("");
-            require(success, "ProofOfContribution: failed to send ether");
+            Address.sendValue(_recipient, msg.value);
         }
     }
 
@@ -172,19 +172,16 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
             // issue SBTs and forward any ether to recipients, divided equally
             for (uint256 i = 0; i < _recipients.length; i++) {
                 _issue(_recipients[i], _tokenId);
-
-                (bool success,) = _recipients[i].call{value: valueToSend}("");
-                require(success, "ProofOfContribution: failed to send ether");
+                Address.sendValue(_recipients[i], valueToSend);
             }
 
             // cleanup any dust leftover
             uint256 balance = address(this).balance;
             if (balance > 0) {
-                (bool success,) = msg.sender.call{value: balance}("");
-                require(success, "ProofOfContribution: failed to send ether");
+                Address.sendValue(payable(msg.sender), balance);
             }
         } else {
-            // no value included, so just do basic issuing SBTs loop
+            // no ether included, so just do basic issuing SBTs loop
             for (uint256 i = 0; i < _recipients.length; i++) {
                 _issue(_recipients[i], _tokenId);
             }
