@@ -20,7 +20,10 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         _;
     }
 
-    /// TODO refactor NatSpec
+    /// @dev Revert overridden ERC1155 functions related to post-mint transfers. Function body
+    /// @dev is placed before revert statement here (even though all 4 function bodies are 
+    /// @dev empty and logically revert statement should come first), in order to avoid a
+    /// @dev compiler warning related to unreachable code in functions with this modifier applied.
     modifier nontransferable() {
         _;
         revert("ProofOfContribution: soulbound tokens are nontransferable");
@@ -79,9 +82,10 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev The nontransferable modifier is applied to revert this function in all cases.
+    /// @dev In order to avoid a compiler warning related to unused parameters while
+    /// @dev overriding these ERC1155 transfer functions, parameter names are commented out.
+    /// @dev In addition, function mutability is set to pure to achieve slight gas savings.
     function safeTransferFrom(
         address, /*from*/
         address, /*to*/
@@ -91,9 +95,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     ) public pure override nontransferable {}
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev See safeTransferFrom() documentation for additional info
     function safeBatchTransferFrom(
         address, /*from*/
         address, /*to*/
@@ -103,15 +105,11 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     ) public pure override nontransferable {}
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev See safeTransferFrom() documentation for additional info
     function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override nontransferable {}
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev See safeTransferFrom() documentation for additional info
     function isApprovedForAll(address, /*account*/ address /*operator*/ )
         public
         pure
