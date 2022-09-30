@@ -6,6 +6,7 @@ import "./ISoulbound.sol";
 import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
+import {Address} from "openzeppelin-contracts/utils/Address.sol";
 
 /// @dev See {ISoulbound}.
 abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
@@ -17,6 +18,15 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     modifier contributionExists(uint256 _tokenId) {
         require(bytes(contributions[_tokenId].name).length > 0, "ProofOfContribution: no matching contribution found");
         _;
+    }
+
+    /// @dev Revert overridden ERC1155 functions related to post-mint transfers. Function body
+    /// @dev is placed before revert statement here (even though all 4 function bodies are 
+    /// @dev empty and logically revert statement should come first), in order to avoid a
+    /// @dev compiler warning related to unreachable code in functions with this modifier applied.
+    modifier nontransferable() {
+        _;
+        revert("ProofOfContribution: soulbound tokens are nontransferable");
     }
 
     /// @dev A representation of a specific type of contribution, for which SBTs can then be issued to contributors
@@ -72,56 +82,41 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev The nontransferable modifier is applied to revert this function in all cases.
+    /// @dev In order to avoid a compiler warning related to unused parameters while
+    /// @dev overriding these ERC1155 transfer functions, parameter names are commented out.
+    /// @dev In addition, function mutability is set to pure to achieve slight gas savings.
     function safeTransferFrom(
         address, /*from*/
         address, /*to*/
         uint256, /*id*/
         uint256, /*amount*/
         bytes memory /*data*/
-    )
-        public
-        pure
-        override
-    {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
+    ) public pure override nontransferable {}
 
     /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
+    /// @dev See safeTransferFrom() documentation for additional info
     function safeBatchTransferFrom(
         address, /*from*/
         address, /*to*/
         uint256[] memory, /*ids*/
         uint256[] memory, /*amounts*/
         bytes memory /*data*/
-    )
+    ) public pure override nontransferable {}
+
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev See safeTransferFrom() documentation for additional info
+    function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override nontransferable {}
+
+    /// @notice Soulbound tokens are nontransferable
+    /// @dev See safeTransferFrom() documentation for additional info
+    function isApprovedForAll(address, /*account*/ address /*operator*/ )
         public
         pure
         override
-    {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
-
-    /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
-    function setApprovalForAll(address, /*operator*/ bool /*approved*/ ) public pure override {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
-
-    /// @notice Soulbound tokens are nontransferable
-    /// @dev In order to suppress compiler warnings (unused parameters and function mutability)
-    /// @dev while overriding ERC1155 transfer functions, parameter names are commented out and
-    /// @dev function mutability is set to pure.
-    function isApprovedForAll(address, /*account*/ address /*operator*/ ) public pure override returns (bool) {
-        revert("ProofOfContribution: soulbound tokens are nontransferable");
-    }
+        nontransferable
+        returns (bool)
+    {}
 
     /*//////////////////////////////////////////////////////////////
                         Transactions – Creating
@@ -157,8 +152,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
 
         if (msg.value > 0) {
             // forward any ether to recipient
-            (bool success,) = _recipient.call{value: msg.value}("");
-            require(success, "ProofOfContribution: failed to send ether");
+            Address.sendValue(_recipient, msg.value);
         }
     }
 
@@ -172,19 +166,16 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
             // issue SBTs and forward any ether to recipients, divided equally
             for (uint256 i = 0; i < _recipients.length; i++) {
                 _issue(_recipients[i], _tokenId);
-
-                (bool success,) = _recipients[i].call{value: valueToSend}("");
-                require(success, "ProofOfContribution: failed to send ether");
+                Address.sendValue(_recipients[i], valueToSend);
             }
 
             // cleanup any dust leftover
             uint256 balance = address(this).balance;
             if (balance > 0) {
-                (bool success,) = msg.sender.call{value: balance}("");
-                require(success, "ProofOfContribution: failed to send ether");
+                Address.sendValue(payable(msg.sender), balance);
             }
         } else {
-            // no value included, so just do basic issuing SBTs loop
+            // no ether included, so just do basic issuing SBTs loop
             for (uint256 i = 0; i < _recipients.length; i++) {
                 _issue(_recipients[i], _tokenId);
             }
