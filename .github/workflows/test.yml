@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+          env: # Or as an environment variable
+            ETH_NODE_URL: ${{ secrets.ETH_NODE_URL }}
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
