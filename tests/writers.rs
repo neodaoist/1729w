@@ -9,32 +9,23 @@ use std::sync::Arc;
 use std::time::Duration;
 use std::env;
 use async_std::task;
-use ethers::prelude::LocalWallet;
+use ethers::prelude::{Address, H160, LocalWallet};
 use futures::FutureExt;
 use log::{info, warn};
 use tokio::time;
 use ethers::utils::{Anvil, AnvilInstance};
-use ethers_contract::abigen;
+use ethers_contract::{abigen, Contract};
 use ethers_middleware::signer::SignerMiddleware;
 use ethers_providers::{Provider, Http, Middleware};
 use ethers::signers::Signer;
 use ethers::prelude::Wallet;
 use ethers::abi::Uint;
 
-// use ethers_signers::wallet;
 
-// 
-
-// TODO: Refactor into structs as needed
-/*
-#[derive(Debug)]
-pub struct Essay {
-    title: String,
-    url: String,
-    author_addr: String
-}
- */
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
+abigen!(ListBidEssayScript, "out/ListBidEssay.s.sol/ListBidEssayScript.json");
+abigen!(ReserveAuctionCoreETH, "out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json");
+abigen!(ModuleManager, "out/ListBidEssay.s.sol/ModuleManager.json");
 
 // `World` is your shared, likely mutable state.
 //#[derive(Debug, WorldInit)]
@@ -176,17 +167,6 @@ async fn main() -> eyre::Result<()>
                     client: client
                 };
                 world.anvil = Option::Some(connection);
-                /*
-//                let nft_contract = task::block_on(SevenTeenTwentyNineEssay::deploy(client, ()).expect("Failed to deploy").send()).expect("Failed to send");
-
-
-                // Populate world
-                let connection = AnvilConnection{
-                    anvil: anvil,
-                    //wallet: wallet,
-                    client: client};
-                world.anvil = Option::Some(connection);
-*/
             }.boxed()
         })
         .run_and_exit("tests/features/implemented")
@@ -448,11 +428,12 @@ fn publish_given_9(world: &mut WriterWorld, essay_votes: String) {
 
 #[when("I mint, list, and bid on the Essay NFT")]
 async fn publish_when_1(world: &mut WriterWorld) {
-    /*
+
     // Mint Essay NFT
     let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
     let client = world.anvil.as_ref().unwrap().client.clone();
-    let multisig = world.getMultisigWallet().address();
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    let multisig = wallet.address();
 
     let nft_contract = world.nft_contract.as_ref().unwrap();
     let mint_call = nft_contract.mint(multisig, "https://test.com/test".to_string());
@@ -476,8 +457,14 @@ async fn publish_when_1(world: &mut WriterWorld) {
     module_manager_contract.method::<_, ()>("setApprovalForModule", (zora_address, true))
         .expect("Error finding setApprovalForModule method").send().await.expect("Error calling approval for module");
 
-    // Create auction
-    println!("Creating listing");
+    let token_id = ethers::core::types::U256::from_dec_str("1").expect("Couldn't convert 1 to U256");
+
+    // Look up block number for auction start
+    let block_provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
+    let block = block_provider.get_block_number().await.expect("Couldn't get block height");
+    let block_uint256 = ethers::prelude::U256::from(block.as_u64());
+
+    // Create listing
     let auction_duration: ethers::prelude::U256 = ethers::core::types::U256::from(3*24*3600); // 3 days
     let auction_reserve_price: ethers::prelude::U256 = ethers::core::types::U256::from_dec_str("10000000000000000").expect("Reserve price should be a valid number");
 
@@ -485,14 +472,12 @@ async fn publish_when_1(world: &mut WriterWorld) {
         .expect("Error finding createAuction method").send().await.expect("Error calling createAuction");
 
         // Place bid
-    println!("Placing bid");
     let bid_value = ethers::types::U256::from_dec_str("20000000000000000").expect("Value should parse");
     reserve_auction_contract.method::<_, ()>("createBid", (nft_contract.address(), token_id))
         .expect("Error finding createAuction method")
         .value(bid_value)
         .send().await.expect("Error calling createAuction");
-        
-     */
+
 
 
 }
