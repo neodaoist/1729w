@@ -4,8 +4,9 @@ Feature: Issue Proof of Contribution SBT
     I want to issue Proof of Contribution Soulbound Token (SBT)s to contributors
 
     Background: Member participation as writers and readers/voters
-        Given There are 150 participating members that hold a 1729 Writers ERC20 participation token
-        And There are 15 total writers in 1729 Writers Cohort 2
+        Given The Proof of Contribution SBT contract is deployed
+    # Given There are 150 participating members that hold a 1729 Writers ERC20 participation token
+    # And There are 15 total writers in 1729 Writers Cohort 2
 
     Scenario: Admin can issue single SBT with value
         Given Address 0xCAFE has a balance of 1 ETH
@@ -34,8 +35,8 @@ Feature: Issue Proof of Contribution SBT
             | 0xB             | 1.3 ETH         |
 
     Scenario: Admin can issue single SBT without value
-        When I issue a Participation SBT to address 0xCAFE
-        Then Address 0xCAFE should own 1 Participation SBT
+        When I issue a Participation SBT to Address1
+        Then Address1 should own 1 Participation SBT
 
     Scenario: Admin can issue multiple SBTs without value
         Given There are 5 writers who submitted a valid essay in at least 1, but not all, weeks

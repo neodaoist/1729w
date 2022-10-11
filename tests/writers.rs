@@ -21,8 +21,8 @@ use ethers::signers::Signer;
 use ethers::prelude::Wallet;
 use ethers::abi::Uint;
 
-
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
+abigen!(SevenTeenTwentyNineProofOfContribution, "out/1729ProofOfContribution.sol/SevenTeenTwentyNineProofOfContribution.json");
 abigen!(ListBidEssayScript, "out/ListBidEssay.s.sol/ListBidEssayScript.json");
 abigen!(ReserveAuctionCoreETH, "out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json");
 abigen!(ModuleManager, "out/ListBidEssay.s.sol/ModuleManager.json");
@@ -62,8 +62,11 @@ pub struct WriterWorld {
     winning_writer_name: String,
     winning_writer_address: String,
 
+    sbt_type: String,
+
     anvil: Option<AnvilConnection>,
     nft_contract: Option<SevenTeenTwentyNineEssay<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>>,
+    sbt_contract: Option<SevenTeenTwentyNineProofOfContribution<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>>>,
 }
 
 // #[derive(Debug)]
@@ -121,8 +124,11 @@ impl World for WriterWorld {
             winning_writer_name: String::from(""),
             winning_writer_address: String::from(""),
 
+            sbt_type: String::from(""),
+
             anvil: Option::None, // Anvil is started and stopped in before/after hooks. Better way to do this?
             nft_contract: Option::None,
+            sbt_contract: Option::None,
         })
     }
 }
@@ -152,7 +158,7 @@ async fn main() -> eyre::Result<()>
             async move {
                 let fork_endpoint = env::var("ETH_NODE_URL").expect("Environment variable ETH_NODE_URL should be defined and be a valid API URL");
                 let anvil = Anvil::new()
-                    .fork(fork_endpoint)
+                    // .fork(fork_endpoint)
                     .chain_id(31337_u64)
                     .spawn();
                 let endpoint = anvil.endpoint();
@@ -492,18 +498,42 @@ fn publish_then_1(world: & mut WriterWorld) {
 //                  Step Defs – Issue Proof of Contribution
 ////////////////////////////////////////////////////////////////
 
+#[given(regex = r"^The Proof of Contribution SBT contract is deployed$")]
+fn issue_given_1(world: &mut WriterWorld) {
+    // Deploy contract
+    let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
+    let provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
+
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    let multisig = wallet.address();
+    let client = Arc::new(SignerMiddleware::new(provider, wallet.with_chain_id(anvil.chain_id())));
+
+    let sbt_contract = task::block_on(SevenTeenTwentyNineProofOfContribution::deploy(client, multisig).expect("Failed to deploy").send()).expect("Failed to send");
+    world.sbt_contract = Option::Some(sbt_contract);
+}
+
+#[when(regex = r"^I issue a ([^\s]+) SBT to Address1$")]
+fn issue_when_1(world: &mut WriterWorld, sbt_type: String) {
+    world.sbt_type = sbt_type;
+}
+
+#[then(regex = r"^Address1 should own 1 ([^\s]+) SBT$")]
+fn issue_then_1(world: & mut WriterWorld, sbt_type: String) {
+    panic!("SBT STEPDEF not implemented yet");
+}
+
 // TODO, uses data tables
 
-#[given(regex = r"^There are ([\d]+) participating members in 1729 Writers$")]
-fn issue_given_1(world: &mut WriterWorld, participating_member_count: String) {
-    world.participating_member_count = participating_member_count;
-}
+// #[given(regex = r"^There are ([\d]+) participating members in 1729 Writers$")]
+// fn issue_given_1(world: &mut WriterWorld, participating_member_count: String) {
+//     world.participating_member_count = participating_member_count;
+// }
 
-#[given(regex = r"^There are ([\d]+) total writers in 1729 Writers Cohort ([\d]+)$")]
-fn issue_given_2(world: &mut WriterWorld, total_writer_count: String, cohort_number: String) {
-    world.total_writer_count = total_writer_count;
-    world.cohort_number = cohort_number;
-}
+// #[given(regex = r"^There are ([\d]+) total writers in 1729 Writers Cohort ([\d]+)$")]
+// fn issue_given_2(world: &mut WriterWorld, total_writer_count: String, cohort_number: String) {
+//     world.total_writer_count = total_writer_count;
+//     world.cohort_number = cohort_number;
+// }
 
 // data table test
 
