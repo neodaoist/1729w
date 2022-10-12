@@ -24,8 +24,9 @@ contract SevenTeenTwentyNineEssay is Ownable, ERC721 {
     using Counters for Counters.Counter;
 
     struct EssayItem {
-        address author;
-        string url;
+        address writer;
+        bytes32 contentHash;
+        string metadataUri;
     }
 
     mapping(uint256 => EssayItem) public essays;
@@ -45,11 +46,18 @@ contract SevenTeenTwentyNineEssay is Ownable, ERC721 {
                         Views
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Get the Essay NFT content hash
+    /// @param tokenId The Token ID for a specific Essay NFT
+    /// @return Sha256 hash of the Essay Markdown content
+    function contentHash(uint256 tokenId) public view returns (bytes32) {
+        return essays[tokenId].contentHash;
+    }
+
     /// @notice Get the Essay NFT metadata URI
-    /// @param id The Token ID for a specific Essay NFT
-    /// @return Fully-qualified URI of an Essay NFT, e.g., XYZ
-    function tokenURI(uint256 id) public view override returns (string memory) {
-        return essays[id].url;
+    /// @param tokenId The Token ID for a specific Essay NFT
+    /// @return Fully-qualified URI of the Essay JSON metadata
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return essays[tokenId].metadataUri;
     }
 
     /// @notice Returns the total of all tokens ever minted (includes tokens which have been burned)
@@ -67,7 +75,7 @@ contract SevenTeenTwentyNineEssay is Ownable, ERC721 {
         view
         returns (address receiver, uint256 royaltyAmount)
     {
-        return (essays[tokenId].author, salePrice / 10);
+        return (essays[tokenId].writer, salePrice / 10);
     }
 
     /// @dev see ERC165
@@ -83,13 +91,14 @@ contract SevenTeenTwentyNineEssay is Ownable, ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Mint a new token, using the next available token ID
-    /// @param author the address of the writer, who will receive royalty payments
-    /// @param url the URL containing the essay JSON metadata
+    /// @param _writer the address of the writer, who will receive royalty payments
+    /// @param _contentHash the sha256 hash of the essay Markdown content
+    /// @param _tokenUri the token URI of the essay JSON metadata
     /// @return the tokenId for the newly minted token
-    function mint(address author, string calldata url) public onlyOwner returns (uint256) {
+    function mint(address _writer, bytes32 _contentHash, string calldata _tokenUri) public onlyOwner returns (uint256) {
         uint256 tokenId = nextTokenId.current();
         nextTokenId.increment();
-        EssayItem memory essay = EssayItem(author, url);
+        EssayItem memory essay = EssayItem(_writer, _contentHash, _tokenUri);
         essays[tokenId] = essay;
         _safeMint(owner(), tokenId);
 
