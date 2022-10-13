@@ -14,7 +14,9 @@ contract MintEssayScript is Script {
         address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
         address multisig = vm.envAddress("MULTISIG_ADDRESS");
         address authorAddress = vm.envAddress("AUTHOR_ADDRESS");
-        string memory essayUrl = vm.envString("ESSAY_URL");
+        bytes32 contentHash = vm.envBytes32("CONTENT_HASH");
+        string memory metadataUri = vm.envString("METADATA_URI");
+
         // generate hash for Essay markdown
 
         // upload Essay image to IPFS
@@ -30,7 +32,7 @@ contract MintEssayScript is Script {
 
         // mint Essay NFT
         vm.broadcast(multisig);
-        token.mint(authorAddress, essayUrl);
+        token.mint(authorAddress, contentHash, metadataUri);
 
         // verify thangs look good (in what ways?)
     }

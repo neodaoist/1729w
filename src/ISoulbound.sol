@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity 0.8.13;
 
 /// @title An ERC1155-flavored SBT / cryptocredential standard
 /// @author neodaoist

@@ -48,10 +48,6 @@ contract ListBidEssayScript is Script {
         require(duration == AUCTION_DURATION);
         vm.stopBroadcast();
 
-        // place bid on essay
-        vm.startBroadcast();
-        auctionHouse.createBid{value: BID_AMOUNT}(vm.envAddress("TOKEN_ADDRESS"), TOKEN_ID);
-        vm.stopBroadcast();
     }
 }
 

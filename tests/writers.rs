@@ -23,9 +23,9 @@ use ethers::abi::Uint;
 
 
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
-abigen!(ListBidEssayScript, "out/ListBidEssay.s.sol/ListBidEssayScript.json");
-abigen!(ReserveAuctionCoreETH, "out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json");
-abigen!(ModuleManager, "out/ListBidEssay.s.sol/ModuleManager.json");
+abigen!(ListBidEssayScript, "out/ListEssay.s.sol/ListBidEssayScript.json");
+abigen!(ReserveAuctionCoreETH, "out/ListEssay.s.sol/ReserveAuctionCoreETH.json");
+abigen!(ModuleManager, "out/ListEssay.s.sol/ModuleManager.json");
 
 // `World` is your shared, likely mutable state.
 //#[derive(Debug, WorldInit)]
@@ -436,7 +436,9 @@ async fn publish_when_1(world: &mut WriterWorld) {
     let multisig = wallet.address();
 
     let nft_contract = world.nft_contract.as_ref().unwrap();
-    let mint_call = nft_contract.mint(multisig, "https://test.com/test".to_string());
+    const SHA_SUM:[u8; 32] = [0xb1,0x67,0x41,0x91,0xa8,0x8e,0xc5,0xcd,0xd7,0x33,0xe4,0x24,0x0a,0x81,0x80,0x31,0x05,
+        0xdc,0x41,0x2d,0x6c,0x67,0x08,0xd5,0x3a,0xb9,0x4f,0xc2,0x48,0xf4,0xf5,0x53];
+    let mint_call = nft_contract.mint(multisig, SHA_SUM, "https://test.com/test".to_string());  // TO-DO: Parameterize the URL and content hash
     task::block_on(mint_call.send()).expect("Failed to send mint transaction");
 
         // List

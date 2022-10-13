@@ -3,4 +3,4 @@ src = 'src'
 test = 'tests/unit'
 out = 'out'
 libs = ['lib']
-solc_version = '0.8.17'
+solc_version = '0.8.13'
