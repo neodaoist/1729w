@@ -23,9 +23,9 @@ use ethers::abi::Uint;
 
 
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
-abigen!(ListBidEssayScript, "out/ListBidEssay.s.sol/ListBidEssayScript.json");
-abigen!(ReserveAuctionCoreETH, "out/ListBidEssay.s.sol/ReserveAuctionCoreETH.json");
-abigen!(ModuleManager, "out/ListBidEssay.s.sol/ModuleManager.json");
+abigen!(ListBidEssayScript, "out/ListEssay.s.sol/ListBidEssayScript.json");
+abigen!(ReserveAuctionCoreETH, "out/ListEssay.s.sol/ReserveAuctionCoreETH.json");
+abigen!(ModuleManager, "out/ListEssay.s.sol/ModuleManager.json");
 
 // `World` is your shared, likely mutable state.
 //#[derive(Debug, WorldInit)]
