@@ -11,6 +11,7 @@ use std::time::Duration;
 use async_std::task;
 use ethers::abi::Uint;
 use std::env;
+use ethers_core::utils::hex;
 
 // Generate Rust bindings for all required contracts
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
@@ -46,7 +47,9 @@ async fn main() {
     let nft_contract = task::block_on(SevenTeenTwentyNineEssay::deploy(client, multisig).expect("Failed to deploy").send()).expect("Failed to send");
 
     // Mint Essay NFT
-    let mint_call = nft_contract.mint(multisig, "https://test.com/test".to_string());
+    const SHA_SUM:[u8; 32] = [0xb1,0x67,0x41,0x91,0xa8,0x8e,0xc5,0xcd,0xd7,0x33,0xe4,0x24,0x0a,0x81,0x80,0x31,0x05,
+        0xdc,0x41,0x2d,0x6c,0x67,0x08,0xd5,0x3a,0xb9,0x4f,0xc2,0x48,0xf4,0xf5,0x53];
+    let mint_call = nft_contract.mint(multisig, SHA_SUM, "https://test.com/test".to_string());
     task::block_on(mint_call.send()).expect("Failed to send mint transaction");
 
     // Query Total Supply
