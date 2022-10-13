@@ -22,6 +22,8 @@ if ! [[ "$SANITY_CHECK" == "y" ]]
 then
   exit 2
 fi
+# Unlock private key
+PRIVATE_KEY=$(gpg -d /tmp/privkey.gpg)
 
 # Call forge script to do the minting
 export AUTHOR_ADDRESS

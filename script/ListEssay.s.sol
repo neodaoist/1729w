@@ -6,7 +6,7 @@ import "forge-std/Script.sol";
 import {SevenTeenTwentyNineEssay} from "../src/1729Essay.sol";
 import {Solenv} from "solenv/Solenv.sol";
 
-contract ListBidEssayScript is Script {
+contract ListEssayScript is Script {
     //
     function run() public {
         // Load config from .env
