@@ -23,7 +23,7 @@ use ethers::abi::Uint;
 
 
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
-abigen!(ListBidEssayScript, "out/ListEssay.s.sol/ListBidEssayScript.json");
+abigen!(ListBidEssayScript, "out/ListEssay.s.sol/ListEssayScript.json");
 abigen!(ReserveAuctionCoreETH, "out/ListEssay.s.sol/ReserveAuctionCoreETH.json");
 abigen!(ModuleManager, "out/ListEssay.s.sol/ModuleManager.json");
 
