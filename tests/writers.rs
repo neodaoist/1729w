@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::convert::Infallible;
 use async_trait::async_trait;
-use cucumber::{gherkin::Step, given, when, then, World, WorldInit, Cucumber};
+use cucumber::{gherkin::Step, given, when, then, World, Cucumber, WorldInit};
 use std::collections::HashMap;
 use std::fmt::Formatter;
 use std::panic::AssertUnwindSafe;
@@ -143,10 +143,11 @@ impl AnvilUtil for WriterWorld {
 
 #[tokio::main]
 // Test runner
-async fn main() -> eyre::Result<()>
+async fn main() //-> eyre::Result<()>
 {
 
-    let world = WriterWorld::cucumber()
+    //let world =
+    WriterWorld::cucumber()
         // Start a fresh anvil before each scenario
         .before(move |_, _, _, world| {
             async move {
@@ -169,10 +170,10 @@ async fn main() -> eyre::Result<()>
                 world.anvil = Option::Some(connection);
             }.boxed()
         })
+       // .cli()
         .run_and_exit("tests/features/implemented")
         .await;
 
-    Ok(())
 }
 
 ////////////////////////////////////////////////////////////////
