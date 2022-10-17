@@ -1,13 +1,13 @@
 use std::borrow::Borrow;
 use std::convert::Infallible;
 use async_trait::async_trait;
-use cucumber::{gherkin::Step, given, when, then, World, Cucumber, WorldInit};
+use cucumber::{gherkin::Step, given, when, then, World, Cucumber, WorldInit, writer};
 use std::collections::HashMap;
 use std::fmt::Formatter;
 use std::panic::AssertUnwindSafe;
 use std::sync::Arc;
 use std::time::Duration;
-use std::env;
+use std::{env, fs};
 use async_std::task;
 use ethers::prelude::{Address, H160, LocalWallet};
 use futures::FutureExt;
@@ -145,7 +145,7 @@ impl AnvilUtil for WriterWorld {
 // Test runner
 async fn main() //-> eyre::Result<()>
 {
-
+    let file = fs::File::create(dbg!(format!("{}/junit.xml", env!("OUT_DIR")))).expect("File should be found");
     //let world =
     WriterWorld::cucumber()
         // Start a fresh anvil before each scenario
@@ -153,7 +153,7 @@ async fn main() //-> eyre::Result<()>
             async move {
                 let fork_endpoint = env::var("ETH_NODE_URL").expect("Environment variable ETH_NODE_URL should be defined and be a valid API URL");
                 let anvil = Anvil::new()
-                    .fork(fork_endpoint)
+//                    .fork(fork_endpoint)
                     .chain_id(31337_u64)
                     .spawn();
                 let endpoint = anvil.endpoint();
@@ -170,8 +170,10 @@ async fn main() //-> eyre::Result<()>
                 world.anvil = Option::Some(connection);
             }.boxed()
         })
-       // .cli()
-        .run_and_exit("tests/features/implemented")
+        //.cli()
+        .with_writer(writer::JUnit::new(file,0))
+        //.run_and_exit("tests/features/implemented")
+        .run("tests/features/implemented")
         .await;
 
 }

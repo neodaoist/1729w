@@ -19,7 +19,7 @@ tokio = { version = "1.20.1", features = ["macros", "rt-multi-thread", "time"] }
 
 [dev-dependencies]
 async-trait = "0.1"
-cucumber = "0.13"
+cucumber = { version="0.13", features = ["output-junit"] }
 futures = "0.3"
 ethers = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-contract = { git = "https://github.com/gakonst/ethers-rs" }
@@ -28,6 +28,8 @@ ethers-middleware = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-providers = { git = "https://github.com/gakonst/ethers-rs" }
 ethers-signers = { git = "https://github.com/gakonst/ethers-rs" }
 eyre = "0.6"
+fs = "0.0.5"
+
 
 [[test]]
 name = "writers" # this should be the same as the filename of your test target
