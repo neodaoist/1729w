@@ -65,5 +65,16 @@ jobs:
 
       - name: Cargo Test
         run: cargo test
+        env: # Sent environment variable for fork node
+          ETH_NODE_URL: ${{ secrets.ETH_NODE_URL }}
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: Cucumber Tests            # Name of the check run which will be created
+          path: target/**/junit.xml    # Path to test results
+          reporter: java-junit
+
 #        env:
 #          RUSTFLAGS: -D warnings
