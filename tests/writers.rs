@@ -24,6 +24,7 @@ abigen!(ListBidEssayScript, "out/ListEssay.s.sol/ListEssayScript.json");
 abigen!(ReserveAuctionCoreETH, "out/ListEssay.s.sol/ReserveAuctionCoreETH.json");
 abigen!(ModuleManager, "out/ListEssay.s.sol/ModuleManager.json");
 
+
 // `World` is your shared, likely mutable state.
 //#[derive(Debug, WorldInit)]
 #[derive(WorldInit)]
@@ -167,7 +168,7 @@ async fn main()
                 world.anvil = Option::Some(connection);
             }.boxed()
         })
-        .with_writer(writer::JUnit::new(file,0))    // Uncomment for output to JUnit XML for Github Actions, etc
+        //.with_writer(writer::JUnit::new(file,0))    // Uncomment for output to JUnit XML for Github Actions, etc
         .run("tests/features/implemented")
         .await;
 
@@ -340,17 +341,7 @@ fn publish_given_9(world: &mut WriterWorld, essay_votes: String) {
 
 #[when("I mint, list, and bid on the Essay NFT")]
 async fn publish_when_1(world: &mut WriterWorld) {
-
-    // Mint Essay NFT
-    let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
-    let wallet: LocalWallet = anvil.keys()[0].clone().into();
-    let multisig = wallet.address();
-
-    let nft_contract = world.nft_contract.as_ref().unwrap();
-    const SHA_SUM:[u8; 32] = [0xb1,0x67,0x41,0x91,0xa8,0x8e,0xc5,0xcd,0xd7,0x33,0xe4,0x24,0x0a,0x81,0x80,0x31,0x05,
-        0xdc,0x41,0x2d,0x6c,0x67,0x08,0xd5,0x3a,0xb9,0x4f,0xc2,0x48,0xf4,0xf5,0x53];
-    let mint_call = nft_contract.mint(multisig, SHA_SUM, "https://test.com/test".to_string());  // TO-DO: Parameterize the URL and content hash
-    task::block_on(mint_call.send()).expect("Failed to send mint transaction");
+    mint_essay(world);
 
     // List
     let client = world.anvil.as_ref().unwrap().client.clone();
@@ -360,6 +351,7 @@ async fn publish_when_1(world: &mut WriterWorld) {
 
 
     // Approve
+    let nft_contract = world.nft_contract.as_ref().unwrap();
     let reserve_auction_contract :Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>> = Contract::new(zora_address, RESERVEAUCTIONCOREETH_ABI.clone(), client.clone());
     let approve_call = nft_contract.set_approval_for_all(transfer_helper_address, true);
     task::block_on(approve_call.send()).expect("Failed to send approve transaction");
@@ -371,28 +363,50 @@ async fn publish_when_1(world: &mut WriterWorld) {
     let token_id = ethers::core::types::U256::from_dec_str("1").expect("Couldn't convert 1 to U256");
 
     // Look up block number for auction start
+    let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
     let block_provider = Provider::<Http>::try_from(anvil.endpoint()).expect("Failed to connect to Anvil").interval(Duration::from_millis(10u64));
     let block = block_provider.get_block_number().await.expect("Couldn't get block height");
     let block_uint256 = ethers::prelude::U256::from(block.as_u64());
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
 
     // Create listing
     let auction_duration: ethers::prelude::U256 = ethers::core::types::U256::from(3*24*3600); // 3 days
     let auction_reserve_price: ethers::prelude::U256 = ethers::core::types::U256::from_dec_str("10000000000000000").expect("Reserve price should be a valid number");
-
+    let multisig = wallet.address();
     reserve_auction_contract.method::<_, ()>("createAuction", (nft_contract.address(), token_id, auction_duration, auction_reserve_price, multisig, block_uint256))
         .expect("Error finding createAuction method").send().await.expect("Error calling createAuction");
 
+
     // Place bid
     let bid_value = ethers::types::U256::from_dec_str("20000000000000000").expect("Value should parse");
+    place_bid(world, bid_value, token_id).await;
+
+}
+
+fn mint_essay(world: &mut WriterWorld) {
+    // Mint Essay NFT
+    let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    let multisig = wallet.address();
+
+    let nft_contract = world.nft_contract.as_ref().unwrap();
+    const SHA_SUM:[u8; 32] = [0xb1,0x67,0x41,0x91,0xa8,0x8e,0xc5,0xcd,0xd7,0x33,0xe4,0x24,0x0a,0x81,0x80,0x31,0x05,
+        0xdc,0x41,0x2d,0x6c,0x67,0x08,0xd5,0x3a,0xb9,0x4f,0xc2,0x48,0xf4,0xf5,0x53];
+    let mint_call = nft_contract.mint(multisig, SHA_SUM, "https://test.com/test".to_string());  // TO-DO: Parameterize the URL and content hash
+    task::block_on(mint_call.send()).expect("Failed to send mint transaction");
+}
+
+async fn place_bid(world: &mut WriterWorld, bid_value: ethers::types::U256, token_id: ethers::types::U256) {
+    // Place bid
+    let nft_contract = world.nft_contract.as_ref().unwrap();
+    let zora_address: ethers::core::types::Address = "0x5f7072E1fA7c01dfAc7Cf54289621AFAaD2184d0".parse::<Address>().expect("Couldn't parse zora address"); // FIXME: Dup
+    let client = world.anvil.as_ref().unwrap().client.clone();
+    let reserve_auction_contract :Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>> = Contract::new(zora_address, RESERVEAUCTIONCOREETH_ABI.clone(), client);
     reserve_auction_contract.method::<_, ()>("createBid", (nft_contract.address(), token_id))
         .expect("Error finding createAuction method")
         .value(bid_value)
         .send().await.expect("Error calling createAuction");
-
-
-
 }
-
 
 ////////////////////////////////////////////////////////////////
 //                  Step Defs – Issue Proof of Contribution
