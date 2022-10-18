@@ -11,7 +11,6 @@ use std::time::Duration;
 use async_std::task;
 use ethers::abi::Uint;
 use std::env;
-use ethers_core::utils::hex;
 
 // Generate Rust bindings for all required contracts
 abigen!(SevenTeenTwentyNineEssay, "out/1729Essay.sol/SevenTeenTwentyNineEssay.json");
