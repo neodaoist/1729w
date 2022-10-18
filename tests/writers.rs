@@ -169,7 +169,7 @@ async fn main()
                 world.anvil = Option::Some(connection);
             }.boxed()
         })
-        //.with_writer(writer::JUnit::new(file,0))    // Uncomment for output to JUnit XML for Github Actions, etc
+        .with_writer(writer::JUnit::new(file,0))    // Uncomment for output to JUnit XML for Github Actions, etc
         .run("tests/features/implemented")
         .await;
 
