@@ -144,7 +144,6 @@ async fn main() {
     script_call.send().await.expect("Failed to run script");
 */
 
-
     println!("Done.");
 
 }

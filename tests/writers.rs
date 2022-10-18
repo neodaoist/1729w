@@ -7,6 +7,7 @@ use std::fmt::Formatter;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{env, fs};
+use std::str::FromStr;
 use async_std::task;
 use ethers::prelude::{Address, H160, LocalWallet};
 use futures::FutureExt;
@@ -378,7 +379,7 @@ async fn publish_when_1(world: &mut WriterWorld) {
 
 
     // Place bid
-    let bid_value = ethers::types::U256::from_dec_str("20000000000000000").expect("Value should parse");
+    let bid_value = ethers::types::U256::from_dec_str("100000000000000000").expect("Value should parse");
     place_bid(world, bid_value, token_id).await;
 
 }
@@ -406,6 +407,75 @@ async fn place_bid(world: &mut WriterWorld, bid_value: ethers::types::U256, toke
         .expect("Error finding createAuction method")
         .value(bid_value)
         .send().await.expect("Error calling createAuction");
+}
+
+#[then(regex = r"^There should be an Essay NFT with token ID ([\d]+) and URL '(.*)'")]
+async fn verify_essay_1(world: &mut WriterWorld, token_id_str: String, expected_url: String) {
+    let nft_contract = world.nft_contract.as_ref().unwrap();
+    let token_id = ethers::types::U256::from_dec_str(token_id_str.as_str()).expect("Token ID should be a number");
+    // Query Total Supply
+    let actual_uri = nft_contract.method::<_, String>("tokenURI", token_id)
+        .expect("Error finding tokenUri method").call().await.expect("Error sending tokenUri call");
+    assert_eq!(actual_uri, expected_url);
+}
+
+#[then(regex = r"^there should be an auction listing on Zora for token ID ([\d]+) with a minimum bid amount of ([\d]+) Finney")]
+async fn verify_listing_1(world: &mut WriterWorld, token_id_str: String, expected_minimum_bid_str: String) {
+    let token_id = ethers::types::U256::from_dec_str(token_id_str.as_str()).expect("Token ID should be a number");
+    let bid_amount :u128 = u128::from_str(expected_minimum_bid_str.as_str()).expect("Minimum bid should be a parsable integer value");
+    let nft_contract = world.nft_contract.as_ref().unwrap();
+
+    // FIXME: De-dup
+    let zora_address: ethers::core::types::Address = "0x5f7072E1fA7c01dfAc7Cf54289621AFAaD2184d0".parse::<Address>().expect("Couldn't parse zora address"); // FIXME: Dup
+    let client = world.anvil.as_ref().unwrap().client.clone();
+    let reserve_auction_contract :Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>> = Contract::new(zora_address, RESERVEAUCTIONCOREETH_ABI.clone(), client);
+
+    let auction_info = reserve_auction_contract.method::<_, (ethers::core::types::Address, // seller
+                                                             u128,  // reserve price
+                                                             ethers::core::types::Address,  // sellerFundsRecipient
+                                                             u128, // highestBid
+                                                             ethers::core::types::Address, // highest bidder
+                                                             u32, // duration
+                                                             u32, // start time
+                                                             u32, // first bid time
+    )>("auctionForNFT", (nft_contract.address(), token_id))
+        .expect("auctionForNFT method should resolve").call().await.expect("auctionForNFT call should complete");
+
+//      println!("Auction info: seller={} reserve_price={} seller_funds_recipient={} highest_bid={} highest_bidder={} duration={} start_time={} first_bid_time={}",
+//               auction_info.0, auction_info.1, auction_info.2, auction_info.3,
+//               auction_info.4, auction_info.5, auction_info.6, auction_info.7);
+    assert_eq!(bid_amount * 10_u128.pow(15), auction_info.1);
+}
+
+#[then(regex = r"^there should be a bid placed for token ID ([\d]+) of ([\d]+) Finney by the 1729w multisig account")]
+async fn verify_bid_1(world: &mut WriterWorld, token_id_str: String, expected_bid_amount_str: String) {
+    let token_id = ethers::types::U256::from_dec_str(token_id_str.as_str()).expect("Token ID should be a number");
+    let bid_amount :u128 = u128::from_str(expected_bid_amount_str.as_str()).expect("Minimum bid should be a parsable integer value");
+    let nft_contract = world.nft_contract.as_ref().unwrap();
+
+    // FIXME: De-dup
+    let zora_address: ethers::core::types::Address = "0x5f7072E1fA7c01dfAc7Cf54289621AFAaD2184d0".parse::<Address>().expect("Couldn't parse zora address"); // FIXME: Dup
+    let client = world.anvil.as_ref().unwrap().client.clone();
+    let reserve_auction_contract :Contract<SignerMiddleware<ethers_providers::Provider<Http>, Wallet<ethers::core::k256::ecdsa::SigningKey>>> = Contract::new(zora_address, RESERVEAUCTIONCOREETH_ABI.clone(), client);
+
+    let auction_info = reserve_auction_contract.method::<_, (ethers::core::types::Address, // seller
+                                                             u128,  // reserve price
+                                                             ethers::core::types::Address,  // sellerFundsRecipient
+                                                             u128, // highestBid
+                                                             ethers::core::types::Address, // highest bidder
+                                                             u32, // duration
+                                                             u32, // start time
+                                                             u32, // first bid time
+    )>("auctionForNFT", (nft_contract.address(), token_id))
+        .expect("auctionForNFT method should resolve").call().await.expect("auctionForNFT call should complete");
+
+    // Look up multisig address
+    let anvil = world.anvil.as_ref().unwrap().anvil.borrow();
+    let wallet: LocalWallet = anvil.keys()[0].clone().into();
+    let multisig = wallet.address();
+
+    assert_eq!(bid_amount * 10_u128.pow(15), auction_info.3);
+    assert_eq!(multisig, auction_info.4);
 }
 
 ////////////////////////////////////////////////////////////////
