@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-import "./ISoulbound.sol";
+import "./IProofOfContribution.sol";
 
 import {ERC1155} from "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 
-/// @dev See {ISoulbound}.
-abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
+/// @dev See {IProofOfContribution}
+abstract contract ProofOfContribution is IProofOfContribution, ERC1155, Ownable {
     //
     using Counters for Counters.Counter;
 
@@ -61,12 +61,12 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         return contributions[_tokenId].uri;
     }
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function hasToken(address _owner, uint256 _tokenId) external view returns (bool) {
         return _hasToken(_owner, _tokenId);
     }
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function hasTokenBatch(address[] calldata _owners, uint256 _tokenId) external view returns (bool[] memory) {
         bool[] memory hasTokens = new bool[](_owners.length);
 
@@ -122,7 +122,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
                         Transactions – Creating
     //////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     /// @dev _contributionName cannot be empty, in order to more efficiently check if a contribution exists
     /// @dev in the contributionExists modifier
     function createContribution(string calldata _contributionName, string calldata _contributionUri)
@@ -146,7 +146,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
                         Transactions – Issuing
     //////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function issue(address payable _recipient, uint256 _tokenId) external payable onlyOwner {
         _issue(_recipient, _tokenId);
 
@@ -156,9 +156,9 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
         }
     }
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function issueBatch(address payable[] calldata _recipients, uint256 _tokenId) external payable onlyOwner {
-        require(_recipients.length <= 100, "SBT: can not issue more than 100 SBTs in a single transaction");
+        require(_recipients.length <= 100, "ProofOfContribution: can not issue more than 100 SBTs in a single transaction");
 
         if (msg.value > 0) {
             uint256 valueToSend = msg.value / _recipients.length;
@@ -186,12 +186,12 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
                         Transactions – Revoking
     //////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function revoke(address _owner, uint256 _tokenId, string calldata _reason) external onlyOwner {
         _revoke(_owner, _tokenId, _reason);
     }
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function revokeBatch(address[] calldata _owners, uint256 _tokenId, string calldata _reason) external onlyOwner {
         for (uint256 i = 0; i < _owners.length; i++) {
             _revoke(_owners[i], _tokenId, _reason);
@@ -202,7 +202,7 @@ abstract contract ProofOfContribution is ISoulbound, ERC1155, Ownable {
                         Transactions – Rejecting
     //////////////////////////////////////////////////////////////*/
 
-    /// @inheritdoc	ISoulbound
+    /// @inheritdoc	IProofOfContribution
     function reject(uint256 _tokenId) external contributionExists(_tokenId) {
         require(_hasToken(msg.sender, _tokenId), "ProofOfContribution: no matching soulbound token found");
 
