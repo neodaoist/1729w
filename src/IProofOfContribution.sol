@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-/// @title An ERC1155-flavored SBT / cryptocredential standard
+/// @title An ERC1155-flavored SBT / cryptocredential standard for contributions
 /// @author neodaoist
 /// @dev Just exploring for now, keeping the interface simple and clear
-interface ISoulbound {
+interface IProofOfContribution {
     //
 
     /*//////////////////////////////////////////////////////////////

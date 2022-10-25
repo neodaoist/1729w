@@ -51,7 +51,7 @@ Feature: Issue Proof of Contribution SBT
 
     Scenario: Admin can not issue more than 100 SBTs
         When I issue Reader/Voter SBTs to 101 Reader/Voter addresses
-        Then I should receive an "SBT: can not issue more than 100 SBTs in a single transaction" error
+        Then I should receive an "ProofOfContribution: can not issue more than 100 SBTs in a single transaction" error
 
     Scenario: Contributor can not transfer SBT
         Given Address 0xCAFE has 1 Full Completion SBT

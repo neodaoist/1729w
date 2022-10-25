@@ -219,7 +219,7 @@ contract SevenTeenTwentyNineProofOfContributionTest is Test {
         vm.startPrank(addresses.multisig);
         sbt.createContribution(CONTRIB1, URI1);
 
-        vm.expectRevert("SBT: can not issue more than 100 SBTs in a single transaction");
+        vm.expectRevert("ProofOfContribution: can not issue more than 100 SBTs in a single transaction");
 
         sbt.issueBatch(contributors, 1);
     }
