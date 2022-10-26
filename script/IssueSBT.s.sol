@@ -27,6 +27,7 @@ contract IssueSBTScript is Script {
         address[] memory SBT_RECIPIENTS = vm.envAddress("SBT_RECIPIENTS",",");
         address payable[] memory SBT_PAYABLES = new address payable[](SBT_RECIPIENTS.length);
         address SBT_CONTRACT_ADDRESS = vm.envAddress("SBT_CONTRACT_ADDRESS");
+        uint256 TOKEN_ID = vm.envUint("TOKEN_ID");
         for(uint256 i = 0; i < SBT_RECIPIENTS.length; i++) {
             SBT_PAYABLES[i] = payable(SBT_RECIPIENTS[i]);
         }
@@ -36,7 +37,7 @@ contract IssueSBTScript is Script {
 
         vm.startBroadcast();
         //sbt.createContribution(sbtName, sbtURI);
-        sbt.issueBatch(SBT_PAYABLES, 1);
+        sbt.issueBatch(SBT_PAYABLES, TOKEN_ID);
         vm.stopBroadcast();
     }
 }
