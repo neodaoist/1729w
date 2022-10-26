@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 
 import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribution.sol";
+import {Solenv} from "solenv/Solenv.sol";
 
 /**
  * @notice
@@ -20,23 +21,20 @@ import {SevenTeenTwentyNineProofOfContribution} from "../src/1729ProofOfContribu
  * Voter
  * Auction Bidder
  */
-contract IssueSBTScript is Script {
-    //
+contract CreateSBTScript is Script {
 
     function run() public {
-        address[] memory SBT_RECIPIENTS = vm.envAddress("SBT_RECIPIENTS",",");
-        address payable[] memory SBT_PAYABLES = new address payable[](SBT_RECIPIENTS.length);
+        // Load config from .env
+        Solenv.config();
         address SBT_CONTRACT_ADDRESS = vm.envAddress("SBT_CONTRACT_ADDRESS");
-        for(uint256 i = 0; i < SBT_RECIPIENTS.length; i++) {
-            SBT_PAYABLES[i] = payable(SBT_RECIPIENTS[i]);
-        }
+        string memory SBT_TITLE = vm.envString("SBT_TITLE");
+        string memory IMAGE_URI = vm.envString("IMAGE_URI");
 
-        //assert(issuees == SBT_PAYABLES);
         SevenTeenTwentyNineProofOfContribution sbt = SevenTeenTwentyNineProofOfContribution(SBT_CONTRACT_ADDRESS);
 
         vm.startBroadcast();
-        //sbt.createContribution(sbtName, sbtURI);
-        sbt.issueBatch(SBT_PAYABLES, 1);
+        sbt.createContribution(SBT_TITLE, IMAGE_URI);
+        //sbt.issueBatch(issuees, 1);
         vm.stopBroadcast();
     }
 }

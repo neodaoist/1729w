@@ -8,11 +8,6 @@ Feature: Publish Essay NFT for the weekly winning essay
         And there are no NFTs minted on the contract
         And the Cohort is 2
         And the Week is 1
-    #        And the winning essay is 'Save the World'
-    #        And the essay content is 'XYZ ABC 345'
-    #        And the writer's name is 'Susmitha87539319' and address is '0xCAFE'
-    #        And the publication URL is 'https://testpublish.com/savetheworld'
-    #        And the winning essay received 1337 votes
 
     @blockchain
     Scenario: Publish winning Essay NFT
