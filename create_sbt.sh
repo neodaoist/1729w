@@ -1,8 +1,10 @@
 #!/bin/bash
 . ./.env
 echo "Will use endpoint $RPC_URL with address $MULTISIG_ADDRESS to mint on NFT contract $TOKEN_ADDRESS"
-read -p "Enter SBT Title: " SBT_TITLE
-read -p "Enter IPFS URI for the Essay Image: " IMAGE_URI
+SBT_TITLE=$1;
+IMAGE_URI=$2
+#read -p "Enter SBT Title: " SBT_TITLE
+#read -p "Enter IPFS URI for the Essay Image: " IMAGE_URI
 
 echo ""
 echo "Minting PoC SBT with:"
