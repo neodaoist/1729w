@@ -59,8 +59,7 @@ The community will also be **self-sustaining in terms of energy** through the 
 
 
 ](https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b703c02-0c41-4f6a-8310-2f157b12f975_768x432.gif)
-
-Today / Tomorrow visualization of Favela Marte through VR
+[Today / Tomorrow visualization of Favela Marte through VR]
 
 In addition to the infrastructure, the innovative program is responsible for developing economic independence for its residents. Since the beginning of the project with Favela Marte, **unemployment has dropped from +20% to 0**. Everyone in the community now has a job or has started a business.
 
