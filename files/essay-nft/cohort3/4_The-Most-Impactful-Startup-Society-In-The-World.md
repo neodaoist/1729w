@@ -52,13 +52,7 @@ Favela Marte will provide **240 houses for 673 citizens**, 80% of whom lived un
 
 The community will also be **self-sustaining in terms of energy** through the use of **solar panels** and have **100% 5G coverage**. Each resident will receive a compatible smartphone, which was made possible through a private partnership.
 
-[
-
-![](https://substackcdn.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_lossy/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b703c02-0c41-4f6a-8310-2f157b12f975_768x432.gif)
-
-
-
-](https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0b703c02-0c41-4f6a-8310-2f157b12f975_768x432.gif)
+![ipfs://bafybeigsm5mcolhm2rucgw72flh5ayhqpmlarkmv2euotrwfpn6su7edjy](https://nftstorage.link/ipfs/bafybeigsm5mcolhm2rucgw72flh5ayhqpmlarkmv2euotrwfpn6su7edjy)
 [Today / Tomorrow visualization of Favela Marte through VR]
 
 In addition to the infrastructure, the innovative program is responsible for developing economic independence for its residents. Since the beginning of the project with Favela Marte, **unemployment has dropped from +20% to 0**. Everyone in the community now has a job or has started a business.
